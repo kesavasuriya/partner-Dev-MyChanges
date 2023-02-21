@@ -1,0 +1,214 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <!-- Show quality Modal-->
+    <div class="eventModal" if:true={showQuliatyModal}>
+        <lightning-record-edit-form object-api-name="Notes__c" record-id={notesId} onsuccess={handleSuccess}
+            onerror={handleEditFormError}>
+
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeQualityModal}
+                        alternative-text="close" variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Quality Of Care</h2>
+                </span>
+
+                <span slot="modalBody">
+                    <lightning-layout>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            Describe the quality of care being provided to the child
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            <lightning-input-field variant="label-hidden"
+                                field-name="Describe_the_quality_of_care__c"></lightning-input-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            Describe (a) the child's adjustment to school, (b) school performance and (c)
+                            appropriateness of school placement
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            <lightning-input-field variant="label-hidden"
+                                field-name="Describe_a_the_child_s_adjustment__c"></lightning-input-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            Describe the child's adjustment to foster home, foster parents, and other persons in the
+                            home. N/A- Child is not of school age NOTE: For Section (3). (b) and/or (c). If the child
+                            may be educationally handicapped and is not receiving special educational services, the
+                            local educational agency must be notified promptly - in writing - to request a screening for
+                            these services.
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            <lightning-input-field variant="label-hidden"
+                                field-name="Describe_child_s_adjustment_to_foster__c"></lightning-input-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button class="slds-p-around_small" label="Save" variant="brand"
+                            type="submit"></lightning-button>
+                    </div>
+                </span>
+
+            </c-modal-component>
+        </lightning-record-edit-form>
+    </div>
+
+    <!-- Comments Modal-->
+    <div class="eventModal" if:true={showNotesCommentModal}>
+
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                <lightning-button-icon icon-name="utility:close" onclick={closeNotesCommentModal}
+                    alternative-text="close" variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+                <h2 id="modal-heading-1" class="slds-text-heading_medium slds-hyphenate">Notes</h2>
+            </span>
+
+            <span slot="modalBody">
+                <lightning-layout>
+                    <lightning-layout-item size="12" class="slds-p-around_medium">
+                        Notes <lightning-input-rich-text label="Notes" name="Notes__c" value={notesCommentVal}
+                            disabled></lightning-input-rich-text>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </span>
+            <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                    <lightning-button class="slds-p-around_small" label="Cancel"
+                        onclick={closeNotesCommentModal}></lightning-button>
+                </div>
+            </span>
+        </c-modal-component>
+    </div>
+
+
+    <!-- Notes Modal-->
+    <div class="eventModal" if:true={showNotesModal}>
+        <lightning-record-edit-form object-api-name="Notes__c" onload={handleNotesLoad} record-id={notesId} onsubmit={handleNotesSubmit}
+            onerror={handleError} onsuccess={handleNotesSuccess}>
+
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeNotesModal} alternative-text="close"
+                        variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Notes</h2>
+                </span>
+
+                <span slot="modalBody">
+
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            <lightning-dual-listbox label="Person Involved" options={contactPersonsPick}
+                                onchange={handlePersonChange} value={personInvolvedValues} required>
+                            </lightning-dual-listbox>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Contact_Purpose__c" variant="label-stacked" required
+                                class="required-fields" disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Contact_Type__c" variant="label-stacked" required
+                                class="required-fields" disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Contact_Location__c" variant="label-stacked"
+                                disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Contact_Date__c" required
+                                variant="label-stacked"></lightning-input-field>
+                            <!--<lightning-input label="Contact Date" type="date" name="Contact_Date__c" date-style="short"  onchange={handleChange} value={notesRec.Contact_Date__c} required class="required-fields" disabled={readOnly}></lightning-input>-->
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Start_Time__c" data-field="Start_Time__c" required
+                                variant="label-stacked" onchange={handleTimeChange}
+                                disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+
+                        <!--<lightning-layout-item size="6" class="slds-p-around_medium">
+                                <lightning-dual-listbox name="Involved_Persons_txt__c"
+                                                        label="Person Involved"
+                                                        options={contactPersonsPick}
+                                                        onchange={handleChange}
+                                                        value={personInvolvedValues} size="4"
+                                                        disabled={readOnly} source-label="Available" selected-label	="Chosen"	
+                                                        required 
+                                                        class="required-fields">
+                                </lightning-dual-listbox> 
+                            </lightning-layout-item>-->
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="End_Time__c" data-field="End_Time__c"
+                                onchange={handleTimeChange} variant="label-stacked"
+                                disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                           <!-- <lightning-input-field field-name="Contact_Duration__c" variant="label-stacked"
+                                value={upsertNoteRec.Contact_Duration__c} disabled></lightning-input-field>-->
+                                <lightning-input type="text" name="Contact_Duration__c" label="Contact Duration"  value={upsertNoteRec.Contact_Duration__c} variant="label-stacked"
+                                 disabled></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Travel_Duration__c" variant="label-stacked"
+                                disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Contact_was_initiated_received__c"
+                                variant="label-stacked" disabled={readOnly} required
+                                class="required-fields"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Contact_was_Attempted_Completed__c"
+                                variant="label-stacked" disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            <h1>Source : {source} </h1>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-p-around_medium">
+                            <lightning-input-field field-name="Notes__c" variant="label-stacked" required
+                                class="required-fields" disabled={readOnly}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-p-around_small">
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button class="slds-p-around_small" label="Cancel"
+                            onclick={closeNotesModal}></lightning-button>
+                        <lightning-button class="slds-p-around_small" label="Save" type="submit" variant="brand"
+                            disabled={readOnly} onclick={onFormValidate}></lightning-button>
+                    </div>
+                </span>
+            </c-modal-component>
+        </lightning-record-edit-form>
+    </div>
+    <div class="slds-box">
+        <lightning-card title={notesTitle}>
+            <lightning-button label="New" slot="actions" onclick={addNewNotes}></lightning-button>
+        </lightning-card>
+
+        <template if:true={showTable}>
+            <div class="slds-border_left slds-border_right slds-border_top">
+                <lightning-datatable key-field="id" data={notesList} columns={notesColumn} hide-checkbox-column="true"
+                    show-row-number-column="true" onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </div>
+        </template>
+    </div>
+</template>

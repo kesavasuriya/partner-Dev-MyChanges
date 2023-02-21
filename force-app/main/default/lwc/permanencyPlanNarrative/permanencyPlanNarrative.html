@@ -1,0 +1,25 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+</div>
+<h5 class="slds-p-right_medium"><b>Narrative</b></h5>
+<lightning-record-edit-form object-api-name="Permanency_Plan__c" record-id={permanencyRecId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+    <lightning-layout>
+        <lightning-layout-item size="4" padding="around-small">
+            <lightning-input type="Date" label="Adoption Plan Begin Date" name="Adoption_Plan_Begin_Date__c" onchange={handleChange} value={Adoption_Plan_Begin_Date__c} date-style="short"></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <h5><b>Bio-Psycho-Socio-Cultural History For Child Presentation And Disclosure</b></h5>
+    <lightning-layout>
+        <lightning-layout-item size="12" padding="around-small">
+            <lightning-input-field field-name="Notes_for_narrative__c" variant="label-stacked"></lightning-input-field>
+        </lightning-layout-item>
+    </lightning-layout>
+    <div class="slds-text-align_right">
+        <lightning-button label="Save and Next" title="Save and Next" onclick={handleSaveNext} disabled={disabledButton} type="submit" class="slds-var-p-around_x-small"></lightning-button>
+        <lightning-button label="Save" title="Save" variant="brand" type="submit" class="slds-var-p-around_x-small"></lightning-button>
+    </div>
+</lightning-record-edit-form>
+</template>

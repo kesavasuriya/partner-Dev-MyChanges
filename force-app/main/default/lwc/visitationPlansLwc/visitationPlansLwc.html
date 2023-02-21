@@ -1,0 +1,101 @@
+<template>
+    <lightning-card>
+        <lightning-button  slot="actions" label="New" onclick={handleAddVisitationPlan}></lightning-button>
+    </lightning-card>
+    <div class="slds-border_left slds-border_right slds-border_top">
+    <lightning-datatable
+    key-field="Id"
+    data={visitationRecordList}
+    columns={columns}
+    hide-checkbox-column show-row-number-column="true"
+    onrowaction={handleRowAction}>
+</lightning-datatable>
+</div>
+
+<template if:true={openAddVisitationPlan}>
+    <lightning-record-edit-form object-api-name="Visitation_Plan__c" record-id={visitationId} onsubmit={handleSubmit}  onsuccess={handleSuccess} onerror={handleError}>
+    <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+        <span slot="modalClose">
+                <lightning-button-icon icon-name="utility:close"
+                                    onclick={handleCancel}
+                                    alternative-text="close"
+                                    variant="bare-inverse"
+                                    class="slds-modal__close"></lightning-button-icon> 
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Visitation Plan</h2>
+        </span> 
+                <span slot="modalBody" class="slds-modal__content">
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-combobox label="Client" name="Client__c" placeholder="-Select-" required class="required-fields" options={clientPickList} onchange={handleChange} value={clientName} ></lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input type="Date" label="Established Date" name="Established_Date__c" onchange={handleChange} value={visitationRecord.Established_Date__c} date-style="short"></lightning-input>						
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input type="Date" label="End Date" name="End_Date__c" onchange={handleChange} value={visitationRecord.End_Date__c} date-style="short"></lightning-input>						
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Conditions__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Court_Ordered__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="No_visits_allowed__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-p-around_small">
+                            <lightning-input-field field-name="Comments__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-p-around_small">
+                            <lightning-input-field field-name="Explain_Visit_Plan__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Frequency__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Explain__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Visit_Duration__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Location__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Child_Transportation__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="ExplainChild__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Visitor_Transportation__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Explain_Visitor__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-dual-listbox name="Person_involved__c"
+                                                                        label="Person Involved"
+                                                                        source-label="Available"
+                                                                        selected-label="Selected"
+                                                                        options={personInvolvedPicklist}
+                                                                        onchange={handleChange}
+                                                                        value={getSelected}
+                                                                        required
+                                                                        class="required-fields"
+                                                                        >
+                            </lightning-dual-listbox>    
+                        </lightning-layout-item>
+                    </lightning-layout>   
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button label="Cancel"   class="slds-p-right_small" onclick={handleCancel}></lightning-button> 
+                        <lightning-button  label="Save" type="submit" variant="brand" onclick={onFormValidate}></lightning-button>  
+                    </div>
+            </span>
+    </c-modal-component>
+    </lightning-record-edit-form>
+    </template>
+
+</template>

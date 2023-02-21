@@ -1,0 +1,146 @@
+<template>
+
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    </div>
+
+    <lightning-card variant="Narrow" title="Adoption Annual Reviews">
+
+        <div class="slds-text-align_right slds-p-bottom_large">
+
+            <lightning-button label="ANNUAL REVIEW" variant="brand" icon-name="utility:add"  onclick={handleAdd}></lightning-button>
+        
+        </div>
+
+        <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                        <div title="Review Date">Review Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Approval Status">Approval Status</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Action">Action</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={annualReviewList} for:item="row">
+                    <tr key={row.Id}>
+                        <td class="wrapText">{row.Review_Date__c}</td>
+                        <td class="wrapText">{row.Annual_Review_Approval_Status__c}</td>
+                        <td class="wrapText">
+                            <lightning-button-icon icon-name="utility:edit" onclick={handleEdit} data-id={row.Id}></lightning-button-icon>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>-->
+        <lightning-datatable
+                    key-field="Id"
+                    data={annualReviewList}
+                    columns={columns}
+                    hide-checkbox-column
+                    onrowaction={handleRowAction}>
+        </lightning-datatable>
+
+    </lightning-card>
+
+    <template if:true={showModal}>
+
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close" icon-name="utility:close" onclick={hideModal} alternative-text="close" variant="bare-inverse"></lightning-button-icon> 
+                    <h2>Annual Review</h2>  
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-card variant="Narrow" title="Annual Review Signature Dates">
+
+                        <lightning-layout>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-input type="date" label="Adoptive Parent1" required="true" name="Adoptive_Parent_1_signature_date__c" value={caseRec.Adoptive_Parent_1_signature_date__c} onchange={handleChange} disabled="true"></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-input type="date" label="LDSS Director/Designee" required="true" name="LDSS_Director_Designee__c" value={annualReviewRec.LDSS_Director_Designee__c} onchange={handleChange}></lightning-input>
+                            </lightning-layout-item>   
+                        </lightning-layout>
+                        <lightning-layout>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-input type="date" label="Adoptive Parent2"  name="Adoptive_Parent_2_Signature_Date__c" value={caseRec.Adoptive_Parent_2_Signature_Date__c} onchange={handleChange} disabled="true"></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+            
+                    </lightning-card>
+                    <lightning-card variant="Narrow" title="Annual Review Details">
+                        <lightning-layout>
+                            <lightning-layout-item size="4" padding="around-small"> 
+                                <lightning-input type="text" label="Entered By" name="Entered_By__c" value={annualReviewRec.Entered_By__c} onchange={handleChange}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-input type="date" label="Review Date" name="Review_Date__c" value={annualReviewRec.Review_Date__c} required="true" onchange={handleChange}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </lightning-card>
+                    <lightning-card variant="Narrow">
+
+                        <lightning-radio-group type="radio" label="Child is under 18 years old or child is under 21 years old with a disability?" options={options} name="Child_is_under_18_Years_old_or_Child_is__c" value={annualReviewRec.Child_is_under_18_Years_old_or_Child_is__c} required onchange={handleChange}></lightning-radio-group>
+                        <lightning-radio-group type="radio" label="Child still meets special needs requirements?" options={options} name="Child_Still_meets_special_need__c" value={annualReviewRec.Child_Still_meets_special_need__c} required onchange={handleChange}></lightning-radio-group>
+                        <lightning-radio-group type="radio" label="Parents are still legally Responsible?" options={options} name="Parent_are_Still_legally_Responsible__c" value={annualReviewRec.Parent_are_Still_legally_Responsible__c} required onchange={handleChange}></lightning-radio-group>
+                        <lightning-radio-group type="radio" label="Renewal Agreement has been signed?" options={options} name="Renewal_agreement_has_been_signed__c" value={annualReviewRec.Renewal_agreement_has_been_signed__c} required onchange={handleChange}></lightning-radio-group>
+                        <lightning-radio-group type="radio" label="Parents provide financial Support for the child?" options={options} name="Parent_Provide_financial_Support_for_the__c" value={annualReviewRec.Parent_Provide_financial_Support_for_the__c} required onchange={handleChange}></lightning-radio-group>
+                        <lightning-radio-group type="radio" label="Child is currently enrolled in school?" options={options} name="Child_is_Currently_entrolled_in_School__c" value={annualReviewRec.Child_is_Currently_entrolled_in_School__c} onchange={handleChange}></lightning-radio-group>
+                        <lightning-radio-group type="radio" label="If not school,documentation of immunization record provided?" options={options} name="if_not_School_age_document_of_immurizati__c" value={annualReviewRec.if_not_School_age_document_of_immurizati__c} onchange={handleChange}></lightning-radio-group>
+                        <lightning-radio-group type="radio" label="If the child is between 18 and 21 years old,is he/she in school,employee or disabled?" options={options} name="if_the_child_is_between_18_and_21_Years__c" value={annualReviewRec.if_the_child_is_between_18_and_21_Years__c} onchange={handleChange}></lightning-radio-group>
+
+                    </lightning-card>
+
+                    <lightning-card variant="Narrow" title="DISABILITY NOTES">
+                        <lightning-textarea label="Disability notes" name="Disability_Notes__c" value={annualReviewRec.Disability_Notes__c} variant="label-hidden" onchange={handleChange}></lightning-textarea>
+                    </lightning-card>
+
+                    <lightning-card variant="Narrow" title="NOTES">
+                        <lightning-textarea label="notes" name="Notes__c" value={annualReviewRec.Notes__c} variant="label-hidden" onchange={handleChange}></lightning-textarea>
+                    </lightning-card>
+
+                    
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button label="SAVE" onclick={handleSave} variant="brand" icon-name="utility:save"></lightning-button>
+                    <template if:false={showApprovalBtn}>
+                        <lightning-button label="SUBMIT FOR APPROVAL" onclick={handleSubmitForApproval} variant="brand" class="slds-p-left_small"></lightning-button>
+                    </template>
+                    <lightning-button label="CANCEL" class="slds-p-left_small" icon-name="utility:close" variant="destructive" onclick={hideModal}></lightning-button>
+                </div>
+            </div>
+        </div>
+    </template>
+        <div class="eventModal" if:true={showSubmitforApprovalModal}>
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                <span slot="modalClose">
+                            <lightning-button-icon icon-name="utility:close"
+                                                      alternative-text="close"
+                                                      onclick={closeSubmiteModal}
+                                                      variant="bare-inverse"
+                                                      class="slds-modal__close"></lightning-button-icon>
+                            <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Submit For Approval</h2>
+                        </span>
+                <span slot="modalBody">
+                    <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                    </c-custom-lookup-component>
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                        <lightning-button label="Cancel" variant="destructive" title="Cancel" icon-name="utility:close" onclick={closeSubmiteModal} class= "slds-var-p-around_x-small"></lightning-button>
+                    </div>
+                  </span>
+            </c-modal-component>
+        </div>
+    
+    
+</template>

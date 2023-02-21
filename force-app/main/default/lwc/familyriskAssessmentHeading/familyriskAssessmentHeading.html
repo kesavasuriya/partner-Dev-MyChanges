@@ -1,0 +1,309 @@
+<template>
+
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <template if:true={showList}>
+        <lightning-card title={heading}>
+            <!--<div class="slds-text-align_right slds-p-bottom_medium">-->
+            <lightning-button label="New" slot="actions" icon-name="utility:add" variant="brand" onclick={handleNew} ></lightning-button>
+            <!--</div>-->
+            <lightning-datatable key-field="id" data={assessmentList} columns={dataColumn} onrowaction={handleRow} hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+            <div if:true={showMsg} class="slds-text-align_center slds-p-top_medium"><b>No records found</b></div>
+        </lightning-card>
+    </template>
+
+    <template if:false={showList}>
+        <div class="slds-text-align_right">
+            <lightning-button label="Back" variant="brand" onclick={handleCancel} ></lightning-button>
+        </div>
+
+   <lightning-layout>
+       <lightning-layout-item size="4" padding="around-small">
+            <lightning-input date-style="short" type="datetime" label="Date Assessment Initiated" name="FRRE_Date_Assessment_Initiated__c" onchange={handleChange} value={familyRiskReassessmentRec.FRRE_Date_Assessment_Initiated__c}></lightning-input>
+       </lightning-layout-item>
+       <lightning-layout-item size="4" padding="around-small">
+            <lightning-input label="Head of Household Name" name="Head of Household Name"  value={serviceCaseInvestigationRec.headOfHousehold} disabled="true"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="4" padding="around-small">
+            <lightning-input label="CPS/Service Case ID" name="CPS/Service Case ID" value={serviceCaseInvestigationRec.Name} disabled="true"></lightning-input>
+        </lightning-layout-item>
+   </lightning-layout>
+
+   <div class="slds-p-bottom_medium"><b>SECTION 1:FAMILY AND HOUSEHOLD COMPOSITION</b></div>
+   <lightning-datatable key-field="id" data={childList} columns={childColumns} onrowaction={handleRowAction} hide-checkbox-column></lightning-datatable>
+
+   <div class="slds-p-top_medium"><b>SECTION 2:RISK INDEX</b></div>
+
+   <lightning-layout>
+       <lightning-layout-item size="1" padding="around-small">RR1</lightning-layout-item>
+       <lightning-layout-item size="8" padding="around-small">
+            <lightning-radio-group label="Household previously received CPS response(voluntary/court-ordered)" name="Household_previously_received_CPS__c" options={RR1options} value={familyRiskReassessmentRec.Household_previously_received_CPS__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+       </lightning-layout-item>
+       <lightning-layout-item size="3" padding="around-small"> 
+            <lightning-input label="Score" name="RR1_Score__c" value={familyRiskReassessmentRec.RR1_Score__c} disabled="true"></lightning-input>
+       </lightning-layout-item>
+   </lightning-layout>
+
+   <lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR2</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-radio-group label="Prior CPS response(IR/AR)" name="Prior_CPS_response_IR_AR__c" options={RR2options} value={familyRiskReassessmentRec.Prior_CPS_response_IR_AR__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR2_Score__c" value={familyRiskReassessmentRec.RR2_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR3</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-radio-group label="Primary caregiver has a history of abuse or neglect as a child" name="Primary_caregiver_has_a_history_of_abuse__c" options={RR3options} value={familyRiskReassessmentRec.Primary_caregiver_has_a_history_of_abuse__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR3_Score__c" value={familyRiskReassessmentRec.RR3_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR4</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-dual-listbox label="Characteristics of children in the household(select all that apply)" name="Characteristics_of_children_household__c" options={RR4options} value={selectedValueRR4} onchange={handleChange} disabled={readOnly}></lightning-dual-listbox>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR4_Score__c" value={familyRiskReassessmentRec.RR4_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+
+<div>The following case observations pertain to the period since the last MFIRA/MFRRA</div>
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR5</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-radio-group label="New CPS response of abuse or neglect since the MFIRA or the last MFRRA" name="New_CPS_response_of_abuse_or_neglect__c" options={RR5options} value={familyRiskReassessmentRec.New_CPS_response_of_abuse_or_neglect__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR5_Score__c" value={familyRiskReassessmentRec.RR5_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR6</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-radio-group label="Primary caregiver alcohol or substance abuse since the MFIRA or the last MFRRA" name="Primary_caregiver_alcohol_or_substance__c" options={RR6options} value={familyRiskReassessmentRec.Primary_caregiver_alcohol_or_substance__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR6_Score__c" value={familyRiskReassessmentRec.RR6_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR7</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-radio-group label="Adult relationships since the MFIRA or the last MFRRA" name="Adult_relationships_since_the_MFIRA__c" options={RR7options} value={familyRiskReassessmentRec.Adult_relationships_since_the_MFIRA__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+         <template if:true={showRR7Yesoptions}>
+            <lightning-dual-listbox label="Please select an option from below" name="Yes_problems_with_adult_r__c" options={RR7Yesoptions} value={selectedValueRR7Yesoptions} onchange={handleChange} required={showRR7Yesoptions} disabled={readOnly}></lightning-dual-listbox>
+         </template>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR7_Score__c" value={familyRiskReassessmentRec.RR7_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR8</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-radio-group label="Primary caregiver mental health since the MFIRA or the last MFRRA (select one)" name="Primary_caregiver_mental_health__c" options={RR8options} value={familyRiskReassessmentRec.Primary_caregiver_mental_health__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR8_Score__c" value={familyRiskReassessmentRec.RR8_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR9</lightning-layout-item>
+    <lightning-layout-item size="8" padding="around-small">
+         <lightning-radio-group label="Primary caregiver provides physical care consistent with each child's needs" name="Primary_caregiver_provides_physical_care__c" options={RR9options} value={familyRiskReassessmentRec.Primary_caregiver_provides_physical_care__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR9_Score__c" value={familyRiskReassessmentRec.RR9_Score__c} disabled="true"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+    
+<lightning-layout>
+    <lightning-layout-item size="1" padding="around-small">RR10</lightning-layout-item>
+    <lightning-layout-item size="1" padding="around-small">
+        Primary Caregiver
+        <lightning-input type="checkbox" label=" " name="Demonstrate_Primary_Caregiver__c" checked={familyRiskReassessmentRec.Demonstrate_Primary_Caregiver__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+        <div class="slds-p-top_medium">
+            <lightning-input type="checkbox" label=" " name="Does_not_Demonstrate_Primary_Caregiver__c" checked={familyRiskReassessmentRec.Does_not_Demonstrate_Primary_Caregiver__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+        </div>
+    </lightning-layout-item>
+    <lightning-layout-item size="1" padding="around-small">
+        Secondary Caregiver
+        <lightning-input type="checkbox" label=" " name="Demonstarte_SecondaryCaregiver__c" checked={familyRiskReassessmentRec.Demonstarte_SecondaryCaregiver__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+        <div class="slds-p-top_medium">
+            <lightning-input type="checkbox" label=" " name="Does_not_Demonstarte_Secondary_Caregiver__c" checked={familyRiskReassessmentRec.Does_not_Demonstarte_Secondary_Caregiver__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+        </div>
+        <div class="slds-p-top_large">
+            <lightning-input type="checkbox" label=" " name="No_Secondary_Caregiver__c" checked={familyRiskReassessmentRec.No_Secondary_Caregiver__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+        </div>
+    </lightning-layout-item>
+    <lightning-layout-item size="6" padding="around-small">
+        <div class="slds-p-top_large">Demonstrates new skills consistent with Service Plan/Case Plan 3 objectives OR is actively engaged in services and activities to gain new skills consistent with Service Plan Objectives(0)</div>
+        <div class="slds-p-top_small">Does not Demonstrates new skills consistent with Service Plan/Case Plan 3 objectives AND/OR Participation is minimal and insufficient to contribute to achieving Service Plan Objectives(1) </div>
+        <div class="slds-p-top_small">No Secondary Caregiver</div>
+    </lightning-layout-item>
+    <lightning-layout-item size="3" padding="around-small"> 
+         <lightning-input label="Score" name="RR10_Score__c" value={familyRiskReassessmentRec.RR10_Score__c} disabled="true"></lightning-input>
+         <div class="slds-p-top_xx-small">
+            <lightning-input label="Score" name="Does_not_demonstrate_Score__c" value={familyRiskReassessmentRec.Does_not_demonstrate_Score__c} disabled="true"></lightning-input>
+         </div>
+         <div class="slds-p-top_xxx-small">
+            <lightning-input label="Score" name="No_Secondary_Score__c" value={familyRiskReassessmentRec.No_Secondary_Score__c} disabled="true"></lightning-input>
+         </div>
+         <div class="slds-p-top_large">
+            <lightning-input label="Total Score" name="Total_Score__c" value={familyRiskReassessmentRec.Total_Score__c} disabled="true"></lightning-input>
+         </div>
+    </lightning-layout-item>
+</lightning-layout>
+
+<div class="slds-p-bottom_small"><b>SECTION 3:SCORING AND OVERRIDES</b></div>
+<h2>SCORED RISK LEVEL</h2>
+
+<lightning-layout>
+    <lightning-layout-item size="4" padding="around-small">
+        <div>SCORE</div>
+        <div class="slds-p-top_xx-small">0-1</div>
+        <div class="slds-p-top_xx-small">2-4</div>
+        <div class="slds-p-top_xx-small">5-7</div>
+        <div class="slds-p-top_xx-small">8+</div>
+    </lightning-layout-item>
+    <lightning-layout-item size="4" padding="around-small">
+        <lightning-radio-group label="RISK LEVEL" name="RISK_LEVEL__c" options={riskLevelOptions} value={familyRiskReassessmentRec.RISK_LEVEL__c} disabled="true"></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+
+<div><b>OVERRIDES</b></div>
+<div>The worker may determine that policy or discretionary overrides are applicable to the family, which will result in a change in the overall risk level. If there is a policy override, select the appropriate override; the risk level will become 
+    very high. If there is a discretionary override, the risk level can increase or decrease by one level, and a reason must be entered in the space provided. If there are no-overrides , select 'No-overrides apply';the risk level will remain the same.
+</div>
+
+<div class="slds-p-top_medium"><b>Policy overrides</b></div>
+<div>Select yes if the condition is applicable in the current review period. If any condition is applicable, override final risk level to very high.</div>
+
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="1.Sexual abuse case and the alleged maltreator is likely to have access to the child" name="X1_Sexual_abuse_case_and_the_alleged__c" options={x1options} value={familyRiskReassessmentRec.X1_Sexual_abuse_case_and_the_alleged__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="2.Non-accidental injury to a child younger than 3 years" name="X2_Non_accidental_injury_to_a_child__c" options={x2options} value={familyRiskReassessmentRec.X2_Non_accidental_injury_to_a_child__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="3. Severe non-accidental injury" name="X3_Severe_non_accidental_injury__c" options={x3options} value={familyRiskReassessmentRec.X3_Severe_non_accidental_injury__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="4. Caregiver action or inaction resulted in death of a child due to abuse or neglect " name="X4_Caregiver_action_or_inaction_resulted__c" options={x4options} value={familyRiskReassessmentRec.X4_Caregiver_action_or_inaction_resulted__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<div><b>Discretionary Override</b></div>
+<div>If a discretionary override is made, select "yes", select override risk level, and indicate reason. Risk level may be overhidden one level higher or lower. </div>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="5. If yes, override risk level" name="X5_If_yes_override_risk_level__c" options={x5options} value={familyRiskReassessmentRec.X5_If_yes_override_risk_level__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <template if:false={showOverride}>
+        <lightning-layout-item size="8" padding="around-small">
+            <lightning-radio-group label="FINAL RISK LEVEL" name="FINAL_RISK_LEVEL__c" options={finalriskleveloptions} value={familyRiskReassessmentRec.FINAL_RISK_LEVEL__c} onchange={handleChange} disabled="true"></lightning-radio-group>
+        </lightning-layout-item>
+    </template>
+    <template if:true={showOverride}>
+        <lightning-layout-item size="8" padding="around-small">
+            <lightning-radio-group label="Select One" name="FINAL_RISK_LEVEL__c" options={finalriskleveloptions} value={familyRiskReassessmentRec.FINAL_RISK_LEVEL__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+        </lightning-layout-item>
+    </template>    
+</lightning-layout>
+<template if:true={showOverride}>
+    <lightning-layout>
+        <lightning-layout-item size="8" padding="around-small">
+            <lightning-textarea label="Discretionary Override Reason" name="FIRA_Discretionary_override_reason__c"  value={familyRiskReassessmentRec.FIRA_Discretionary_override_reason__c} onchange={handleChange} disabled={readOnly}></lightning-textarea>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
+
+<div><b>RECOMMENDED DECISION</b></div>
+<lightning-datatable key-field="id" columns={columns} data={recommendedDecisionList} hide-checkbox-column></lightning-datatable>
+<div class="slds-p-top_xx-small">*Unless unresolved safety threats remain</div>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="PLANNED ACTION" name="PLANNED_ACTION__c" options={plannedActionOptions} value={familyRiskReassessmentRec.PLANNED_ACTION__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<div class="slds-p-top-small">If recommended decision and planned action do not match, explain why:</div>
+<lightning-layout>
+    <lightning-layout-item size="4" padding="around-small">
+        <lightning-input label="Case Worker Name" name="Case_Worker_Name__c" value={familyRiskReassessmentRec.Case_Worker_Name__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+    </lightning-layout-item>
+    <lightning-layout-item size="4" padding="around-small">
+        <lightning-combobox label="Submit for Approval " name="Submit_for_Approval__c" options={approvalOptions} value={familyRiskReassessmentRec.Submit_for_Approval__c} required="true" onchange={handleChange} disabled={readOnly}></lightning-combobox>
+        <lightning-input label="Supervisor Name" name="Supervisor_Name__c" value={familyRiskReassessmentRec.Supervisor_Name__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+    </lightning-layout-item>
+    <lightning-layout-item size="4" padding="around-small">
+        <lightning-input date-style="short" type="date" label="Date" name="Date__c" value={familyRiskReassessmentRec.Date__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+        <lightning-combobox label="Route to Supervisor" name="Route_to_Supervisor__c" value={familyRiskReassessmentRec.Route_to_Supervisor__c} options={routeToSupervisorOptions} onchange={handleChange} disabled={readOnly}></lightning-combobox>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="12" padding="around-small">
+        <lightning-textarea label="Casewoker Comments" name="Caseworker_comments__c" value={familyRiskReassessmentRec.Caseworker_comments__c} onchange={handleChange} disabled={readOnly}></lightning-textarea>
+    </lightning-layout-item>
+</lightning-layout>
+<div class="slds-text-align_right">
+    <lightning-button label="Cancel" icon-name="utility:close" variant="destructive" onclick={handleCancel} class="slds-p-right_small"></lightning-button>
+    <template if:false={showApprovalBtn}>
+        <lightning-button label="Submit for Approval" variant="brand" onclick={handleApproval} class="slds-p-right_small" disabled={readOnly}></lightning-button>
+    </template>
+    <lightning-button label="Save" icon-name="utility:save" variant="brand" onclick={handleSave} class="slds-p-right_small" disabled={readOnly}></lightning-button>
+
+</div>
+
+
+</template>
+
+<template if:true={showApprovalScreen}>
+    <div class="slds-modal slds-fade-in-open slds-backdrop">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <lightning-button-icon icon-name="utility:close"
+                                onclick={hideApprovalScreen}
+                                alternative-text="close"
+                                variant="bare-inverse"
+                                class="slds-modal__close"></lightning-button-icon>  
+                <h2>Submit for Approval</h2>  
+            </div>
+            <div class="slds-modal__content slds-p-around_medium">
+                <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                </c-custom-lookup-component>
+            </div>
+            <div class="slds-modal__footer">
+                <lightning-button label="Cancel" variant="destructive" title="Cancel" onclick={hideApprovalScreen} class= "slds-var-p-around_x-small" icon-name="utility:close"></lightning-button>
+
+                <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+            </div>
+
+        </div> 
+    </div>
+
+</template>
+
+</template>

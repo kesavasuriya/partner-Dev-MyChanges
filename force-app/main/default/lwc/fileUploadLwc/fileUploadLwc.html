@@ -1,0 +1,6 @@
+<template>
+    <lightning-file-upload label="Upload file" name="fileUploader" onuploadfinished={handleUploadFinished} ></lightning-file-upload>
+    <template if:true={showFileLink}>
+        <lightning-button label={fileName} variant="bare" onclick={handleFileNavigate}></lightning-button>
+    </template>
+</template>

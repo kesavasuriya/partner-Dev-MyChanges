@@ -1,0 +1,107 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+</div>
+<lightning-record-edit-form object-api-name="Permanency_Plan__c" record-id={permanencyRecId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+
+    <lightning-layout multiple-rows="true">
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-output-field field-name="Adoption_Plan_Begin_Date__c" variant="label-stacked" disabled="true"></lightning-output-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input-field field-name="Disclosure_Approval_Status__c" variant="label-stacked" disabled="true"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input-field field-name="Child_is_Legally_free__c" variant="label-stacked" disabled="true" value={breaktheLinkRec.Child_is_Legally_free__c} required class="required-fields" ></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input-field field-name="Child_was_in_an_Approved_Pre_Adoptive__c" value={breaktheLinkRec.Child_was_in_an_Approved_Pre_Adoptive__c} required class="required-fields"  disabled="true" variant="label-stacked"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="date" label="TPR Date of Parent1" name="tprDateofParent1" value={tprDateofParent1} date-style="short" disabled="true"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="date" label="TPR Date of Parent2" name="tprDateofParent2" value={tprDateofParent2} date-style="short" disabled="true"></lightning-input>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <div>Provider Name : {providerName}</div>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <div>Placement Structure :{placementStructure}</div>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="date" label="Placement Begin Date" name="Begin_Date__c" value={beginDate} date-style="short" disabled="true"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="date" label="Placement End Date" name="End_Date__c" value={endDate} date-style="short" disabled="true"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="text" label="Approval Status" name="Placement_Approval_Status__c" value={approvalStatus} disabled="true"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" class="slds-p-around_small">
+            <div class="slds-border_top"></div>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input-field field-name="Adoptive_Placement_Agreement_signed__c" required class="required-fields"  variant="label-stacked"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="date" label="Date Agreement signed" name="Date_Agreement_signed__c" value={breaktheLinkRec.Date_Agreement_signed__c} date-style="short" required class="required-fields"  onchange={handleChange}></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" class="slds-p-around_small">
+            <div class="slds-border_top"></div>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="date" label="Finalization Date" name="" value={courtOrderDate} date-style="short" required class="required-fields"  disabled="true"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input type="date" label="Associated Court Order Date" name="" value={courtOrderDate} date-style="short" required class="required-fields"  disabled="true"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <lightning-input-field field-name="Adoption_has_been_finalized__c" variant="label-stacked" disabled="true" value={breaktheLinkRec.Adoption_has_been_finalized__c} required class="required-fields" ></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <div class="slds-p-top_small"><b>Approval Status:</b>{breaktheLinkRec.Break_Line_Approval_Status__c}</div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" class="slds-p-around_small">
+            <div class="slds-list_horizontal">
+                <h1 class="slds-text-color_error">Notes:<br></br>
+                </h1>The finalization date checkbox will enable when child's placement and removal episode is closed.</div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <div class="slds-text-align_right">
+        <lightning-button label="Save" type="submit" variant="brand" onclick={onFormValidate}></lightning-button>
+        <template if:false={showApprovalBtn}>
+            <lightning-button label="Create Adoption Case" type="submit" onclick={submitforApproval} variant="brand-outline" class="slds-p-left_small" ></lightning-button>
+        </template>
+    </div>
+
+</lightning-record-edit-form>
+
+<template if:true={showApprovalScreen}>
+    <div class="slds-modal slds-fade-in-open slds-backdrop">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <lightning-button-icon icon-name="utility:close"
+                                onclick={hideApprovalScreen}
+                                alternative-text="close"
+                                variant="bare-inverse"
+                                class="slds-modal__close"></lightning-button-icon>  
+                <h2>Submit for Approval</h2>  
+            </div>
+            <div class="slds-modal__content slds-p-around_medium">
+                <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                </c-custom-lookup-component>
+            </div>
+            <div class="slds-modal__footer">
+                <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand-outline" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                <lightning-button label="Cancel"  title="Cancel" onclick={hideApprovalScreen} class= "slds-var-p-around_x-small" ></lightning-button>
+            </div>
+
+        </div> 
+    </div>
+
+</template>
+</template>

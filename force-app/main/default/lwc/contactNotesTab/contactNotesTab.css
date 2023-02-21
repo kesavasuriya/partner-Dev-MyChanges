@@ -1,0 +1,8 @@
+.wrapText {
+    white-space: normal !important;
+    /*word-break: break-word !important;*/
+}
+
+.THIS.slds-card__header {
+    background-color: gray !important;
+}

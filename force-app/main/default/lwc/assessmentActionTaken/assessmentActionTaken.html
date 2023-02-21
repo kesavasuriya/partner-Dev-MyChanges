@@ -1,0 +1,15 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+    <div><b>ACTION TAKEN</b></div>
+    <lightning-textarea label="Actions Taken" name="Actions_Taken__c" value={actionRec.Actions_Taken__c} required="true" onchange={handleChange} disabled={readOnly}></lightning-textarea>
+    <div class="slds-p-top_small"><b>Note:Prior to proceeding,the Worker and Supervisor confirms all actions required to locate the child and/or family have been followed and documented
+        in Contacts, as required by SSA Policy
+    </b></div>
+    <div class="slds-text-align_right">
+        <lightning-button label="Proceed to Approval" variant="brand" onclick={handleSave} disabled={readOnly}></lightning-button>
+   </div>
+</template>

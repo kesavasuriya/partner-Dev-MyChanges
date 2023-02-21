@@ -1,0 +1,17 @@
+<template>
+        <lightning-file-upload
+            label="Upload File"
+            name="fileUploader"
+            accept={acceptedFormats}
+            record-id={providerId}
+            onuploadfinished={handleUploadFinished}>
+        </lightning-file-upload>
+
+        <lightning-datatable
+                key-field="id"
+                data={dataList}
+                hide-checkbox-column
+                columns={columnsList}
+                onrowaction={handleRowAction}>
+        </lightning-datatable>
+</template>

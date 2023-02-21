@@ -1,0 +1,97 @@
+<template>
+   <!--<div class="slds-text-align_right">
+        <lightning-button label="Add" icon-name="utility:add" onclick={handleAdd} variant="brand" class="slds-p-bottom_small"></lightning-button>
+    </div>-->
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    </div>
+    <lightning-card title={reviewTitle}> 
+        <lightning-button label="Add new" slot="actions" icon-name="utility:add" onclick={handleAdd} variant="brand"></lightning-button>
+        <!--<div class="slds-p-top_large">-->
+            <lightning-datatable key-field="id" data={resourceRecords} columns={columns} onrowaction={handleRowaction} hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        <!--</div>-->
+        <div if:true={showNorecordMsg} class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+            No Records Found.
+        </div>
+    </lightning-card>
+    
+    <template if:true={showModal}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                    onclick={hideModal}
+                    alternative-text="close"
+                    variant="bare-inverse"
+                    class="slds-modal__close"></lightning-button-icon>   
+                    <h2>Add Resource Consult Review</h2>  
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                   <lightning-layout>
+                       <lightning-layout-item size="5" padding="around-small">
+                            <lightning-input label="Name" name="UserName" required="true" value={resourceRec.UserName} onchange={handleChange} disabled={readOnly}></lightning-input>
+                       </lightning-layout-item>
+                       <lightning-layout-item size="5" padding="around-small">
+                           <lightning-combobox label="User Type" name="Select_User_Type__c" value={resourceRec.Select_User_Type__c} options={userOptions} required="true" onchange={handleChange} disabled={readOnly}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <lightning-button label="Add User" variant="brand" icon-name="utility:add" onclick={handleAddUser} disabled={readOnly}></lightning-button>
+                    </lightning-layout-item>
+                   </lightning-layout>
+                   <lightning-layout>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <lightning-input type="datetime" label="Review Date/Time" name="Review_Date_Time__c" value={resourceRec.Review_Date_Time__c} date-style="short" onchange={handleChange} required="true" disabled={readOnly}></lightning-input>
+                        </lightning-layout-item>
+                   </lightning-layout>
+                   <lightning-layout>
+                       <lightning-layout-item size="12" padding="around-small">
+                            <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th>User Name</th>
+                                        <th>User Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead> 
+                                <template if:false={showUserMsg}>
+                                    <tbody>
+                                        <template for:each={resourceRec.userList} for:index="index" for:item="row">
+                                            <tr key={row.index}>
+                                                <td>{row.username}</td>
+                                                <td>{row.usertype}</td>
+                                                <td>
+                                                    <lightning-button-icon icon-name="utility:delete" onclick={handleDeleteUser} data-id={row.id} disabled={readOnly}></lightning-button-icon>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </template>                                
+                            </table>
+                            <template if:true={showUserMsg}>
+                                <div class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+                                    No Users Found.
+                                </div>
+                            </template>
+                       </lightning-layout-item>
+                   </lightning-layout>
+                   
+                   <lightning-layout>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <span class="slds-text-color_error">*</span>
+                            <span>Meeting Notes</span>
+                            <lightning-input-rich-text label="Meeting Notes" name="Meeting_Notes__c" value={resourceRec.Meeting_Notes__c} required="true" onchange={handleChange} disabled={readOnly}></lightning-input-rich-text>
+                        </lightning-layout-item>
+                   </lightning-layout>
+                </div>
+                <div class="slds-modal__footer"> 
+                        <lightning-button label="Cancel" icon-name="utility:close" variant="destructive" onclick={hideModal} class="slds-p-right_small">
+                    </lightning-button>
+                        <lightning-button label="Save" icon-name="utility:save" variant="brand" onclick={handleSave}  disabled={readOnly}>  
+                    </lightning-button>  
+                </div>   
+            </div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,115 @@
+<template>
+    <lightning-card>
+        <lightning-button  slot="actions" label="New" onclick={handleAddAddress}></lightning-button>
+    </lightning-card>
+   
+
+  <div class="slds-theme_default">
+    <table class="slds-table slds-table_cell-buffer slds-border_left slds-border_bottom slds-border_right slds-border_top slds-table_col-bordered">
+        <thead>
+            <tr>
+                <th  scope="col">
+                    <div  title="Address Name">Address Name</div>
+                  </th>
+                  <th  scope="col">
+                    <div  title="Current Address">Current Address</div>
+                  </th>
+                  <th  scope="col">
+                      <div  title="Start Date">Start Date</div>
+                    </th>
+                    <th  scope="col">
+                      <div  title="End Date">End Date</div>
+                    </th>
+                    <th  scope="col">
+                        <div  title="Action">Action</div>
+                    </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={addressRecordList} for:item="row" for:index="index">
+                <tr key={row.Id}>
+                    <td>
+
+                        <lightning-formatted-address street={row.street} locale="en-US"
+										city={row.City__c} country={row.County__c}
+										province={row.State__c} postal-code={row.ZipCode__c}>
+									</lightning-formatted-address>
+                    </td>
+                    <td class="slds-text-align_center"><lightning-input type="checkbox" disabled checked={row.Current_Address__c}></lightning-input></td>
+                    <td class="slds-text-align_center"><lightning-formatted-date-time value={row.Start_Date__c}></lightning-formatted-date-time></td>
+                    <td class="slds-text-align_center"><lightning-formatted-date-time value={row.End_Date__c}></lightning-formatted-date-time></td>
+                    <td class="slds-text-align_center"><div><lightning-button-icon data-rownumber={index} data-action="edit" data-id={row.Id} icon-name="utility:edit" onclick={handleRowAction}></lightning-button-icon>
+                        <lightning-button-icon class="slds-p-left_xx-small" data-action="delete" data-id={row.Id} icon-name="utility:delete" onclick={handleRowAction}></lightning-button-icon></div></td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>   
+
+
+<div class="eventModal" if:true={showAddressModal}>
+                 <lightning-record-edit-form record-id={addressId} object-api-name="Contact_Address__c" onerror={handleError}  onsubmit={handleSubmit} onsuccess={handleSuccess}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  onclick={closeAddressModal}
+                                                  alternative-text="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Address</h2>
+                    </span>
+    
+            <span slot="modalBody">
+                <lightning-layout multiple-rows="true" >
+         <lightning-layout-item size="6" padding="around-small" >
+            <lightning-input-field field-name="Address_Type__c"  required> </lightning-input-field>
+         </lightning-layout-item>
+       <lightning-layout-item size="6" padding="around-small" >     
+            <lightning-input-field field-name="Current_Address__c"> </lightning-input-field>
+         </lightning-layout-item>
+         <lightning-layout-item size="6" padding="around-small" >
+              <lightning-input-field field-name="Start_Date__c" required> </lightning-input-field>
+         </lightning-layout-item>
+         <lightning-layout-item size="6" padding="around-small" >     
+            <lightning-input-field field-name="End_Date__c"> </lightning-input-field>
+         </lightning-layout-item>
+         <lightning-layout-item size="6" padding="around-small" >
+              <lightning-input-field field-name="Known_danger_at_address__c" required> </lightning-input-field>
+         </lightning-layout-item>
+         <lightning-layout-item size="6" padding="around-small" >
+              <lightning-input-field field-name="Comments__c"> </lightning-input-field>
+         </lightning-layout-item>
+         <lightning-layout-item size="6" padding="around-small" >
+                <lightning-input-address
+                address-lookup-label="Address Search"
+                address-label="Address"
+                street-label="Address Line 1"
+                street = {addressRecord.Address_Line_1__c}
+                address-lookup="text"
+                city-label="City"
+                city = {addressRecord.City__c}
+                province = {addressRecord.State__c}
+                country = {addressRecord.County__c}
+                postal-code = {addressRecord.ZipCode__c}
+                country-label="Country"
+                province-label="State/ Province"
+                postal-code-label="Zip/ Postal Code"
+                onchange={addressInputChange}
+                show-address-lookup>
+            </lightning-input-address>
+        
+         </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small" class="slds-p-top_medium" >
+              <lightning-input-field field-name="Address_Line_2__c"  variant="label-stacked" name="Address_Line_2__c" style="padding-top:75px;"> </lightning-input-field>
+         </lightning-layout-item>
+     </lightning-layout>
+            </span>
+            <span slot="modalFooter">
+               <div class="slds-text-align_center"> <lightning-button class="slds-p-around_small" variant="brand" type="submit" label="Save"></lightning-button>
+               <lightning-button class="slds-p-around_small"  label="Cancel" onclick={closeAddressModal}></lightning-button></div>
+            </span>
+        </c-modal-component>
+                     </lightning-record-edit-form>
+
+    </div>
+</template>

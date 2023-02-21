@@ -1,0 +1,69 @@
+<template>
+        <div class="spinner">
+            <template if:true={loading}>
+                 <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+            </template>
+</div>
+<lightning-card>
+    <lightning-button slot="actions" label="New" onclick={handleAdd}></lightning-button>
+</lightning-card>
+<div class="slds-border_left slds-border_right slds-border_top">
+    <lightning-datatable key-field="Id" data={actionList} columns={columns} hide-checkbox-column onrowaction={handleRowAction} show-row-number-column="true"></lightning-datatable>
+</div>
+<template if:true={showAddRecord}>
+            <lightning-record-edit-form object-api-name="Goal_Action__c" record-id={goalActionId} onsubmit={handleSubmit}  onsuccess={handleSuccess} onerror={handleError}>
+            <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                            onclick={handleCancel}
+                                            alternative-text="close"
+                                            variant="bare-inverse"
+                                            class="slds-modal__close"></lightning-button-icon> 
+                                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Action</h2>
+                </span> 
+                        <span slot="modalBody" class="slds-modal__content">
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input-field field-name="Name" required variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input-field field-name="Status__c" required variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-combobox label="Person Responsible" name="Person_Responsible__c" value={actionRec.Person_Responsible__c} required="true" options={personResponsiblePicklistValue} onchange={handleChange}></lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="Date" label="Start Date" name="Start_Date__c" required onchange={handleChange} value={actionRec.Start_Date__c} date-style="short"></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="Date" label="End Date" name="End_Date__c" required onchange={handleChange} value={actionRec.End_Date__c} date-style="short"></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="12" padding="around-small">
+                                    <lightning-input-field field-name="Comments__c" required variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-dual-listbox name="Person_Benefitizing__c"
+                                                                        label="Persons Benefiting"
+                                                                        source-label="Available"
+                                                                        selected-label="Selected"
+                                                                        field-level-help="Select"
+                                                                        options={personBenefitingPicklistValue}
+                                                                        onchange={handleChange}
+                                                                        value={getSelected}
+                                                                        required="true"
+                                                                        >
+                                        </lightning-dual-listbox>
+                                   
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </span>
+                        <span slot="modalFooter">
+                            <div class="slds-text-align_right">
+                                <lightning-button label="Cancel"   class="slds-p-right_small" onclick={handleCancel}></lightning-button> 
+                                <lightning-button  label="Save" type="submit" variant="brand"></lightning-button>  
+                            </div>
+                    </span>
+            </c-modal-component>
+            </lightning-record-edit-form>
+            </template>
+</template>

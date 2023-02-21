@@ -1,0 +1,157 @@
+<template>
+    <template if:true={isSpinner}>
+        <lightning-spinner
+            variant="brand"
+            size="large">
+    </lightning-spinner>
+    </template>
+    <template if:true={showTitleIVECmp}>
+        <lightning-card variant="Narrow" title="Foster Care">
+            <div class="slds-p-top_medium slds-p-left_small slds-p-right_small">
+                <h5 class="slds-p-left_small">Total Cases: {titleIVESize}</h5>
+                <div class="slds-text-align_right">
+                    <lightning-button-icon icon-name="utility:search" alternative-text="Search"  class="slds-m-left_xx-small" title="Search" onclick={handleSearch}></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" class="slds-m-left_xx-small" title="Refresh" onclick={handleClear}></lightning-button-icon>
+                </div>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="2">
+                        <lightning-input type="text" name="searchClientId" label="Client ID" placeholder="Search Client ID #" value={titleSearchIns.clientId} onchange={handleSearchChange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="2">
+                        <lightning-input type="text" name="searchFirstName" label="First Name" placeholder="Search First Name #" value={titleSearchIns.firstName} onchange={handleSearchChange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="2">
+                        <lightning-input type="text" name="searchLastName" label="Last Name" placeholder="Search Last Name #" value={titleSearchIns.lastName} onchange={handleSearchChange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="2">
+                        <lightning-input type="date" date-style="short" name="searchRemovalDate" label="Removal Date"  placeholder="Search Removal Date" value={titleSearchIns.removalDate} onchange={handleSearchChange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="2">
+                        <lightning-combobox name="searchEligibleStatus" label="Eligible Status" placeholder="Eligible Status" options={eligibleStatusPicklist} onchange={handleSearchChange} value={titleSearchIns.eligibleStatus}> </lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="2">
+                        <lightning-combobox name="searchCountry" label="Country" placeholder="Search Country" options={countryPicklist} onchange={handleChange} value={titleSearchIns.country}> </lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                
+                <template if:true={showTitleIVETable}>
+
+                    <lightning-datatable key-field="id" data={visibleData} columns={columns} onrowaction={handleRowAction}></lightning-datatable>
+                                
+                    <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right slds-table--fixed-layout">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-scrollable" scope="col">
+                                <div  title="CHILD NAME">CHILD NAME</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                <div title="CLIENT ID">CLIENT ID</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="CASE NUMBER">CASE NUMBER</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                <div title="CHILD AGENCY">CHILD AGENCY</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="CHILD JURISDICTION">CHILD JURISDICTION</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="REMOVAL DATE">REMOVAL DATE</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="DATE OF BIRTH">DATE OF BIRTH</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="REMOVAL AGE">REMOVAL AGE</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="ASSIGNED TO">ASSIGNED TO</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="ASSIGNMENT STATUS">ASSIGNMENT STATUS</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="ELIGIBLE STATUS">ELIGIBLE STATUS</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="REVIEW PERIOD">REVIEW PERIOD</div>
+                                </th>
+                                <th class="slds-scrollable" scope="col">
+                                    <div title="ACTION">ACTION</div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            
+                                <template for:each={visibleData} for:index="index" for:item="row">  
+                                    <tr key={row.titleIVEId}>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.childName}> {row.childName}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                                <a data-id={row.titleIVEId} onclick={handleTitleIvERec}>{row.clientId}</a>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} title={row.caseNumber}>{row.caseNumber}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.childAgency}> {row.childAgency}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.childJurisdiction}> {row.childJurisdiction}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.removalDate}> {row.removalDate}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.DOB}> {row.DOB}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.removalAge}> {row.removalAge}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.assignedTo}> {row.assignedTo}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.assignmentStatus}> {row.assignmentStatus}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.eligibleStatus}> {row.eligibleStatus}</div>
+                                        </td>
+                                        <td class="slds-scrollable" data-label="">
+                                            <div id={index} accesskey={index} title={row.reviewPeriod}> {row.reviewPeriod}</div>
+                                        </td>
+                                        <td class="slds-scrollable">
+                                            <div id={index}>
+                                                <lightning-input type="checkbox" label="" variant="label-hidden" aria-labelledby="otherlabel" name={row.id} onchange={handleCheckboxChange} ></lightning-input>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            
+                            <template if:true={showMsg}>
+                                <p>No records to display</p>
+                            </template>
+                        </tbody>
+                    </table>-->
+                   
+                </template><br/>
+                <div>
+                    <template if:true={showChild}>
+                        <c-pagination-l-w-c total-list={titleIVEList} onupdate={paginationHandler}></c-pagination-l-w-c>
+                    </template>
+                </div><br/>
+                <!--<div class="slds-text-align_right">
+                    <lightning-button variant="brand" label="Assign" title="Assign" onclick={handleClick} class="slds-m-left_x-small" disabled={showAssignButton}></lightning-button>
+                </div>-->
+            </div>
+        </lightning-card>
+        
+    </template>
+    <template if:true={showtitleIvEStageCmp}>
+        <!--<c-title-iv-e-stage-l-w-c current-title-iv-e-rec={currentIvERec} steps={pathSteps}></c-title-iv-e-stage-l-w-c> -->
+        <c-title-i-v-tabs-l-w-c current-title-iv-e-rec={currentIvERec} onhidetabs={handleBackBtnClick}></c-title-i-v-tabs-l-w-c>
+    </template>
+</template>

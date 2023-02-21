@@ -1,0 +1,7 @@
+.slds-scrollable {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+.slds-modal__content {
+    overflow: visible;
+}

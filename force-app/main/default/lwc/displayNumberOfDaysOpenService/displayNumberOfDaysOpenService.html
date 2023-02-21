@@ -1,0 +1,70 @@
+<template>
+
+	<div class="backgroundcolor slds-box">
+		<lightning-layout>
+			<lightning-layout-item class="slds-p-around_small" size="4">
+				<p class="slds-p-around_xxx-small">Case Number : {servicecaseIns.Name} </p>
+				<p class="slds-p-around_xxx-small">Start Date and Time : <lightning-icon class="slds-p-right_xxx-small"
+						size="small" icon-name="utility:date_time"></lightning-icon> {startDate}</p>
+				<p class="slds-p-around_xxx-small">Restrict/Unrestrict : <lightning-button label={buttonLabel}
+						onmouseover={handleMouseOver} onmouseout={handleMouseOut} onclick={handleRestrictClick}
+						class="slds-m-left_x-small"></lightning-button>
+				</p>
+				<p class="slds-p-around_xxx-small"> Status/Decision: <template if:true={isClosed}>
+						<lightning-badge label={Status} class="slds-theme_success"></lightning-badge>
+					</template><template if:false={isClosed}>
+						<lightning-badge label={Status} class="slds-theme_warning"></lightning-badge>
+					</template></p>
+			</lightning-layout-item>
+			<lightning-layout-item class="slds-p-around_small" size="4">
+				<p class="slds-p-around_xxx-small"> HOH : <lightning-icon class="slds-p-right_xxx-small" size="small"
+						icon-name="utility:user"></lightning-icon> {hoh} </p>
+				<p class="slds-p-around_xxx-small"> Family Worker: <lightning-icon class="slds-p-right_xxx-small"
+						size="small" icon-name="utility:user_role"></lightning-icon>{familyWorker}</p>
+				<p class="slds-p-around_xxx-small"> Intake/Referral : <template if:true={showIntakeNavigation}>
+						<lightning-button label={intakeRecord.CaseNumber} onclick={handleIntakeNavigate}>
+						</lightning-button>
+					</template> </p>
+				<p class="slds-p-around_xxx-small"> Administrative Worker: <lightning-icon
+						class="slds-p-right_xxx-small" size="small" icon-name="utility:user_role"></lightning-icon>
+					{administrativeWorker}</p>
+
+			</lightning-layout-item>
+			<lightning-layout-item class="slds-p-around_small" size="3">
+				<p class="slds-p-around_xxx-small"> Opened On : <lightning-icon class="slds-p-right_xxx-small"
+						size="small" icon-name="utility:date_time"></lightning-icon> {openedDate}</p>
+				<p class="slds-p-around_xxx-small"> Closed On : {closeDate}</p>
+				<p class="slds-p-around_xxx-small"> Reviewer : <lightning-icon class="slds-p-right_xxx-small"
+						size="small" icon-name="utility:user_role"></lightning-icon> {reviewer}</p>
+				<p class="slds-p-around_xxx-small"> Child Worker : <lightning-icon class="slds-p-right_xxx-small"
+						size="small" icon-name="utility:user_role"></lightning-icon> {childWorker} </p>
+
+			</lightning-layout-item>
+			<lightning-layout-item class="slds-p-around_small" size="2">
+				<div class="slds-p-top_small"></div>
+				<div class="slds-avatar slds-avatar_circle circle " size="max-large">
+					<p class="textSize30"> {servicecaseIns.Number_of_days__c} </p>
+					<p class="textSize10">Days</p>
+				</div><br>
+				<div class="slds-p-top_small slds-p-left_none"><b>ELAPSED</b></div>
+			</lightning-layout-item>
+		</lightning-layout>
+	</div>
+
+	<template if:true={showValidateModal}>
+		<div class="slds-modal slds-fade-in-open slds-backdrop">
+			<div class="slds-modal__container">
+				<div class="slds-modal__header">
+					<lightning-button-icon icon-name="utility:close" onclick={closeValidateModal}
+						alternative-text="close" variant="bare-inverse" class="slds-modal__close">
+					</lightning-button-icon>
+					<h2><b>Assignment</b></h2>
+				</div>
+				<div class="slds-modal__content slds-p-around_medium">
+					<div class="slds-text-align--center">{modalMsg}</div>
+				</div>
+			</div>
+		</div>
+	</template>
+
+</template>

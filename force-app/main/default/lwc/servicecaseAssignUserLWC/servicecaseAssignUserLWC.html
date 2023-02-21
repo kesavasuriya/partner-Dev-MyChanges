@@ -1,0 +1,188 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <lightning-card title="">
+        <div class="slds-text-align_right slds-p-bottom_medium slds-p-top_large">
+            <lightning-button label="Assign" title="Assign" onclick={handleAssignModal} icon-name="standard:user"
+                variant="brand" class="slds-var-p-around_x-small slds-text-align_right"></lightning-button>
+        </div>
+
+        <template if:true={showAssignModal}>
+            <div class="slds-modal slds-fade-in-open slds-backdrop">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <lightning-button-icon icon-name="utility:close" onclick={closeAssignModal}
+                            alternative-text="close" variant="bare-inverse" class="slds-modal__close">
+                        </lightning-button-icon>
+                        <h2>Assign/Transfer - Service Case</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-layout>
+                            <lightning-layout-item class="slds-p-around_medium" size="6">
+                                <lightning-radio-group type="radio" variant="label-hidden"
+                                    options={assignTypePickOption} name="Assign_Type__c"
+                                    value={assignServiceCaseRec.Assign_Type__c} onchange={handleTypeChange}
+                                    disabled={readOnly}></lightning-radio-group>
+                            </lightning-layout-item>
+                        </lightning-layout>
+
+                        <template if:false={showLocalDepartment}>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_medium" size="6">
+                                    <lightning-combobox name="Select_a_Unit__c" label="Select a Unit"
+                                        value={assignServiceCaseRec.Select_a_Unit__c} placeholder="CPS Unit 2"
+                                        options={selectUnitPickOption} onchange={handleChange} disabled={readOnlyType}>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item class="slds-p-around_medium" size="6">
+                                    <lightning-combobox name="Select_a_Social_Worker__c" label="Select a social worker"
+                                        value={assignServiceCaseRec.Select_a_Social_Worker__c}
+                                        options={socialWorkerPickOption} onchange={handleChange} required
+                                        disabled={readOnly}> </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </template>
+
+                        <template if:true={showLocalDepartment}>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_medium" size="6">
+                                    <lightning-combobox name="" label="Select a Local Department"
+                                        options={selectLocalDepartmentPickOption} disabled={readOnly}>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item class="slds-p-around_medium" size="6">
+                                    <lightning-combobox name="" label="Select a Supervisor" disabled={readOnly}>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </template>
+
+                        <lightning-layout>
+                            <lightning-layout-item class="slds-p-around_medium" size="4">
+                                <lightning-radio-group type="radio" label="Responsibility"
+                                    options={responsibilityPickOption} name="Responsibility__c"
+                                    value={assignServiceCaseRec.Responsibility__c} onchange={handleChange} required
+                                    disabled={readOnly}></lightning-radio-group>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="4">
+                                <lightning-input class="slds-p-left_x-small" type="date" name="Assign_Start_Date__c"
+                                    value={assignServiceCaseRec.Assign_Start_Date__c} label="Start Date"
+                                    onchange={handleChange} disabled={readOnly}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="4">
+                                <lightning-input class="slds-p-left_x-small" type="date" name="Assign_End_Date__c"
+                                    value={assignServiceCaseRec.Assign_End_Date__c} label="End Date"
+                                    onchange={handleChange} disabled={readOnly}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <template if:true={showChildList}>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_medium" size="6">
+                                    <lightning-combobox name="Child_List__c" label="Child List"
+                                        value={assignServiceCaseRec.Child_List__c} options={childPickOption}
+                                        onchange={handleChange} required disabled={readOnly}> </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </template>
+                        <lightning-layout>
+                            <lightning-layout-item size="12" class="slds-p-around_medium">
+                                <p>Summary</p>
+                                <lightning-input-rich-text name="Summary__c" value={assignServiceCaseRec.Summary__c}
+                                    onchange={handleChange} disabled={readOnly}></lightning-input-rich-text>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <lightning-button label="Cancel" variant="destructive" onclick={closeAssignModal}
+                            icon-name="utility:close" class="slds-p-right_small"> </lightning-button>
+                        <lightning-button label="Save" variant="brand" onclick={handleValidation}
+                            icon-name="utility:save" disabled={readOnly}>
+
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+
+    <lightning-datatable key-field="Id" data={assignmentRecordList} columns={assignmentTableColumns}
+        hide-checkbox-column onrowaction={handleRowaction}>
+    </lightning-datatable>
+
+    <template if:true={showPreviewModal}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close" onclick={closePreviewModal}
+                        alternative-text="close" variant="bare-inverse" class="slds-modal__close">
+                    </lightning-button-icon>
+                    <h2>Contact Details</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-layout>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div><b>From Worker Details</b></div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div><b>To Worker Details</b></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div>Name: <b>{assignServiceCaseRec.Assigned_By__r.Name}</b></div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div>Name: <b>{assignServiceCaseRec.Select_a_Social_Worker__r.Name}</b></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div>Email: <b>{assignServiceCaseRec.Assigned_By__r.Email}</b></div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div>Email: <b>{assignServiceCaseRec.Select_a_Social_Worker__r.Email}</b></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div>Contact: <b>{assignServiceCaseRec.Assigned_By__r.Phone}</b></div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div>Contact: <b>{assignServiceCaseRec.Select_a_Social_Worker__r.Phone}</b></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div></div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <div>Responsibility: <b>{assignServiceCaseRec.Responsibility__c}</b></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template if:true={showValidateModal}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeValidateModal}
+                        alternative-text="close" variant="bare-inverse" class="slds-modal__close">
+                    </lightning-button-icon>
+                    <h2>Assignment</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <div  class="slds-text-align--center">Only supervisor and admin can assign records</div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</template>

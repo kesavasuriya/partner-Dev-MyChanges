@@ -1,0 +1,9 @@
+.border{
+    border:  6px;
+    border-color: gray;
+    border-style: solid;
+    color: black;
+}
+.scroll {
+    height:8rem;
+  }

@@ -1,0 +1,251 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+    <lightning-card>
+        <div class="slds-p-left_medium">Client Name</div>
+        <lightning-layout>
+            <lightning-layout-item size="3" class="slds-p-around_small">
+                <lightning-combobox class="slds-p-left_x-small" name="Client Name" options={name} value={details.id} variant="label-hidden" onchange={handleChange}></lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-p-around_small">
+                <div>Client ID:<b>{details.clientid}</b></div>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" class="slds-p-around_small">
+                <div>DOB:<b><lightning-formatted-date-time value={details.DOB} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></p></b></div>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" class="slds-p-around_small">
+                <div>Gender:<b>{details.gender}</b></div>
+                
+            </lightning-layout-item>
+            <lightning-layout-item size="1" class="slds-p-around_small">
+                <div>Age:<b>{details.age}</b></div>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-text-align_right slds-p-bottom_medium">
+            <lightning-button variant="brand" icon-name="utility:add" label="Add New Service" onclick={showAddNewService} disabled={hideAddNewServiceButton}></lightning-button>
+        </div>
+        
+        <lightning-datatable
+                    key-field="Id"
+                    data={visibleData}
+                    columns={columns}
+                    hide-checkbox-column show-row-number-column="true"
+                    onrowaction={handleRowAction}>
+        </lightning-datatable><br/>
+        <div>
+            <template if:true={showChild}>
+                <c-pagination-l-w-c total-list={serviceList} onupdate={paginationHandler}></c-pagination-l-w-c>
+            </template>
+        </div> 
+        
+        
+
+        <template if:true={showdelete}>
+            <div class="slds-modal slds-fade-in-open slds-backdrop">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <lightning-button-icon icon-name="utility:close"
+                        onclick={hideDelete}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>   
+                        <h2>Delete Service</h2>  
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="slds-text-align_center" >Do you want to delete?</div>
+                    </div>
+                    <div class="slds-modal__footer"> 
+                        <lightning-button label="Delete" icon-name="utility:delete" variant="brand" onclick={handleDeleteService}>  
+                        </lightning-button>  
+                    </div>   
+                </div>
+            </div>
+        </template>
+
+        <template if:true={showModalAddNewService}>
+            <div class="slds-modal slds-fade-in-open slds-backdrop"> 
+                <div class="slds-modal__container"> 
+                    <div class="slds-modal__header">
+                        <lightning-button-icon icon-name="utility:close"
+                        onclick={handleCancel}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>   
+                        <h2>Add Service Detail</h2>  
+                      </div>
+                      <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-layout>
+                            <lightning-layout-item class="slds-p-around_small" size="3">  
+                                <div>Client ID:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b>{details.clientid}</b></div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div>Client Name:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b>{details.name}</b></div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div>Client DOB:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b><lightning-formatted-date-time value={details.DOB} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></p></b></div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div>Client Gender:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b>{details.gender}</b></div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Client Program Assignment" name="Client_Program_Name__c" value={service.Client_Program_Name__c} options={clientProgramName} required="true" onchange={handleService}></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="text" label="Action" name="Actiontxt__c" value={service.Actiontxt__c} onchange={handleService}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="text" label="Service Plan" name="Service_Plan__c" value={service.Service_Plan__c} onchange={handleService}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Services" name="AgencyServices__c" value={service.AgencyServices__c} options={agencyService} onchange={handleService} required="true"></lightning-combobox>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Frequency" name="Frequency__c" value={service.Frequency__c} options={frequency} required="true" onchange={handleService}></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Duration" name="Duration__c" value={service.Duration__c} options={duration} required="true" onchange={handleService}></lightning-combobox>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="date" date-style="short"  label="Estimated Begin Date" name="Estimated_Begin_Date__c" value={service.Estimated_Begin_Date__c} required="true" onchange={handleService}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="date"  date-style="short" label="Estimated End Date" name="Estimated_End_Date__c" value={service.Estimated_End_Date__c} required="true" onchange={handleService}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="datetime" date-style="short"  label="Actual Begin DateTime" name="Actual_Begin_DateTime__c" value={service.Actual_Begin_DateTime__c}  onchange={handleService}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="datetime" date-style="short"  label="Actual End DateTime" name="Actual_End_DateTime__c" value={service.Actual_End_DateTime__c} onchange={handleService}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-textarea label="Notes" name="Notes__c" value={service.Notes__c} onchange={handleService}></lightning-textarea>
+                      </div>
+                      <div class="slds-modal__footer"> 
+                        <lightning-button icon-name="utility:close" label="Discard" variant="destructive"  class="slds-p-right_small" onclick={handleCancel}></lightning-button> 
+                        <lightning-button icon-name="utility:save" label="Save" variant="brand" onclick={handleSave}>  
+                        </lightning-button>  
+                      </div> 
+                </div>
+            </div>
+        </template>
+
+        <template if:true={showModalEditNewService}>
+            <div class="slds-modal slds-fade-in-open slds-backdrop"> 
+                <div class="slds-modal__container"> 
+                    <div class="slds-modal__header">
+                        <lightning-button-icon icon-name="utility:close"
+                        onclick={hideModalEditNewService}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>   
+                        <h2>Edit Service Detail</h2>  
+                      </div>
+                      <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-layout>
+                            <lightning-layout-item class="slds-p-around_small" size="3">  
+                                <div>Client ID:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b>{serviceEdit.Client__r.Casevault_PID__c}</b></div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div>Client Name:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b>{serviceEdit.Client__r.Name}</b></div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div>Client DOB:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b><lightning-formatted-date-time value={serviceEdit.Client__r.Date_of_Birth__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></p></b></div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div>Client Gender:</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="3">
+                                <div><b>{serviceEdit.Client__r.Gender__c}</b></div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Client Program Assignment" name="Client_Program_Name__c" value={serviceEdit.Client_Program_Name__c} options={editclientProgramName} required="true" onchange={handleEditService}></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="text" label="Action" name="Actiontxt__c" value={serviceEdit.Actiontxt__c}  onchange={handleEditService}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="text" label="Service Plan" name="Service_Plan__c" value={serviceEdit.Service_Plan__c} onchange={handleEditService}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Services" name="AgencyServices__c" value={serviceEdit.AgencyServices__c} options={agencyService} onchange={handleEditService} required="true"></lightning-combobox>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Frequency" name="Frequency__c" value={serviceEdit.Frequency__c} options={frequency} required="true" onchange={handleEditService}></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-combobox label="Duration" name="Duration__c" value={serviceEdit.Duration__c} options={duration} required="true" onchange={handleEditService}></lightning-combobox>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="date" date-style="short"  label="Estimated Begin Date" name="Estimated_Begin_Date__c" value={serviceEdit.Estimated_Begin_Date__c} required="true" onchange={handleEditService}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="date" date-style="short"  label="Estimated End Date" name="Estimated_End_Date__c" value={serviceEdit.Estimated_End_Date__c} required="true" onchange={handleEditService}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout> 
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="datetime" date-style="short" label="Actual Begin DateTime" name="Actual_Begin_DateTime__c" value={serviceEdit.Actual_Begin_DateTime__c}  onchange={handleEditService}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="6">
+                                <lightning-input type="datetime" date-style="short"  label="Actual End DateTime" name="Actual_End_DateTime__c" value={serviceEdit.Actual_End_DateTime__c} onchange={handleEditService}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-textarea label="Notes" name="Notes__c" value={serviceEdit.Notes__c} onchange={handleEditService}></lightning-textarea>
+                      </div>
+                      <div class="slds-modal__footer"> 
+                        <lightning-button icon-name="utility:close" label="Discard" variant="destructive"  class="slds-p-right_small" onclick={hideModalEditNewService}></lightning-button> 
+                        <lightning-button icon-name="utility:save" label="Update" variant="brand" onclick={handleUpdate}>  
+                        </lightning-button>  
+                      </div> 
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+    
+</template>

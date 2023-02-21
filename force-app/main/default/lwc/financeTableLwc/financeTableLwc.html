@@ -1,0 +1,38 @@
+<template>
+    <template if:true={loading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <template if:false={showPayment}>
+        <lightning-card>
+            <div slot="actions">
+
+                <lightning-input name="enter-search" variant="label-hidden" type="search"></lightning-input>
+            </div>
+
+            <lightning-datatable key-field="Id" data={visibleProviders} columns={providerColumns} hide-checkbox-column
+                onrowaction={handleProviderRowAction} >
+            </lightning-datatable>
+            <template if:true={showPage1}>
+                <c-pagination-l-w-c total-list={providers} onupdate={providerPaginationHandler}></c-pagination-l-w-c>
+            </template>
+        </lightning-card>
+    </template>
+    <template if:true={showPayment}>
+        <lightning-card title="Payment Summary">
+            <div slot="actions">
+                <lightning-button label="Back" onclick={goBack}></lightning-button>
+            </div>
+        <lightning-datatable key-field="Id" data={providerPayments} columns={providerPaymentColumns} hide-checkbox-column
+            onrowaction={handleProviderPaymentRowAction}>
+        </lightning-datatable>
+    </lightning-card>
+
+        <div class="slds-p-around_large"></div>
+        <lightning-card title="Payment Details">
+        <lightning-datatable key-field="Id" data={paymentRecords} columns={paymentColumns} 
+            hide-checkbox-column>
+        </lightning-datatable>
+    </lightning-card>
+        </template>
+    </template>
+</template>

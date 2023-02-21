@@ -1,0 +1,70 @@
+<template>
+    
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <div class="slds-p-bottom_small"><b>Scoring And Overrides</b></div>
+    <div class="slds-p-right_small slds-p-bottom_small"><b>Scored Risk Level</b></div>
+    <lightning-datatable key-field="id" data={scoreList} columns={columns} hide-checkbox-column></lightning-datatable>
+
+<div class="slds-p-top_small"><b>Overrides</b></div>
+<div>The worker may determine that policy or discretionary overrides are applicable to the family, which will result in a change in the overall risk level. If there is a policy override, select the appropriate override; the risk level will become 
+    very high. If there is a discretionary override, the risk level can increase or decrease by one level, and a reason must be entered in the space provided. If there are no-overrides , select 'No-overrides apply';the risk level will remain the same.
+</div>
+
+<div class="slds-p-top_medium"><b>Policy overrides</b></div>
+<div>Select yes if the condition is applicable in the current review period. If any condition is applicable, override final risk level to very high.</div>
+
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="1.Sexual abuse case and the alleged maltreator is likely to have access to the child" name="X1_Sexual_abuse_case_and_the_alleged__c" options={x1options} value={scoringAndOverridesRec.X1_Sexual_abuse_case_and_the_alleged__c} onchange={handleChange} disabled={readOnly} required="true"></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="2.Non-accidental injury to a child younger than 3 years" name="X2_Non_accidental_injury_to_a_child__c" options={x2options} value={scoringAndOverridesRec.X2_Non_accidental_injury_to_a_child__c} onchange={handleChange} disabled={readOnly} required="true"></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="3. Severe non-accidental injury" name="X3_Severe_non_accidental_injury__c" options={x3options} value={scoringAndOverridesRec.X3_Severe_non_accidental_injury__c} onchange={handleChange} disabled={readOnly} required="true"></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="4. Caregiver action or inaction resulted in death of a child due to abuse or neglect " name="X4_Caregiver_action_or_inaction_resulted__c" options={x4options} value={scoringAndOverridesRec.X4_Caregiver_action_or_inaction_resulted__c} onchange={handleChange} disabled={readOnly} required="true"></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<div><b>Discretionary Override</b></div>
+<div>If a discretionary override is made, select "yes", select override risk level, and indicate reason. Risk level may be overhidden one level higher or lower. </div>
+<lightning-layout>
+    <lightning-layout-item size="8" padding="around-small">
+        <lightning-radio-group label="5. If yes, override risk level" name="X5_If_yes_override_risk_level__c" options={x5options} value={scoringAndOverridesRec.X5_If_yes_override_risk_level__c} onchange={handleChange} disabled={readOnly} required="true"></lightning-radio-group>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <template if:false={showOverride}>
+        <lightning-layout-item size="8" padding="around-small">
+            <lightning-radio-group label="FINAL RISK LEVEL" name="FINAL_RISK_LEVEL__c" options={finalriskleveloptions} value={scoringAndOverridesRec.FINAL_RISK_LEVEL__c} onchange={handleChange} disabled="true"></lightning-radio-group>
+        </lightning-layout-item>
+    </template>
+    <template if:true={showOverride}>
+        <lightning-layout-item size="8" padding="around-small">
+            <lightning-radio-group label="Select One" name="FINAL_RISK_LEVEL__c" options={finalriskleveloptions} value={scoringAndOverridesRec.FINAL_RISK_LEVEL__c} onchange={handleChange} disabled={readOnly}></lightning-radio-group>
+        </lightning-layout-item>
+    </template>    
+</lightning-layout>
+<template if:true={showOverride}>
+    <lightning-layout>
+        <lightning-layout-item size="8" padding="around-small">
+            <lightning-textarea label="Discretionary Override Reason" name="FIRA_Discretionary_override_reason__c"  value={scoringAndOverridesRec.FIRA_Discretionary_override_reason__c} onchange={handleChange} disabled={readOnly} required={showOverride}></lightning-textarea>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
+<div class="slds-text-align_right">
+    <lightning-button label="Save" icon-name="utility:save" variant="brand" onclick={handleSave}  disabled={readOnly}></lightning-button>
+</div>
+</template>

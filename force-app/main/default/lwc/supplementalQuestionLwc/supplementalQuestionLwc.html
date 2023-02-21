@@ -1,0 +1,49 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <lightning-card title="Supplemental Questions" class="slds-p-top_large">
+        <lightning-layout>
+            <lightning-layout-item size="2" class="slds-p-around_small">
+                <h4>S1</h4>
+            </lightning-layout-item>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <h4>Criminal history within the past three years</h4>
+                    <lightning-radio-group name="FIRA_Does_either_caregiver_have_history__c"
+                        label="Does either caregiver have a history of criminal behavior within the past three years?"
+                        value={supplementalQuestionRec.FIRA_Does_either_caregiver_have_history__c}
+                        type="radio" options={optionS1} onchange={handleChange} disabled={readOnly}
+                    required></lightning-radio-group>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" class="slds-p-around_small"></lightning-layout-item>
+        </lightning-layout>
+        <template if:true={showprimarySecondary}>
+            <lightning-layout>
+                <lightning-layout-item size="2" class="slds-p-around_small"></lightning-layout-item>
+                <lightning-layout-item size="5" class="slds-p-around_small">
+                    <lightning-dual-listbox name="FIRA_Primary__c"
+                                label="Primary"
+                                source-label="Available" disabled={readOnly}
+                                selected-label="Selected" options={primaryOptions} onchange={handleChange}
+                                value={selectedValueprimaryOptions}>
+                </lightning-dual-listbox> 
+                </lightning-layout-item>
+                <lightning-layout-item size="5" class="slds-p-around_small">
+                    <lightning-dual-listbox name="FIRA_Secondary__c"
+                                label="Secondary"
+                                source-label="Available" disabled={readOnly}
+                                selected-label="Selected" options={secondaryOptions} onchange={handleChange}
+                                value={selectedValuesecondaryOptions}>
+                </lightning-dual-listbox> 
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        
+    </lightning-card>
+    <div class="slds-text-align_right">
+        <lightning-button label="Save" variant="brand" onclick={handleSave} icon-name="utility:save" disabled={readOnly}></lightning-button>
+    </div>
+</template>

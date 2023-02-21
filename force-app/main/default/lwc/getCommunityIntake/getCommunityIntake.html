@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title={totalCases} icon-name="standard:case"></lightning-card>
+    <div class="slds-p-top_small"></div>
+    <lightning-datatable
+                    key-field="Id"
+                    data={intakeRecordList}
+                    columns={columns}
+                    hide-checkbox-column>
+        </lightning-datatable>
+</template>

@@ -1,0 +1,29 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item size="4" class="slds-p-around_small">
+            <div><b>TASKS</b> : <lightning-badge class="slds-badge_inverse" label="0"></lightning-badge></div>
+        </lightning-layout-item>
+        <lightning-layout-item size="4" class="slds-p-around_small slds-text-align_center">
+            <div><b>OPEN TASK</b> : <lightning-badge class="slds-theme_warning " label="0"></lightning-badge></div>
+        </lightning-layout-item>
+        <lightning-layout-item size="4" class="slds-p-around_small slds-text-align_right">
+            <div><b>CLOSED TASK</b> : <lightning-badge class="slds-theme_success" label="0"></lightning-badge></div>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="wrapText" scope="col">ASSIGNED DATE</th>
+                <th class="wrapText" scope="col">TASK</th>
+                <th class="wrapText" scope="col">DUE DATE</th>
+                <th class="wrapText" scope="col">COMPLETED DATE</th>
+                <th class="wrapText" scope="col">STATUS</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+</template>

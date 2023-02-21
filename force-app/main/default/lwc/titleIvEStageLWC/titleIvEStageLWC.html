@@ -1,0 +1,24 @@
+<template>
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    <lightning-progress-indicator current-step={currentStage} type="path" variant="base">
+        <template for:each={steps} for:item="step">
+            <lightning-progress-step class="slds-path__item slds-is-incomplete" label={step.label} value={step.value} key={step.label} onclick={stageAction}></lightning-progress-step>
+        </template>
+    </lightning-progress-indicator>
+    <div class="slds-p-left_medium">
+        <template if:true={isLegal}>
+            <c-title-legal-l-w-c title-iv-e-rec={currentTitleIvERec}></c-title-legal-l-w-c>
+        </template>
+        <template if:true={isAFDCRelatedness}>
+            <c-title-iv-e-afdc-l-w-c title={titleIVEId} title-iv-e-rec={currentTitleIvERec}></c-title-iv-e-afdc-l-w-c>
+        </template>
+        <template if:true={isPlacement}>
+            <c-title-placement-l-w-c title={titleIVEId} title-iv-e-rec={currentTitleIvERec}></c-title-placement-l-w-c>
+        </template>
+        <template if:true={isOtherCriteria}>
+            <c-title-iv-e-other-cetria title-iv-e-rec={currentTitleIvERec}></c-title-iv-e-other-cetria>
+        </template>
+    </div>
+</template>

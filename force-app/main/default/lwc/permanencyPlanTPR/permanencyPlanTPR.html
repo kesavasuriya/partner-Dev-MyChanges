@@ -1,0 +1,83 @@
+<template>
+
+
+<div class="slds-box">
+        <lightning-card title="TPR">
+            <lightning-button label="New" slot="actions" onclick={handleNew}></lightning-button>
+        </lightning-card>
+        <div class="slds-border_left slds-border_right slds-border_top">
+        <lightning-datatable key-field="id"
+         data={tprList} 
+         columns={columns} 
+         hide-checkbox-column 
+        onrowaction={handleRowAction} show-row-number-column="true">
+        </lightning-datatable>
+    </div>
+</div>
+<div class="slds-text-align_right slds-p-around_small">
+     <lightning-button variant="brand" label="Save and Next" disabled={disabledButton} onclick={handleNext}> </lightning-button>
+</div>
+
+<div class="eventModal" if:true={showAddTPRModal}>
+    <lightning-record-edit-form object-api-name="TPR__c"  record-id={tprId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_large'>
+        <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              onclick={closeAddTPRModal}
+                                              alternative-text="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Termination of Parental Rights (TPR) Details </h2>
+                </span>
+        <span slot="modalBody" class="slds-modal__content">
+                    <lightning-layout>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-combobox label='Parent' name="ParentName__c" value={tprRec.ParentName__c} options={personPicklist} required class="required-fields" onchange={handleChange}></lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" class="slds-p-around_small viewDateOutModal">
+                            <lightning-input type="Date" label="Date Parent Served" name="Date_Parent_Served__c" onchange={handleChange} value={tprRec.Date_Parent_Served__c} date-style="short"></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-input-field field-name="Method_of_Service__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-input-field field-name="TPR_Status__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                            <lightning-layout-item size="4" class="slds-p-around_small viewDateOutModal">
+                                <lightning-input type="Date" label="TPR Decision Date" name="TPR_Decision_Date__c" onchange={handleChange} value={tprRec.TPR_Decision_Date__c} date-style="short"></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" class="slds-p-around_small">
+                                <lightning-input-field field-name="Relationship__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                            <lightning-layout-item size="6" class="slds-p-around_small">
+                                <lightning-input-field field-name="Termination__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="slds-p-around_small">
+                                <lightning-input-field field-name="Termination_Appealed__c" variant="label-stacked"></lightning-input-field>
+
+                            </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                            <lightning-layout-item size="12" class="slds-p-around_small">
+                                <lightning-input-field field-name="Reason__c" variant="label-stacked"></lightning-input-field>
+
+                            </lightning-layout-item>
+                    </lightning-layout>
+                </span>
+        <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button label="Cancel" title="Cancel" onclick={closeAddTPRModal}  class= "slds-var-p-around_x-small" ></lightning-button>
+                        <lightning-button label="Save" title="Save"  variant="brand" class= "slds-var-p-around_x-small" type="submit" onclick={onFormValidate}></lightning-button>
+                    </div>
+                </span>
+    </c-modal-component>
+    </lightning-record-edit-form>
+</div>
+</template>

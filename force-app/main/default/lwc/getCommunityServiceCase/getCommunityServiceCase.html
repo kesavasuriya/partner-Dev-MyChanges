@@ -1,0 +1,11 @@
+<template>
+    <lightning-card title={totalnoServicecase} icon-name="custom:custom27"></lightning-card>
+    <div class="slds-p-top_small"></div>
+    <lightning-datatable
+                    key-field="Id"
+                    data={serviceRecordList}
+                    columns={columns}
+                    hide-checkbox-column>
+    </lightning-datatable>
+
+</template>

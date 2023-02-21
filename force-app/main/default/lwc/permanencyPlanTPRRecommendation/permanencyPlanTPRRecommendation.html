@@ -1,0 +1,60 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    </div>
+
+    <lightning-card variant="Narrow" title="TPR Recommendation Checklist">
+        <lightning-record-edit-form object-api-name="Permanency_Plan__c" record-id={permanencyRecId}
+            onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+
+            <lightning-layout multiple-rows="true">
+
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input class="slds-p-left_xx-small required-fields" type="checkbox"
+                        label="Court hearing occurs" name="Court_hearing_occurs__c"
+                        checked={tprRec.Court_hearing_occurs__c} onchange={handleChange} disabled="true" required>
+                    </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input class="slds-p-left_xx-small required-fields" type="checkbox"
+                        label="Court order of TPR for parents" name="Court_order_of_TPR_for_parents__c"
+                        checked={tprRec.Court_order_of_TPR_for_parents__c} onchange={handleChange} disabled="true"
+                        required></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input class="slds-p-left_xx-small required-fields" type="checkbox"
+                        label="Petition for TPR sent to court" name="Petition_for_TPR_sent_to_court__c"
+                        checked={tprRec.Petition_for_TPR_sent_to_court__c} onchange={handleChange} disabled="true"
+                        required></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input class="slds-p-left_xx-small required-fields" type="checkbox"
+                        label="Primary Permanacy Plan is adoption" name="Primary_Permanacy_Plan_is_adoption__c"
+                        checked={tprRec.Primary_Permanacy_Plan_is_adoption__c} onchange={handleChange} disabled="true"
+                        required></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input-field field-name="Child_in_care_15_out_of_last_22_months__c"
+                        variant="label-inline"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input-field field-name="Information_for_either_parent_is_unknown__c"
+                        variant="label-inline"> </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input-field field-name="Reason_for_Recommendation__c" variant="label-stacked" required
+                        class="required-fields"> </lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+            <div class="slds-text-align_right">
+                <lightning-button label="Save and Next" type="submit" onclick={handleSaveandNext}
+                    disabled={disableButton}></lightning-button>
+                <lightning-button label="Save" variant="brand" type="submit" onclick={handleSave}
+                    class="slds-p-left_small"></lightning-button>
+            </div>
+        </lightning-record-edit-form>
+    </lightning-card>
+
+</template>

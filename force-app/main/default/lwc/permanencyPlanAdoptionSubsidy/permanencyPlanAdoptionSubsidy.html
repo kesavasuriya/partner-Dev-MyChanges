@@ -1,0 +1,14 @@
+<template>
+    
+    <lightning-tabset active-tab-value={activeTab} >
+        <lightning-tab label="Subsidy Agreement" value="default"  onactive={handleTabClick} >
+            <c-permanency-plan-subsidy-agreement permanency-rec-id={permanencyRecId}></c-permanency-plan-subsidy-agreement>
+        </lightning-tab>
+        <lightning-tab label="Subsidy Rates" onactive={handleTabClick} value="rate" >
+            <c-permanency-plan-subsidy-rates permanency-rec-id={permanencyRecId}></c-permanency-plan-subsidy-rates>
+        </lightning-tab>
+        <lightning-tab label="Subsidy Downloads" onactive={handleTabClick} >
+            <c-permanency-plan-subsidy-downloads></c-permanency-plan-subsidy-downloads>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

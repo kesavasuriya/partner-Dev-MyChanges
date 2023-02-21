@@ -1,0 +1,47 @@
+<template>
+    <template if:false={showModal}>
+     <lightning-card>
+        <div class="slds-m-around_medium">
+    <lightning-tabset active-tab-value={activeTab}>
+        <!-- <lightning-tab label="Home" value="home" onactive={handleTabClick}>
+
+            </lightning-tab> -->
+        <lightning-tab label="Referrals" value="Refferal" onactive={handleTabClick}>
+            <c-custom-community-referal-detail provider-id={loggedProviderId}></c-custom-community-referal-detail>
+        </lightning-tab>    
+        <lightning-tab label="Provider" value="provider" onactive={handleTabClick}>
+           <c-custom-community-provider-detail provider-id={loggedProviderId}></c-custom-community-provider-detail>
+        </lightning-tab>
+        <lightning-tab label="Contact" value="contact" onactive={handleTabClick}>
+            <c-custom-community-contact provider-id={loggedProviderId}></c-custom-community-contact>
+        </lightning-tab>
+        <lightning-tab label="Placement" value="placement" onactive={handleTabClick}>
+            <c-custom-community-placement provider-id={loggedProviderId}></c-custom-community-placement>  
+        </lightning-tab>
+        <lightning-tab label="File Upload" value="fileUpload" onactive={handleTabClick}>
+           <c-custom-community-file-upload provider-id={loggedProviderId}></c-custom-community-file-upload>
+        </lightning-tab>
+        <lightning-tab label="Payment Info" value="PaymentInfo" onactive={handleTabClick}>
+        </lightning-tab>
+    </lightning-tabset>
+</div>
+</lightning-card>
+</template>
+    <template if:true={showModal}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                    <span slot="modalBody">
+                        <div class="slds-text-align_center">
+                            <lightning-card  title="" >
+                                <div class="slds-p-around_small">
+                                    <lightning-input type="text" label="Username" name="username" onchange={handleUserChange}></lightning-input>
+                                    <lightning-input type="password" label="Password" name="password" onchange={handlePasswordChange}  ></lightning-input>
+                                    <div class="slds-p-top_medium slds-text-align_center">
+                                        <lightning-button variant="brand" label="Log In" title="Primary action" onclick={handleClick} ></lightning-button>
+                                    </div>
+                                </div>
+                            </lightning-card>
+                        </div>
+                    </span>
+        </c-modal-component>
+    </template>
+</template>

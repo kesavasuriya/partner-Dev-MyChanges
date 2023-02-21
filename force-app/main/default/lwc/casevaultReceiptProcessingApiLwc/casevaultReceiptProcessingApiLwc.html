@@ -1,0 +1,255 @@
+<template>
+	<lightning-layout>
+		<lightning-layout-item class="slds-p-around_small" size="4"></lightning-layout-item>
+		<lightning-layout-item class="slds-p-around_small" size="4"></lightning-layout-item>
+		<lightning-layout-item class="slds-p-around_small" size="4">
+			<div onkeyup={handleKeyUp}>
+				<lightning-input name="enter-search" label="" variant="label-hidden" type="search"></lightning-input>
+			</div>
+		</lightning-layout-item>
+	</lightning-layout>
+	<template if:true={isLoading}>
+		<lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+	</template>
+	<lightning-card variant="Narrow" title="Receivable Summary ">
+		<lightning-button icon-name="utility:add" variant="brand" label="Create New Receipt" onclick={openModal}
+			slot="actions"></lightning-button>
+		<!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+            <tr class="slds-line-height_reset">
+            <th class="wrapText" scope="col">
+            <div title="Config Id">Receivable Summary Id</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Config Definition">Vendor Id</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Config Description">Receivable Start Date</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Config Value">Receivable End Date</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Active SW">Received Amount</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Actions">Final Receivable Balance Amount</div>
+            </th>
+            </tr>
+            </thead>
+            <template if:true={isLoadingReceivableSummaryData}>
+            <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+            </template>
+            <template if:false={isLoadingReceivableSummaryData}>
+            <tbody>
+            <template for:each={receivableSummaryData} for:index="index" for:item="row">
+            <tr key={row.Id} data-name={row.receivableSummaryID} data-vendorid={row.vendorID} data-totalamount={row.finalReceivableBalanceAmount} data-label={index} class={row.selectedRow} onclick={handleRowClick}>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.receivableSummaryID} > {row.receivableSummaryID}</div>
+            </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.vendorID} > {row.vendorID}</div>
+            </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.receivableStartDate} > {row.receivableStartDate}</div>
+            </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.receivableEndDate} > {row.receivableEndDate}</div>
+            </td>
+            <td class="wrapText" data-label="">
+                <div id={index} accesskey={index} title={row.receivedAmount} > {row.receivedAmount}</div>
+                </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.finalReceivableBalanceAmount}>{row.finalReceivableBalanceAmount}</div>
+            </td>
+            </tr>
+            </template>
+            </tbody>
+            </template>
+            </table>
+    </lightning-card>   
+    <div class="slds-p-top_medium"></div>
+    <lightning-card variant="Narrow" title="Recivable Summary Details"> 
+        <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+            <tr class="slds-line-height_reset">
+            <th class="wrapText" scope="col">
+            <div title="Config Id">Receivable Detail Id</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Config Definition">Vendor Id</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Config Description">Receivable Start Date</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Config Value">Receivable End Date</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Active SW">Received Amount</div>
+            </th>
+            <th class="wrapText" scope="col">
+            <div title="Actions">Final Receivable Balance Amount</div>
+            </th>
+            </tr>
+            </thead>
+            <template if:true={isLoadingReceiptSummaryData}>
+            <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+            </template>
+            <template if:false={isLoadingReceiptSummaryData}>
+            <tbody>
+            <template for:each={receivableSummaryDetailData} for:index="index" for:item="row">
+            <tr key={row.Id} data-name={row.vendorID} data-label={index} class={row.selectedRow} onclick={handleRowClickReceiptrecord}>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.receivableDetailID}> {row.receivableDetailID}</div>
+            </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.vendorID}> {row.vendorID}</div>
+            </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.receivableStartDate}> {row.receivableStartDate}</div>
+            </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.receivableEndDate}> {row.receivableEndDate}</div>
+            </td>
+            <td class="wrapText" data-label="">
+                <div id={index} accesskey={index} title={row.receivedAmount} > {row.receivedAmount}</div>
+                </td>
+            <td class="wrapText" data-label="">
+            <div id={index} accesskey={index} title={row.finalReceivableBalanceAmount}>{row.finalReceivableBalanceAmount}</div>
+            </td>
+            </tr>
+            </template>
+            </tbody>
+            </template>
+            </table>
+            </lightning-card>
+            <div class="slds-p-top_medium"></div>
+            <lightning-card variant="Narrow" title="Receipt Summary"> 
+                <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                    <thead>
+                    <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                    <div title="Config Id">Receipt Summary ID</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Config Definition">Vendor Id</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Config Description">Receipt Amount</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Config Value">Receipt Type</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Active SW">Comments</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Actions">Receipt Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Actions">Reference Number</div>
+                    </th>
+                    </tr>
+                    </thead>
+                    <template if:true={isLoadingReceivableSummaryDetailData}>
+                    <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+                    </template>
+                    <template if:false={isLoadingReceivableSummaryDetailData}>
+                    <tbody>
+                    <template for:each={receiptSummaryData} for:index="index" for:item="row">
+                    <tr key={row.Id}>
+                    <td class="wrapText" data-label="">
+                    <div id={index} accesskey={index} title={row.receiptSummaryID}> {row.receiptSummaryID}</div>
+                    </td>
+                    <td class="wrapText" data-label="">
+                    <div id={index} accesskey={index} title={row.vendorID}> {row.vendorID}</div>
+                    </td>
+                    <td class="wrapText" data-label="">
+                    <div id={index} accesskey={index} title={row.receiptAmount}> {row.receiptAmount}</div>
+                    </td>
+                    <td class="wrapText" data-label="">
+                    <div id={index} accesskey={index} title={row.receiptType}> {row.receiptType}</div>
+                    </td>
+                    <td class="wrapText" data-label="">
+                    <div id={index} accesskey={index} title={row.comments} > {row.comments}</div>
+                    </td>
+                    <td class="wrapText" data-label="">
+                    <div id={index} accesskey={index} title={row.receiptDate}>{row.receiptDate}</div>
+                    </td>
+                    <td class="wrapText" data-label="">
+                    <div id={index} accesskey={index} title={row.referenceNo}>{row.referenceNo}</div>
+                    </td>
+                    </tr>
+                    </template>
+                    </tbody>
+                    </template>
+                    </table>-->
+
+		<lightning-datatable key-field="id" columns={receivableSummaryColumns} data={visibleData}
+			max-row-selection="1" selected-rows={setSelectedRows1} onrowselection={handleRowClick}>
+		</lightning-datatable>
+
+		<template if:true={showChild}>
+			<c-pagination-l-w-c total-list={receivableSummaryData} onupdate={paginationHandler}></c-pagination-l-w-c>
+		</template>
+
+		<div class="slds-p-around_large"></div>
+		<lightning-datatable key-field="id" columns={receivableSummaryDetailColumns} data={visibleData1}
+			max-row-selection="1" selected-rows={setSelectedRows2} onrowselection={handleRowClickReceiptrecord}>
+		</lightning-datatable>
+
+        <template if:true={showChild1}>
+			<c-pagination-l-w-c total-list={receivableSummaryDetailData} onupdate={paginationHandler1}></c-pagination-l-w-c>
+		</template>
+
+		<div class="slds-p-around_large"></div>
+		<lightning-datatable key-field="id" columns={receiptSummaryColumns} data={visibleData2}
+			hide-checkbox-column>
+		</lightning-datatable>
+
+        <template if:true={showChild2}>
+			<c-pagination-l-w-c total-list={receiptSummaryData} onupdate={paginationHandler2}></c-pagination-l-w-c>
+		</template>
+	</lightning-card>
+
+	<template if:true={showModal}>
+		<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+			aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+			<div class="slds-modal__container">
+				<header class="slds-modal__header">
+					<lightning-button-icon icon-name="utility:close" onclick={hideModal} alternative-text="close"
+						variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+					<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Receipt Details</h2>
+				</header>
+				<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+					<lightning-input type="number" label="Total Receivable Amount" read-only="true" value={totalReceivableAmount}  formatter="decimal" step="0.01">
+					</lightning-input>
+					<lightning-input label="Vendor Id" value={createReceiptRecord.vendorID}></lightning-input>
+                    <lightning-input type="number" name="Receipt Amount" label="Receipt Amount" value={createReceiptRecord.receiptAmount} formatter="decimal" step="0.01"  onchange={handleChange}></lightning-input>
+
+					<!--<lightning-input label="Receipt Amount" onchange={handleChange} name="Receipt Amount"
+						value={createReceiptRecord.receiptAmount}></lightning-input>-->
+					<lightning-combobox name="Receipt Type" label="Receipt Type" value={createReceiptRecord.receiptType}
+						placeholder="Select A Value" onchange={handleChange} options={options}></lightning-combobox>
+
+					<lightning-textarea label="Comment" onchange={handleChange} name="Comment" type="text"
+						value={createReceiptRecord.comments}></lightning-textarea>
+					<lightning-input type="date" date-style="short" label="Receipt Date" name="Receipt Date"
+						onchange={handleChange} value={createReceiptRecord.receiptDate}></lightning-input>
+					<lightning-input type="text" label="Reference Number" name="Reference Number"
+						onchange={handleChange} value={createReceiptRecord.referenceNo}></lightning-input>
+				</div>
+				<footer class="slds-modal__footer">
+                    <lightning-button icon-name="utility:close" variant="destructive" label="Cancel" onclick={hideModal}
+						title="Cancel" class="slds-m-left_x-small"></lightning-button>
+					<lightning-button variant="brand" disabled={enableButton} icon-name="utility:check"
+						label="Process Receipt" title="Process Receipt" onclick={handledata}
+						class="slds-m-left_x-small"></lightning-button>
+					
+				</footer>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open"></div>
+	</template>
+</template>

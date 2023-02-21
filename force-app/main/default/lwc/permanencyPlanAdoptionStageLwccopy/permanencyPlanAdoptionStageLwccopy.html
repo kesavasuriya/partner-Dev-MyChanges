@@ -1,0 +1,55 @@
+<template>
+   
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    </div>
+
+   
+   
+    <template if:true={showChild}>
+        <lightning-progress-indicator current-step={currentadoptionStage} type="path" variant="base">
+            <template for:each={adoptionPlanningpicklist} for:item="adoptionPlan" for:index="index">
+                <lightning-progress-step class="slds-path__item slds-is-incomplete" label={adoptionPlan.label} value={adoptionPlan.value} key={adoptionPlan.value} onclick={stageAction}></lightning-progress-step>
+            </template>
+        </lightning-progress-indicator>
+        <div class="slds-p-top_medium"></div>
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <div>Client Name</div>
+                <div></div>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <div>D.O.B.</div>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <div>Gender</div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
+        
+
+    <div class="slds-p-top_medium">
+
+        <template if:true={showTPRRecommendation}>
+            <c-permanency-plan-t-p-r-recommendation permanency-rec-id={id} onstage={handleStage}></c-permanency-plan-t-p-r-recommendation>
+        </template>
+        <template if:true={showLegalCustody}>
+            <c-permanency-plan-legal-custody></c-permanency-plan-legal-custody>
+        </template>
+        <template if:true={showTPR}>
+            <c-permanency-plan-t-p-r permanency-rec-id={id} onstage={handleStage}></c-permanency-plan-t-p-r>
+        </template>
+        <template if:true={showAdoptionPlanning}>
+            <c-permanency-plan-adoption-planningcopy permanency-rec-id={id}></c-permanency-plan-adoption-planningcopy>
+        </template>
+        <template if:true={showAdoptionSubsidy}>
+            <c-permanency-plan-adoption-subsidy permanency-rec-id={id}></c-permanency-plan-adoption-subsidy>
+        </template>
+        <template if:true={showBreaktheLink}>
+            <c-permanency-plan-breakthe-link permanency-rec-id={id}></c-permanency-plan-breakthe-link>
+        </template>  
+    </div>
+    
+</template>

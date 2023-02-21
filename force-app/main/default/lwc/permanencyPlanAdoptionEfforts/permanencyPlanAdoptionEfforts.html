@@ -1,0 +1,80 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+</div>
+<lightning-record-edit-form object-api-name="Permanency_Plan__c" data-name="permanencyForm" record-id={permanencyRecId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+    <lightning-card title="Adoption Planning">
+        <lightning-layout>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input-field field-name="Reasonable_but_unsuccessful_efforts__c" variant="label-stacked"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input-field field-name="Exception_granted_in_child_s_interest__c" variant="label-stacked"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="Date" label="Date and time for Exception granted in child's best interests" name="Date_Exception_granted_child_interests__c" onchange={handlePermanencyChange} value={permanencyRec.Date_Exception_granted_child_interests__c} date-style="short"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <lightning-layout>
+            <lightning-layout-item size="12" padding="around-small">
+                <h3><b>Notes</b></h3>
+                <lightning-input-field field-name="Notes__c" variant="label-hidden"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+
+    <lightning-card title="Efforts to Place Child Without Subsidy">
+        <lightning-button label="New" title="New" slot="actions" onclick={handleAddAdoption} class="slds-var-p-around_x-small"></lightning-button>
+        <div class="slds-border_left slds-border_right slds-border_top">
+
+            <lightning-datatable key-field="id" data={effortRecords} columns={columns} hide-checkbox-column onrowaction={handleRowAction} show-row-number-column="true">
+            </lightning-datatable>
+        </div>
+        <div class="slds-text-align_right slds-p-top_medium">
+            <lightning-button label="Save and Next" title="Save and Next" class="slds-var-p-around_x-small" disabled={disabledButton} type="submit" onclick={handleSaveNext}></lightning-button>
+            <lightning-button label="Save" title="Save" variant="brand" class="slds-var-p-around_x-small" type="submit"></lightning-button>
+        </div>
+    </lightning-card>
+</lightning-record-edit-form>
+
+
+<div if:true={showModal}>
+    <lightning-record-edit-form object-api-name="Adoption_Efforts__c" data-name="effortForm" record-id={efforRecId} onsubmit={handleEffortSubmit} onsuccess={handleEffortSuccess} onerror={handleError}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              onclick={closeModal}
+                                              alternative-text="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Effort</h2>
+                </span>
+
+            <span slot="modalBody" class="slds-modal__content">
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item size="6" padding="around-small">
+                            <lightning-input type="Date" label="Effort Date" name="Effort_Date__c" onchange={handleChange} value={effortRecord.Effort_Date__c} date-style="short"></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <lightning-input-field field-name="Type_of_Effort__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" padding="around-small">
+                            <lightning-input-field field-name="Notes__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </span>
+
+            <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button label="Cancel" title="Cancel" onclick={closeModal}  class= "slds-var-p-around_x-small" ></lightning-button>
+                        <lightning-button label="Save" title="Save"  variant="brand" class= "slds-var-p-around_x-small" type="submit"></lightning-button>
+                    </div>
+                </span>
+
+        </c-modal-component>
+    </lightning-record-edit-form>
+</div>
+</template>

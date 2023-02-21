@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title={totalNoofContacts} icon-name="standard:contact">
+        <lightning-datatable
+                    key-field="Id"
+                    data={contacts}
+                    columns={columns}
+                    hide-checkbox-column>
+        </lightning-datatable>
+    </lightning-card>
+</template>

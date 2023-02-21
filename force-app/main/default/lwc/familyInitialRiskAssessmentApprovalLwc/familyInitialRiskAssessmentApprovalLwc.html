@@ -1,0 +1,107 @@
+<template>
+
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <lightning-card title="Approval" class="slds-p-top_large"></lightning-card>
+
+    <lightning-layout class="slds-p-top_large">
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" name="Supervisor_Name__c" label="Supervisor" value={approvalRec.Supervisor_Name__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-combobox name="Route_to_Supervisor__c" label="Re route Supervisor"  value={approvalRec.Route_to_Supervisor__c} onchange={handleChange} options={rerouteSupervisorOptions}  disabled={readOnly}></lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small"></lightning-layout-item>
+    </lightning-layout>
+
+        <lightning-textarea class="slds-p-left_small" name="Supervisor_Comments__c" label="Supervisor Comments"  value={approvalRec.Supervisor_Comments__c} onchange={handleChange}  disabled={readOnly}></lightning-textarea>
+
+    <lightning-layout>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input date-style="short" type="date" name="FIRA_Supervisor_Reviewed_Date__c" label="Supervisor Reviewed Date" value={approvalRec.FIRA_Supervisor_Reviewed_Date__c} onchange={handleChange}  disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" name="Case_Worker_Name__c" label="Case Worker Name" value={approvalRec.Case_Worker_Name__c} onchange={handleChange}  disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small"></lightning-layout-item>
+    </lightning-layout>
+
+        <lightning-textarea class="slds-p-left_small" name="Caseworker_comments__c" label="CaseWorker Comments"  value={approvalRec.Caseworker_comments__c} onchange={handleChange}  disabled={readOnly}></lightning-textarea>
+
+
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <h3>Case Worker Signature</h3>
+                <lightning-button label="Capture/Update Signature"   name="FIRA_Case_worker_Signature__c" title="Capture/Update Signature" onclick={handleSignModal} variant="brand" disabled={readOnly}></lightning-button>
+                <div class="slds-p-around_small" if:true={showParent1}>
+                    <img src={sourceUrlParent1}  class="img"></img>
+                </div>  
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <h3>Supervisor Signature</h3>
+                <lightning-button label="Capture/Update Signature"   name="Supervisor_Signature__c" title="Capture/Update Signature" onclick={handleSignModal} variant="brand" disabled={readOnly}></lightning-button>
+                <div class="slds-p-around_small" if:true={showParent2}>
+                    <img src={sourceUrlParent2}  class="img"></img>
+                </div> 
+            </lightning-layout-item>
+        </lightning-layout>    
+        <div class="eventModal" if:true={showSignModal}>
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                <span slot="modalClose">
+                            <lightning-button-icon icon-name="utility:close"
+                                                      alternative-text="close"
+                                                      onclick={closeSignModal}
+                                                      variant="bare-inverse"
+                                                      class="slds-modal__close"></lightning-button-icon>
+                            <h2 id="modal-heading-06" class="slds-text-heading_medium slds-hyphenate">Signature</h2>
+                        </span>
+                <span slot="modalBody">
+                    <lightning-layout>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <c-signature-lwc onhandlesign ={handleSignature}></c-signature-lwc>
+                        </lightning-layout-item>
+                        </lightning-layout>
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-p-left_x-small">
+                        <lightning-button label="SAVE" title="Save"  icon-name="utility:save" variant="brand" class= "slds-var-p-around_x-small"  onclick={closeSignModal}></lightning-button>
+                    </div>
+                </span>
+            </c-modal-component> 
+            </div>
+   <div class="slds-text-align_right">
+       <lightning-button label="Save" variant="brand" onclick={handleSave} icon-name="utility:save"  disabled={readOnly}></lightning-button>
+       <template if:false={showApprovalBtn}>
+            <lightning-button class="slds-p-left_small" label="Submit for Approval" variant="brand" onclick={handleApproval}  disabled={readOnly}></lightning-button>
+       </template>
+  </div>
+
+    <template if:true={showApprovalScreen}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                                    onclick={hideApprovalScreen}
+                                    alternative-text="close"
+                                    variant="bare-inverse"
+                                    class="slds-modal__close"></lightning-button-icon>  
+                    <h2>Submit for Approval</h2>  
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                    </c-custom-lookup-component>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                    <lightning-button label="Cancel" variant="destructive" title="Cancel" onclick={hideApprovalScreen} class= "slds-var-p-around_x-small" icon-name="utility:close"></lightning-button>
+                </div>
+
+            </div> 
+        </div>
+
+    </template>
+</template>

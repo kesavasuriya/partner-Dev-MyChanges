@@ -1,0 +1,9 @@
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.textFont {
+    
+    font-size: large;
+}

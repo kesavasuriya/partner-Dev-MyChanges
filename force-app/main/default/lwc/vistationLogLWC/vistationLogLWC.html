@@ -1,0 +1,112 @@
+<template>
+    <div class="slds-box">
+    <lightning-card title={visitationLogTitle}>
+        <lightning-button label="New" slot="actions" title="new"  onclick={showNew} ></lightning-button>  
+    </lightning-card>  
+        <template if:true={showTable}>
+            <div class="slds-border_left slds-border_right slds-border_top">
+        <lightning-datatable 
+                        key-field="id"
+                        data={visitionLogList}
+                        columns={columns} 
+                        onrowselection={handleRowSelection}
+                        hide-checkbox-column="true" show-row-number-column="true"
+                        onrowaction={handleRowAction}  min-column-width="180" max-column-width="200">
+        </lightning-datatable>
+        </div>
+    </template>
+
+</div>
+<template if:true={showAddnew}> 
+    <div class="eventModal" if:true={showAddnew} >
+        <lightning-record-edit-form object-api-name="Visitation_Log__c" record-id={visitationLogRecordId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError} >
+
+            <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                            onclick={closeModal}
+                                            alternative-text="close"
+                                            variant="bare-inverse"
+                                            class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Visitation Log</h2>
+                </span> 
+            <span slot="modalBody">
+                <lightning-card title="Visitation Log Details">
+                <lightning-layout>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-combobox label="Client" name="Client__c" options={clientPickOptions} onchange={handleChange} value={VistationLog.Client__c} required class="required-fields"></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input label="Visit Date" name="Visit_Date__c" type="date" onchange={handleChange} date-style="short" required class="required-fields" value={VistationLog.Visit_Date__c}></lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field variant="label-stacked"  field-name="Status__c" ></lightning-input-field> 
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field variant="label-stacked"  field-name="Court_Ordered__c" ></lightning-input-field>
+                    </lightning-layout-item>
+                </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item size="6" small-device-size="6" large-device-size="6" medium-device-size="12" padding="around-small">
+                    <lightning-dual-listbox name="Persons_Involved__c"
+                                            required
+                                            class="required-fields"
+                                            label="Person Involved"
+                                            source-label="Available" 
+                                            selected-label="Chosen"
+                                            options={personPickOptions}
+                                            onchange={handleChange} size="4"
+                                            value={personInvolvedValues}>
+                    </lightning-dual-listbox> 
+                </lightning-layout-item>
+                <lightning-layout-item size="6" small-device-size="6" large-device-size="6" medium-device-size="12" padding="around-small">
+                    <lightning-dual-listbox name="Collateral_Visit_Participants__c"
+                                            label="Collateral Visit Participants"
+                                            options={collateralVisitParticipantsOptions}
+                                            onchange={handleChange} size="4"
+                                            value={collateralValues}>
+                    </lightning-dual-listbox> 
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item size="12" padding="around-small">
+                    <lightning-input-field variant="label-stacked"  field-name="Comments__c" ></lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item size="12" padding="around-small">
+                    <lightning-input-field variant="label-stacked"  field-name="Location__c"></lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item size="12" padding="around-small">
+                    <lightning-input-field variant="label-stacked"  field-name="Specify_any_other_participants_that_are__c" ></lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item size="12" padding="around-small" > 
+                    <lightning-input-field variant="label-stacked"  field-name="Conditions__c" ></lightning-input-field>
+            </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item size="12" padding="around-small">
+                    <lightning-input-field variant="label-stacked"  field-name="Conditions_Comments__c" ></lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+
+                </lightning-card>
+            </span>
+
+            <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                    <lightning-button label="Cancel"  title="Cancel"  onclick={closeModal} class= "slds-var-p-around_x-small"></lightning-button>
+                    <lightning-button label="Save" title="Save"  variant="brand" type="submit" class= "slds-var-p-around_x-small" onclick={onFormValidate}></lightning-button>
+                </div>
+            </span>
+            </c-modal-component>
+        </lightning-record-edit-form>
+    </div>
+</template>
+</template>

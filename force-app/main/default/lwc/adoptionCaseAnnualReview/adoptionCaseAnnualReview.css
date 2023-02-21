@@ -1,0 +1,9 @@
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.slds-modal__container {
+    max-width: 80rem !important;
+    width: 80% !important;
+}

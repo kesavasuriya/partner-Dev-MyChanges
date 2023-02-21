@@ -1,0 +1,38 @@
+<template>
+    <lightning-card title="">
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="3">
+                <h1>Case Number : {caseInfos.CaseNumber}</h1>
+                <h1>Case Type : {developerName} </h1>
+                <h1>Recevied On : {caseInfos.Received_Date__c}</h1>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="3">
+                <h1>HOH : {contactInfos} </h1>
+                <h1>Responsiblity : </h1>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="2">
+                <h1>CJAMS PDI# : {clientId}</h1>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="3">
+                <h1>Status : {caseInfos.Status}/ {caseInfos.Decision_Approval_Status__c} </h1>
+                <h1>Reviwer : {caseInfos.Decision_Approved_By__c} </h1>
+                <h1>Worker : {caseInfos.Decision_Submitted_By__c}</h1>
+                <h1>Phone : </h1>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="1">
+                <lightning-card>
+                    
+                    <div slot="actions">
+                        <div class="leftPadding15">Due On</div>
+                        <div class="slds-icon_container slds-avatar_circle circle">
+                            {caseInfos.Number_of_days_created_date__c} days
+                        </div>
+                        <br/>
+                        <b> <span>ELAPSED</span></b>
+                    </div>
+                </lightning-card>
+            </lightning-layout-item>
+        </lightning-layout>
+
+    </lightning-card>
+</template>

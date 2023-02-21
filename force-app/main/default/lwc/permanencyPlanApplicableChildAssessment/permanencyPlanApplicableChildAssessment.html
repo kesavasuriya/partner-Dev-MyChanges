@@ -1,0 +1,462 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+<div class="slds-text-align_right slds-m-top_small">
+    <lightning-layout>
+        <lightning-layout-item size="12" padding="around-small">
+            <p class="around-small"> Current Status : {applicableChildAssessmentRec.Applicable_Child_Approval_Status__c} </p>
+        </lightning-layout-item>
+    </lightning-layout>
+</div>
+
+<h2 class="header"><b>Section I - To Be Completed By The Child's Caseworker And Submited To Local Title IV-E Unit Prior Adoption Agreement Negotation</b></h2>
+<lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle} active-section-name={activeSections}>
+
+    <lightning-accordion-section class="sds-c-accordion-summary-color-background" name="A" label="A.Child Status Information">
+        <lightning-card>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" name="Child_Birth_Date__c" label="Child Birth Date" onchange={handleChange} value={applicableChildAssessmentRec.Child_Birth_Date__c} required></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" name="Federal_Fiscal_Year_Adoption_Date__c" label="Federal Fiscal Year Adoption Assistance Agreement Sign Date" onchange={handleChange} value={applicableChildAssessmentRec.Federal_Fiscal_Year_Adoption_Date__c}
+                        requried></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><b>1.Child Age</b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1>Check the age of the child by the end of the federal fiscal year (October 1 to September 30) in which the adoption assistance agreement is entered into</h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="Check_the_age_of_the_child__c" variant="label-hidden" placeholder="-Select-" options={checkTheAgeOfChildTheChildPick} onchange={handleChange} value={applicableChildAssessmentRec.Check_the_age_of_the_child__c}></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><b>2. Child Entry Date</b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1>Has the child been in care 60 months or more?</h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="Has_the_child_been_in_care__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.Has_the_child_been_in_care__c} requried></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><b>3. Silbing Status</b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1>Is the child a sibling to a child who qualifies as an applicable child by age or length of care and is being placed in the same adoptive home ?</h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="Is_the_child_a_sibling_to_a_child__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.Is_the_child_a_sibling_to_a_child__c}></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="wrapText" scope="col">
+                            <div title="Name of sibling child">Name of sibling child </div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Name">NAME</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Name of sibling child's Adoptive Placement">Name of sibling child's Adoptive Placement</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Date of silbing adoption decree"> Date of silbing adoption decree</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Date of silbings appilcable child assessment">Date of silbings appilcable child assessment</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Child's sibling's appicability status"> Child's sibling's appicability status </div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Excepted Child adoptive placement(provider Id) "> Excepted Child adoptive placement(provider Id)</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Sibling's Relationship with child">Sibling's Relationship with child</div>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </lightning-card>
+    </lightning-accordion-section>
+    <lightning-accordion-section name="B" label="B.Placement and Medical Information">
+        <lightning-card>
+            <h2><b>1. Is the child in care of public agency or licensed child placement agency pursuant to:</b></h2>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1>a. An involuntary removal in accordance with the judicial determination that is contrary to the child's welfare to remain in the home?</h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="An_involuntary_removal_in_accordance__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.An_involuntary_removal_in_accordance__c}></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" label="Date of removal" name="Date_of_removal__c" onchange={handleChange} value={applicableChildAssessmentRec.Date_of_removal__c}></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" label=" Date of first court order with CTW" name="Date_of_first_court_order_CTW__c" onchange={handleChange} value={applicableChildAssessmentRec.Date_of_first_court_order_CTW__c}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1>b. A voluntary placement agreement ?</h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="A_voluntary_placement_agreement__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.A_voluntary_placement_agreement__c}></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" variant="label-hidden" placeholder=" Child Removal Date(VPA)" name="Child_Removal_Date_VPA__c" onchange={handleChange} value={applicableChildAssessmentRec.Child_Removal_Date_VPA__c}></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" variant="label-hidden" placeholder="Date of first court order with best interest or CTW finding if converted to CINA" name="Date_of_first_court_order_CINA__c" value={applicableChildAssessmentRec.Date_of_first_court_order_CINA__c}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1>c. Voluntary relinquishment?</h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="Voluntary_relinquishment__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.Voluntary_relinquishment__c}></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" variant="label-hidden" placeholder="Date of relinquishment" name="Date_of_relinquishment__c" onchange={handleChange} value={applicableChildAssessmentRec.Date_of_relinquishment__c}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><span class="slds-text-color_error">*</span><b>2. Does the child meet all medical or disability requirements?</b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="medical_or_disability_requirements__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.medical_or_disability_requirements__c} required></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><b>3.Is the child residing in a foster family home or childcare institution with their minor parent who was with countary to welfare or voluntary placement agreement?</b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="child_residing_in_a_foster_family_home__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.child_residing_in_a_foster_family_home__c}></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1>Minor Parent information</h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="wrapText" scope="col">
+                            <div title="Minor Parent Name"> Minor Parent Name</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Birth date of parent">Birth date of parent</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Removal Type of Minor Parent">Removal Type of Minor Parent</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Removal court order date of Minor Parent"> Removal court order date of Minor Parent</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="VAP Removal Type Date of Minor Parent">VAP Removal Type Date of Minor Parent</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Minor parent's current placement Type"> Minor parent's current placement Type </div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="child's current placement Type">child's current placement Type</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Physical address of minor parent">Physical address of minor parent</div>
+                        </th>
+                        <th class="wrapText" scope="col">
+                            <div title="Physical address of child">Physical address of child</div>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </lightning-card>
+    </lightning-accordion-section>
+    <lightning-accordion-section name="C" label="C.Special Needs of Child">
+        <lightning-card>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><span class="slds-text-color_error">*</span><b>1. Can the child be returned to the home of the parent?</b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="child_be_returned_to_the_home_of_parent__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.child_be_returned_to_the_home_of_parent__c}
+                        required></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><b>2. Does the meet</b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><span class="slds-text-color_error">*</span> All medical disability requirements for SSI: </h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="All_medical_disability_requirements_SSI__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.All_medical_disability_requirements_SSI__c}
+                        required></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <!--<lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">-->
+            <lightning-dual-listbox name="One_of_following_special_needs_factors__c" label="b. One of the following special needs factors" source-label="Available" selected-label="Selected" field-level-help="Select One of the following special needs factors " options={sepcialNeedsfactorPick}
+                onchange={handleChange} value={sepcialNeedsfactorPickVal}>
+            </lightning-dual-listbox>
+            <!--</lightning-layout-item>
+            </lightning-layout>-->
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><b>3. Describe in detail</b> </h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><span class="slds-text-color_error">*</span>a. The reasonable but unsuccessful efforts made to place child without assistance </h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="Reasonable_but_unsuccessful_efforts__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.Reasonable_but_unsuccessful_efforts__c} required></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-textarea name="Reasonable_unsuccessful_effort_comments__c" variant="label-hidden" onchange={handleChange} value={applicableChildAssessmentRec.Reasonable_unsuccessful_effort_comments__c}></lightning-textarea>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1> <span class="slds-text-color_error">*</span>b. If instead the child is being adopted by their foster parent and has significant emotional ties with that person: </h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="If_instead_the_child_is_being_adopted_b__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.If_instead_the_child_is_being_adopted_b__c}
+                        required></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-textarea name="If_instead_child_being_adopted_comments__c" variant="label-hidden" onchange={handleChange} value={applicableChildAssessmentRec.If_instead_child_being_adopted_comments__c}></lightning-textarea>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-card>
+    </lightning-accordion-section>
+    <lightning-accordion-section name="D" label="D.TitleIV-E Status">
+        <lightning-card>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><span class="slds-text-color_error">*</span>1. Was the child eligible for adoption assistance payment in prior adoption and is now being adopted due to adoptive parent(s) rights being terminated OR adoptive parent(s) death? </h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-combobox name="Was_the_child_eligible_for_adoption__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.Was_the_child_eligible_for_adoption__c} required></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-input type="text" name="Document_explanation_in_case_record__c" label="Document explanation in case record" onchange={handleChange} value={applicableChildAssessmentRec.Document_explanation_in_case_record__c}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" label="Previous Adoptive Parent(s) TPR (if terminated)" name="Previous_Adoptive_Parent_s_TPR__c" onchange={handleChange} value={applicableChildAssessmentRec.Previous_Adoptive_Parent_s_TPR__c}></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-input date-style="short" type="date" label="Previous Adoptive Parent(s) Death date (if dead)" name="Previous_Adoptive_Parent_s_Death_date__c" onchange={handleChange} value={applicableChildAssessmentRec.Previous_Adoptive_Parent_s_Death_date__c}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <h1><b>2. Tiltle IV-E Foster Care Status </b></h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <h1><span class="slds-text-color_error">*</span>Is the child currently Title 1V-E foster care eligibile?</h1>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <h1><span class="slds-text-color_error">*</span>Is the child currently SSI eligibile? </h1>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-combobox name="Is_the_child_currently_Title_1V_E_foster__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.Is_the_child_currently_Title_1V_E_foster__c}
+                        requried></lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-combobox name="Is_the_child_currently_SSI_eligibile__c" variant="label-hidden" placeholder="-Select-" options={hasTheChildBeenInCarePick} onchange={handleChange} value={applicableChildAssessmentRec.Is_the_child_currently_SSI_eligibile__c} requried></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-card>
+    </lightning-accordion-section>
+    <lightning-accordion-section name="E" label="Case Worker Details">
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="Caseworker Name" name="Caseworker_Name__c" value={applicableChildAssessmentRec.Caseworker_Name__c} onchange={handleChange}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input date-style="short" type="date" label="Date" name="Caseworker_Date__c" value={applicableChildAssessmentRec.Caseworker_Date__c} onchange={handleChange}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-button label="Capture/Update Signature" title="Capture/Update Signature" onclick={handleCaseworkerSignModal} variant="brand"></lightning-button>
+                <!--<lightning-input-rich-text class="slds-p-around_small" value={applicableChildAssessmentRec.Caseworker_Signature__c} disabled></lightning-input-rich-text>-->
+                <div class="slds-p-around_small" if:true={showcaseWorkerSign}>
+                    <img src={caseWorkerSignUrl} class="img"></img>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-accordion-section>
+    <lightning-accordion-section name="F" label="Resubmission of Request">
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="Caseworker Name" name="Resubmission_Case_Worker_Name__c" value={applicableChildAssessmentRec.Resubmission_Case_Worker_Name__c} onchange={handleChange}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input date-style="short" type="date" label="Date" name="Resubmission_Request_Date__c" value={applicableChildAssessmentRec.Resubmission_Request_Date__c} onchange={handleChange}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-button label="Capture/Update Signature" title="Capture/Update Signature" onclick={handleResubmissionSignModal} variant="brand"></lightning-button>
+                <!--<lightning-input-rich-text class="slds-p-around_small" value={applicableChildAssessmentRec.Resubmission_Signature__c} disabled></lightning-input-rich-text>-->
+                <div class="slds-p-around_small" if:true={showresubmissionsign}>
+                    <img src={resubmissionsignUrl} class="img"></img>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-accordion-section>
+</lightning-accordion>
+<div class="slds-text-align_right slds-m-top_small">
+    <lightning-button variant="brand" label="Save" title="save" onclick={handleSave} class="slds-m-left_small"></lightning-button>
+    <template if:false={showApprovalBtn}>
+        <lightning-button  label="Submit for Approval" title="Submit for Approval" onclick={submitForApproval} class="slds-m-left_small"></lightning-button>
+      </template>
+</div>
+
+<div class="eventModal" if:true={showResubmissionModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  alternative-text="close"
+                                                  onclick={closeResubmissionModal}
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Caseworker Signature</h2>
+                    </span>
+        <span slot="modalBody">
+                <lightning-layout>
+                    <lightning-layout-item size="6" class="slds-p-around_small">
+                        <c-signature-lwc onhandlesign ={handleResubmissionSignature}></c-signature-lwc>
+                          <p class="slds-p-left-medium">Caseworker Signature</p>
+                    </lightning-layout-item>
+                    </lightning-layout>
+            </span>
+        <span slot="modalFooter">
+                <div class="slds-p-left_x-small">
+                    <lightning-button label="SAVE" title="Save"  icon-name="utility:save" variant="brand" class= "slds-var-p-around_x-small"  onclick={closeResubmissionModal}></lightning-button>
+                </div>
+            </span>
+    </c-modal-component>
+</div>
+
+<div class="eventModal" if:true={showCaseworkerModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                            <lightning-button-icon icon-name="utility:close"
+                                                      alternative-text="close"
+                                                      onclick={closeCaseworkerModal}
+                                                      variant="bare-inverse"
+                                                      class="slds-modal__close"></lightning-button-icon>
+                            <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Caseworker Signature</h2>
+                        </span>
+        <span slot="modalBody">
+                    <lightning-layout>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <c-signature-lwc onhandlesign ={handleCaseworkerSignature}></c-signature-lwc>
+                              <p class="slds-p-left-medium">Caseworker Signature</p>
+                        </lightning-layout-item>
+                        </lightning-layout>
+                </span>
+        <span slot="modalFooter">
+                    <div class="slds-p-left_x-small">
+                        <lightning-button label="SAVE" title="Save"  icon-name="utility:save" variant="brand" class= "slds-var-p-around_x-small"  onclick={closeCaseworkerModal}></lightning-button>
+                    </div>
+                </span>
+    </c-modal-component>
+</div>
+<div class="eventModal" if:true={showSubmitforApprovalModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                                <lightning-button-icon icon-name="utility:close"
+                                                          alternative-text="close"
+                                                          onclick={closeSubmiteModal}
+                                                          variant="bare-inverse"
+                                                          class="slds-modal__close"></lightning-button-icon>
+                                <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Submit For Approval</h2>
+                            </span>
+        <span slot="modalBody">
+                        <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                        </c-custom-lookup-component>
+                    </span>
+        <span slot="modalFooter">
+                        <div class="slds-text-align_right">
+                                <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                            <lightning-button label="Cancel" variant="destructive" title="Cancel" icon-name="utility:close" onclick={closeSubmiteModal} class= "slds-var-p-around_x-small"></lightning-button>
+                        </div>
+                      </span>
+    </c-modal-component>
+</div>
+</template>

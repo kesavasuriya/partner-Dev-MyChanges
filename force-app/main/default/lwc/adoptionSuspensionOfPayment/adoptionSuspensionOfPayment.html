@@ -1,0 +1,102 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <lightning-layout>
+        <lightning-layout-item class="slds-p-around_small" size="12">
+            <div class="slds-text-align_right">
+                <lightning-button variant="brand" icon-name="utility:add" class="slds-m-right_x-small" label="ADD" onclick={handleAddSuspension}></lightning-button>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <div class="eventModal" if:true={showSuspensionModal}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_large'>
+            <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  onclick={closeSuspensionhModal}
+                                                  alternative-text="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">SUSPENSION</h2>
+                    </span>
+    
+            <span slot="modalBody">
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="12">
+                        <lightning-combobox label="Reason for Suspension" 
+                                            name="Suspension_Reason__c"
+                                            placeholder="--Reason for Suspension--"
+                                            options={suspensionForReasonPick}
+                                            onchange={handleChange}
+                                            value={adoptionSuspensionRec.Suspension_Reason__c}
+                                            disabled={readOnly}
+                        ></lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="6">
+                        <lightning-input label="Suspension Begin Date" onchange={handleChange} type="date" name="Start_Date__c"  value={adoptionSuspensionRec.Start_Date__c} disabled={readOnly} required ></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="6">
+                        <lightning-input label="Suspension End Date" onchange={handleChange} type="date" name="End_Date__c"  value={adoptionSuspensionRec.End_Date__c} disabled={readOnly} ></lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="12">
+                        <lightning-textarea label="Notes" onchange={handleChange} name="Notes__c" value={adoptionSuspensionRec.Notes__c} disabled={readOnly}></lightning-textarea>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </span>
+            <span slot="modalFooter">
+                <div class="slds-text-align_right ">
+                    <template if:true={showUpdateBtn}>
+                        <div class="slds-m-vertical_medium slds-text-align_right">
+                            <lightning-button variant="brand" label="Update"  icon-name="utility:save" onclick={handleSave} disabled={readOnly}></lightning-button>
+                        </div>
+                    </template>
+                    <template if:false={showUpdateBtn}>
+                        <lightning-button variant="brand" label="Save"  icon-name="utility:save" onclick={handleSave} disabled={readOnly}></lightning-button>
+                    </template>
+                    <lightning-button label="Cancel" variant="destructive" title="Cancel" icon-name="utility:close" onclick={closeSuspensionhModal} class= "slds-var-p-around_x-small"></lightning-button>
+                    <template if:false={showApprovalBtn}>
+                        <lightning-button label="Send for Approval" variant="brand" class="slds-var-p-around_x-small"  onclick={handleSubmitForApproval} disabled={enableSendforApproval}></lightning-button>
+                    </template>
+
+                </div>
+            </span>
+        </c-modal-component>
+    </div>
+
+    <lightning-datatable key-field="id" 
+                        data={suspensionList} 
+                        columns={columns} 
+                        hide-checkbox-column 
+                        onrowaction={handleRowAction}>
+    </lightning-datatable>
+
+    <template if:true={showApprovalScreen}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                                    onclick={hideApprovalScreen}
+                                    alternative-text="close"
+                                    variant="bare-inverse"
+                                    class="slds-modal__close"></lightning-button-icon>  
+                    <h2>Submit for Approval</h2>  
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                    </c-custom-lookup-component>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                    <lightning-button label="Cancel" variant="destructive" title="Cancel" onclick={hideApprovalScreen} class= "slds-var-p-around_x-small" icon-name="utility:close"></lightning-button>
+                </div>
+
+            </div> 
+        </div>
+
+    </template>
+
+</template>

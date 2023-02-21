@@ -1,0 +1,1520 @@
+<template>
+	<div class="spinner">
+		<template if:true={isLoading}>
+			<lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+		</template>
+	</div>
+	<template if:true={showPermanencyProgress}>
+		<div class="slds-text-align_right">
+			<lightning-button class="slds-p-left_medium" label="Save" variant="brand" onclick={handleSave}>
+			</lightning-button>
+		</div>
+		<lightning-layout>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>Child's Name : </b>{childRec.Name}</h4>
+			</lightning-layout-item>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>Child's DOB : </b>
+					<lightning-formatted-date-time value={childRec.Date_of_Birth__c} year="numeric" month="numeric"
+						day="numeric"></lightning-formatted-date-time>
+				</h4>
+			</lightning-layout-item>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>Client Id : </b>{childRec.Casevault_PID__c}</h4>
+			</lightning-layout-item>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>Case Id : </b>{intakeRec.CaseNumber}</h4>
+			</lightning-layout-item>
+		</lightning-layout>
+
+		<lightning-layout>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>Case Worker : </b>
+					<!--{permanencyProgressRecord.CreatedBy.Name}-->
+				</h4>
+			</lightning-layout-item>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>Jurisdiction : </b>{intakeRec.Jurisdiction__c}</h4>
+			</lightning-layout-item>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>CIS Id / MDM Id</b></h4>
+			</lightning-layout-item>
+			<lightning-layout-item size="3" class="slds-p-around_small">
+				<h4><b>Reporting Period : </b>
+					<lightning-formatted-date-time value={permanencyProgressRecord.From_Date__c} year="numeric"
+						month="numeric" day="numeric"></lightning-formatted-date-time> - <lightning-formatted-date-time
+						value={permanencyProgressRecord.To_Date__c} year="numeric" month="numeric" day="numeric">
+					</lightning-formatted-date-time>
+				</h4>
+			</lightning-layout-item>
+		</lightning-layout>
+
+		<lightning-accordion allow-multiple-sections-open>
+			<lightning-accordion-section label="I.Child's Living Arrangement / Placement">
+				<lightning-card>
+					<div class="slds-p-top_small"></div>
+					<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+						<thead>
+							<tr class="slds-line-height_reset">
+								<th class="wrapText" scope="col">Placement / Living Arrangement</th>
+								<th class="wrapText" scope="col">Name,Address & Contact Number</th>
+								<th class="wrapText" scope="col">Begin Date</th>
+								<th class="wrapText" scope="col">End Date</th>
+								<th class="wrapText" scope="col">Type</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Placement</td>
+								<td>Name:{providerRec.Name} Address:{locationAddress}</td>
+								<td>
+									<lightning-formatted-date-time value={placementRec.Begin_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</td>
+								<td>
+									<lightning-formatted-date-time value={placementRec.End_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</td>
+								<td>{placementRec.Placement_Structure__c}</td>
+							</tr>
+						</tbody>
+					</table>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="II.Assessment Summary">
+				<div class="slds-border_left slds-border_right slds-border_top">
+
+					<lightning-datatable key-field="id" data={AssessmentRecords} columns={assessmentColumns}
+						hide-checkbox-column show-row-number-column="true">
+					</lightning-datatable>
+
+				</div>
+				<template if:false={showAssessmentTable}>
+					<div class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+						No Records Found.
+					</div>
+				</template>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="III.a.Caseworker's Services and Plan">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>1. Where and With whom does the child currently live (Indicate type of
+								placement,i.e.,foster home, legal risk placement,restricted foster care)? </div>
+							<div class="slds-p-top_medium">{placementRec.Placement_Structure__c}</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>2.If the permanency plan is to return home or relative placement,is the placement in
+								close proximity to the child's family?</div>
+							<div class="slds-p-top_medium">
+								{permanencyPlanRecord.If_the_Permanency_plan_is_to_return_home__c}</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Explanation:</b></h4>
+							</div>
+							<div class="slds-p-top_medium"></div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>3.Discuss how the caregiver is meeting the safety needs of the child as well as the
+								appropriateness and the restrictiveness of the present placement,the child's adjustment
+								to thee placement,and how the placement meets the best interest
+								and the special needs of the child. </div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium">
+								{permanencyPlanRecord.Discuss_how_the_caregiver_is_meeting__c}</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>4.Is the child in Treatment Foster Care?</div>
+							<div class="slds-p-top_medium">{permanencyProgressRecord.TreatmentFostercare}</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>Date of Treatment Plan in Record</div>
+							<div class="slds-p-top_medium"></div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>Last Treatment Team Meeting</div>
+							<div class="slds-p-top_medium"></div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>5.Date of last Progress Report from purchase of Care / Treatment Foster Care Facility?
+							</div>
+							<lightning-input class="slds-p-top_medium" date-style="short" type="date"
+								name="Date_of_last_Progress_Report__c" variant="label-hidden" onchange={handleChange}
+								value={permanencyProgressRecord.Date_of_last_Progress_Report__c}></lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>6.Discuss and explain changes in the child's placement during the last 6 months.Discuss
+								any anticipated changes in placement in the next 6 months. </div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium">
+								{permanencyPlanRecord.Discuss_and_explain_changes_in_the_child__c}</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>7.List mandates of court order pertaining to the child.Indicate date of court order.
+							</div>
+							<lightning-textarea class="slds-p-top_medium"
+								name="List_mandates_of_court_order_pertaining__c" variant="label-hidden"
+								onchange={handleChange}
+								value={permanencyProgressRecord.List_mandates_of_court_order_pertaining__c}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>8.Follow-up information on court orders(including dates):</div>
+							<lightning-textarea class="slds-p-top_medium"
+								name="Follow_up_information_on_court_orders__c" variant="label-hidden"
+								onchange={handleChange}
+								value={permanencyProgressRecord.Follow_up_information_on_court_orders__c}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>9.Describe how the worker is carrying out specific court orders pertaining to the
+								child.</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium"></div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>9a.Primary Permanency Goal</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b>{permanencyPlanRecord.Primary_Permanency_Plan__c}</h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>Concurrent Permanency Goal</div>
+							<div class="slds-p-top_medium">{permanencyPlanRecord.Concurrent_Permanency_Plan__c}</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>Established Date</div>
+							<div class="slds-p-top_medium">{permanencyPlanRecord.Plan_Established_Date__c}</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>10.What services are being provided to the child to facilitate permanency and/or
+								self-sufficiency?</div>
+							<lightning-textarea class="slds-p-top_medium" name="What_services_are_being_provided__c"
+								variant="label-hidden" onchange={handleChange}
+								value={permanencyProgressRecord.What_services_are_being_provided__c}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div><b>Start Date</b></div>
+							<div class="slds-p-top_medium">
+								<lightning-input date-style="short" type="date" name="caseworker_Service_StartDate__c"
+									variant="label-hidden" onchange={handleChange}
+									value={permanencyProgressRecord.caseworker_Service_StartDate__c}></lightning-input>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div><b>End Date</b></div>
+							<div class="slds-p-top_medium">
+								<lightning-input date-style="short" type="date" name="caseworker_Service_EndDate__c"
+									variant="label-hidden" onchange={handleChange}
+									value={permanencyProgressRecord.caseworker_Service_EndDate__c}></lightning-input>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>11.Document what steps have been taken to finalize the placement for children whose
+								permanency plan is adoption or placement at another permanent home? </div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium">{permanencyPlanRecord.Document_what_steps_have_been_taken__c}
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>12.Referral Made to Adoptuskids(Date)?</div>
+							<lightning-input class="slds-p-top_medium" date-style="short" type="date"
+								name="Referral_Made_to_Adoptuskids__c" variant="label-hidden" onchange={handleChange}
+								value={permanencyProgressRecord.Referral_Made_to_Adoptuskids__c}></lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>13.Child's Face to Face Visits? </div>
+							<div class="slds-p-top_medium">
+								<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+									<thead>
+										<tr class="slds-line-height_reset">
+											<th class="wrapText" scope="col">Contact Date</th>
+											<th class="wrapText" scope="col">Authored Date</th>
+										</tr>
+									</thead>
+									<tbody>
+										<template for:each={faceToFaceRecords} for:item="row">
+											<tr key={row.Id}>
+												<td>
+													<lightning-formatted-date-time value={row.Contact_Date__c}
+														year="numeric" month="numeric" day="numeric">
+													</lightning-formatted-date-time>
+												</td>
+												<td></td>
+											</tr>
+										</template>
+									</tbody>
+								</table>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>14.Describe how the worker is ensuring that the child receives safe and appropriate
+								care.Discuss specific outcomes of ongoing/past services that have been offered to the
+								child during the assessment period? </div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium">{permanencyPlanRecord.Describe_how_the_worker_is_ensuring__c}
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>15.Discuss how the worker is addressing the child's needs(Specify the needs and
+								services,include by reference dates all contact sheet notes documenting visitation
+								between child and caseworker).</div>
+							<lightning-textarea class="slds-p-top_medium" name="Discuss_how_the_worker_is_addressing__c"
+								variant="label-hidden" onchange={handleChange}
+								value={permanencyProgressRecord.Discuss_how_the_worker_is_addressing__c}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>16.What efforts were made to promote permanency for the child during this assessment
+								period?</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium">{permanencyPlanRecord.What_efforts_were_made_to_promote__c}
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>17.Has a Lifebook been prepared?If no, Explain?</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium">{permanencyPlanRecord.Has_a_Lifebook_been_prepared__c}</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>18.Describe the parent's current relationship with the child.</div>
+							<lightning-textarea class="slds-p-top_medium"
+								name="Describe_the_parent_current_relationship__c" variant="label-hidden"
+								onchange={handleChange}
+								value={permanencyProgressRecord.Describe_the_parent_current_relationship__c}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>19.Discuss the visitation plan and any accommodations needed.</div>
+							<lightning-textarea class="slds-p-top_medium" name="Discuss_the_visitation_plan__c"
+								variant="label-hidden" onchange={handleChange}
+								value={permanencyProgressRecord.Discuss_the_visitation_plan__c}></lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>20.Discuss parent-child interaction during visits(where applicable).</div>
+							<lightning-textarea class="slds-p-top_medium" name="Discuss_parent_child_interaction__c"
+								variant="label-hidden" onchange={handleChange}
+								value={permanencyProgressRecord.Discuss_parent_child_interaction__c}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>21.What services have been provided to eliminate the safety barriers that brought the
+								child into care and to move the child toward permanency?</div>
+							<lightning-combobox variant="label-hidden" name="What_services_provided_to_eliminate__c"
+								options="" onchange={handleChange}
+								value={permanencyProgressRecord.What_services_provided_to_eliminate__c}>
+							</lightning-combobox>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>22.What services have we identified that are needed for the child to return home that
+								are unavailable in our community?</div>
+							<lightning-textarea class="slds-p-top_medium" name="What_services_have_we_identified__c"
+								variant="label-hidden" onchange={handleChange}
+								value={permanencyProgressRecord.What_services_have_we_identified__c}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>23.Describe the parent's compliance in developing and carrying out the terms of the
+								Service Agreement.(Discuss specific outcomes during this assessment period).Describe the
+								parent's involvement including dates of case planning meetings,In
+								working with the caseworker to develop the case plan.Discuss specific outcomes of
+								ongoing and past services offered to the parent(s)during this assessment
+								period.Including times of participation and results of any meetings. </div>
+							<div class="slds-p-top_medium">
+								<h4><b>Ans.</b></h4>
+							</div>
+							<div class="slds-p-top_medium">{permanencyPlanRecord.Describe_the_parent_s_compliance__c}
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="III.b.Services To Provider">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>1.Describe all services to Provider(i.e.emotional support/guidance,discussion of
+								child's special needs,discussion of behavioral management techniques,respite care,use of
+								flex funds,etc.).</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Health Passport</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Health_Passport__c"
+								checked={permanencyProgressRecord.Health_Passport__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Day Care</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Day_Care__c"
+								checked={permanencyProgressRecord.Day_Care__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Reimbursement for Expenses</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Reimbursement_for_Expenses__c"
+								checked={permanencyProgressRecord.Reimbursement_for_Expenses__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Transportation</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Transportation__c"
+								checked={permanencyProgressRecord.Transportation__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Discussion of Visitation(date)</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Discussion_of_Visitation_Date__c"
+								checked={permanencyProgressRecord.Discussion_of_Visitation_Date__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Financial Support</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Financial_Support__c"
+								checked={permanencyProgressRecord.Financial_Support__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Emotional Support/Guidance</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Emotional_Support_or_Guidance__c"
+								checked={permanencyProgressRecord.Emotional_Support_or_Guidance__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Special Training</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Special_Training__c"
+								checked={permanencyProgressRecord.Special_Training__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Other</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Other__c" checked={permanencyProgressRecord.Other__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Discussion of Child's Needs (date)</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Discussion_of_Childs_Needs__c"
+								checked={permanencyProgressRecord.Discussion_of_Childs_Needs__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>If Other:</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden" name="If_Other__c"
+								value={permanencyProgressRecord.If_Other__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Respite Care</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<lightning-input type="checkbox" name="Respite_Care__c"
+								checked={permanencyProgressRecord.Respite_Care__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>Discuss each checked iteam including how the services help meet the needs of the child
+								and provider,provides for the child's safety,and facilitate the achievement of a
+								permanent placement for the child. </div>
+							<div class="slds-p-top_medium">
+								<h4>Discuss:</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Discuss_each_checked_iteam__c"
+								value={permanencyProgressRecord.Discuss_each_checked_iteam__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="IV.a.Child's Legal Information">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>1.Is the child co-committed</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Is_the_child_co_committed__c"
+								value={permanencyProgressRecord.Is_the_child_co_committed__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>2.Has the youth experienced any episodes of incarcerations or detainment in juvenile
+								facility during this reporting period?</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Has_youth_experienced_any_episodes__c"
+								value={permanencyProgressRecord.Has_youth_experienced_any_episodes__c}
+								onchange={handleChange}></lightning-textarea>
+							<div class="slds-p-top_medium">
+								<h4>Explain:</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Has_the_youth_experienced_Explain__c"
+								value={permanencyProgressRecord.Has_the_youth_experienced_Explain__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>3.Has the youth had involvement with the Juvenile Court as a result of delinquency
+								related charges?</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Has_youth_had_involvement__c"
+								value={permanencyProgressRecord.Has_youth_had_involvement__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="2" class="slds-p-around_small">
+							<div>
+								<h4><b>Parent Name</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden" name="Parent_Name__c"
+								value={permanencyProgressRecord.Parent_Name__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="5" class="slds-p-around_small">
+							<div>
+								<h4><b>Child in out-of-home placement for 15 months or longer?</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Child_IN_Out_Of_Home_Placement__c"
+								value={permanencyProgressRecord.Child_IN_Out_Of_Home_Placement__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="5" class="slds-p-around_small">
+							<div>
+								<h4><b>If yes,state compelling reason not to file tpr petition</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="State_Compelling_Reason__c"
+								value={permanencyProgressRecord.State_Compelling_Reason__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Date TPR Petition Filed</b></h4>
+							</div>
+							<div class="slds-p-top_medium"></div>
+							<lightning-input date-style="short" type="date" class="slds-p-top_medium"
+								name="Date_TPR_Petition_Filed__c"
+								value={permanencyProgressRecord.Date_TPR_Petition_Filed__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Date of Voluntary signature</b></h4>
+							</div>
+							<div>
+								<h4><b>Mother(Biological):</b></h4>
+							</div>
+							<lightning-input date-style="short" class="slds-p-top_medium" type="date"
+								name="Date_of_Voluntary_signature_Mother__c"
+								value={permanencyProgressRecord.Date_of_Voluntary_signature_Mother__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div></div>
+							<div class="slds-p-top_medium">
+								<h4><b>Father(Biological):</b></h4>
+							</div>
+							<lightning-input class="slds-p-top_medium" date-style="short" type="date"
+								name="Date_of_Voluntary_signature_Father__c"
+								value={permanencyProgressRecord.Date_of_Voluntary_signature_Father__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Date TPR Granted</b></h4>
+							</div>
+							<lightning-input type="date" date-style="short" class="slds-p-top_medium"
+								name="Date_TPR_Granted__c" value={permanencyProgressRecord.Date_TPR_Granted__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Date TPR Denied</b></h4>
+							</div>
+							<lightning-input class="slds-p-top_medium" date-style="short" type="date"
+								name="Date_TPR_Denied__c" value={permanencyProgressRecord.Date_TPR_Denied__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Date(s) TPR Appeal Filed</b></h4>
+							</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Father (Biological):</b></h4>
+							</div>
+							<lightning-input date-style="short" type="date" class="slds-p-top_medium"
+								name="Date_TPR_Appeal_Filed_Father__c"
+								value={permanencyProgressRecord.Date_TPR_Appeal_Filed_Father__c}
+								onchange={handleChange}></lightning-input>
+							<div class="slds-p-top_medium">
+								<h4><b>Mother (Biological):</b></h4>
+							</div>
+							<lightning-input date-style="short" type="date" class="slds-p-top_medium"
+								name="Date_TPR_Appeal_Filed_Mother__c"
+								value={permanencyProgressRecord.Date_TPR_Appeal_Filed_Mother__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>TPR Appeal Decision</b></h4>
+							</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Father (Biological):</b></h4>
+							</div>
+							<lightning-input date-style="short" class="slds-p-top_medium" type="date"
+								name="TPR_Appeal_Decision_Father__c"
+								value={permanencyProgressRecord.TPR_Appeal_Decision_Father__c} onchange={handleChange}>
+							</lightning-input>
+							<div class="slds-p-top_medium">
+								<h4><b>Mother (Biological):</b></h4>
+							</div>
+							<lightning-input date-style="short" type="date" class="slds-p-top_medium"
+								name="TPR_Appeal_Decision_Mother__c"
+								value={permanencyProgressRecord.TPR_Appeal_Decision_Mother__c} onchange={handleChange}>
+							</lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="V.Child's Education">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h2><b>SASID:</b></h2>
+							</div>
+							<div class="slds-p-top_medium">
+								<h4><b>A.List of all Educational programs child has participated in during this period:</b>
+								</h4>
+							</div>
+							<div class="slds-p-top_medium"></div>
+							<div class="slds-p-top_medium">B.Was the child enrolled in school within 5 days of
+								placement?School Not in Session Comments:</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Was_the_child_enrolled_in_school__c"
+								value={permanencyProgressRecord.Was_the_child_enrolled_in_school__c}
+								onchange={handleChange}></lightning-textarea>
+							<div class="slds-p-top_medium">C.Is this school placement in close proximity to the school
+								attended prior to placement?</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Is_this_school_placement__c"
+								value={permanencyProgressRecord.Is_this_school_placement__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<div class="slds-border_left slds-border_right slds-border_top">
+
+						<lightning-datatable key-field="id" data={educationRecords} columns={educationColumns}
+							hide-checkbox-column show-row-number-column="true">
+						</lightning-datatable>
+
+					</div>
+					<template if:false={showEducationTable}>
+						<div
+							class="slds-text-align_center slds-p-top_large slds-p-bottom_large slds-text-heading_medium">
+							No Records Found.
+						</div>
+					</template>
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Has the child changed school due to placement?</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Has_the_child_changed_school__c"
+								value={permanencyProgressRecord.Has_the_child_changed_school__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Explain why it was in the child's best interest to change schools</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Best_interest_to_change_schools__c"
+								value={permanencyProgressRecord.Best_interest_to_change_schools__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>
+								<h4>D.Discuss the appropriateness of the child's current educational setting.</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Discuss_the_appropriateness__c"
+								value={permanencyProgressRecord.Discuss_the_appropriateness__c} onchange={handleChange}>
+							</lightning-textarea>
+							<div class="slds-p-top_medium">
+								<h4>What Educational services is the child receiving?</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="What_Educational_services__c"
+								value={permanencyProgressRecord.What_Educational_services__c} onchange={handleChange}>
+							</lightning-textarea>
+							<div class="slds-p-top_medium">
+								<h4>If child is pre-school age and developmentally delayed,is the child enrolled in a
+									special program?</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="If_child_is_pre_school_age__c"
+								value={permanencyProgressRecord.If_child_is_pre_school_age__c} onchange={handleChange}>
+							</lightning-textarea>
+							<div class="slds-p-top_medium">
+								<h4>Is there a copy of the child's current report card in the record?</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Child_current_report_card__c"
+								value={permanencyProgressRecord.Child_current_report_card__c} onchange={handleChange}>
+							</lightning-textarea>
+							<div class="slds-p-top_medium">
+								<h4>Individual Education Program(File IEP in Educational Section of Record)</h4>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>Individual Education Program</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Individual_Education_Program__c"
+								value={permanencyProgressRecord.Individual_Education_Program__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="4" class="slds-p-around_small">
+							<div>
+								<h4><b>IEP Dated</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden" name="" value=""
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h2>Educational Parent Surrogate</h2>
+							</div>
+
+							<lightning-layout>
+								<lightning-layout-item size="4" class="slds-p-around_small">
+									<div>
+										<h4><b>Name</b></h4>
+									</div>
+									<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+										name="Educational_Parent_Name__c"
+										value={permanencyProgressRecord.Educational_Parent_Name__c}
+										onchange={handleChange}></lightning-textarea>
+								</lightning-layout-item>
+								<lightning-layout-item size="4" class="slds-p-around_small">
+									<div>
+										<h4><b>Address</b></h4>
+									</div>
+									<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+										name="Educational_Parent_Address__c"
+										value={permanencyProgressRecord.Educational_Parent_Address__c}
+										onchange={handleChange}></lightning-textarea>
+								</lightning-layout-item>
+								<lightning-layout-item size="4" class="slds-p-around_small">
+									<div>
+										<h4><b>Requested</b></h4>
+									</div>
+									<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+										name="Educational_Parent_Requested__c"
+										value={permanencyProgressRecord.Educational_Parent_Requested__c}
+										onchange={handleChange}></lightning-textarea>
+								</lightning-layout-item>
+							</lightning-layout>
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h2>Indicate School Adjustment/Performance In Social/Emotional Matters</h2>
+							</div>
+
+							<lightning-layout>
+								<lightning-layout-item size="4" class="slds-p-around_small">
+									<div>
+										<h4><b>At or near age level</b></h4>
+									</div>
+									<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+										name="At_or_near_age_level__c"
+										value={permanencyProgressRecord.At_or_near_age_level__c}
+										onchange={handleChange}></lightning-textarea>
+								</lightning-layout-item>
+								<lightning-layout-item size="4" class="slds-p-around_small">
+									<div>
+										<h4><b>Behavioral problems</b></h4>
+									</div>
+									<lightning-input class="slds-p-top_medium" type="checkbox"
+										name="Behavioral_problems__c"
+										checked={permanencyProgressRecord.Behavioral_problems__c}
+										onchange={handleChange}></lightning-input>
+								</lightning-layout-item>
+								<lightning-layout-item size="4" class="slds-p-around_small">
+									<div>
+										<h4><b>Problems with peers</b></h4>
+									</div>
+									<lightning-input class="slds-p-top_medium" type="checkbox"
+										name="Problems_with_peers__c"
+										checked={permanencyProgressRecord.Problems_with_peers__c}
+										onchange={handleChange}></lightning-input>
+								</lightning-layout-item>
+							</lightning-layout>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h4><b>Strengths</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden" name="Strengths__c"
+								value={permanencyProgressRecord.Strengths__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h4><b>Weakness</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden" name="Weakness__c"
+								value={permanencyProgressRecord.Weakness__c} onchange={handleChange}>
+							</lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>
+								<h4>E.Describe the child's strengths and needs</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Describe_the_child_strengths__c"
+								value={permanencyProgressRecord.Describe_the_child_strengths__c}
+								onchange={handleChange}></lightning-textarea>
+							<div class="slds-p-top_medium">
+								<h4>F.If a child is between 18 and 21 years old,is he/she in school,employed,or
+									disabled?</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Child_is_between_18_and_21_years_old__c"
+								value={permanencyProgressRecord.Child_is_between_18_and_21_years_old__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VI.Child's Employment">
+				<lightning-card>
+				</lightning-card>
+			</lightning-accordion-section>
+			<lightning-accordion-section label="VII.a.Child's Health Care">
+				<lightning-card>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VII.b.Initial Exams">
+				<div class="slds-border_left slds-border_right slds-border_top">
+
+					<lightning-datatable key-field="id" data={initialExamRecords} columns={initialExamColumns}
+						hide-checkbox-column show-row-number-column="true">
+					</lightning-datatable>
+
+				</div>
+
+				<template if:false={showInitialExamTable}>
+					<div class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+						No Records Found.
+					</div>
+				</template>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VII.c.Annual Exams">
+				<div class="slds-border_left slds-border_right slds-border_top">
+
+					<lightning-datatable key-field="id" data={finalExamRecords} columns={annualExamColumns}
+						hide-checkbox-column show-row-number-column="true">
+					</lightning-datatable>
+
+				</div>
+				<template if:false={showFinalExamTable}>
+					<div class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+						No Records Found.
+					</div>
+				</template>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VII.d.Follow Up">
+				<div class="slds-border_left slds-border_right slds-border_top">
+
+					<lightning-datatable key-field="id" data={followupExamRecords} columns={followupColumns}
+						hide-checkbox-column show-row-number-column="true">
+					</lightning-datatable>
+
+				</div>
+
+				<template if:false={showFollowupExamTable}>
+					<div class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+						No Records Found.
+					</div>
+				</template>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VII.e.Medications">
+				<div class="slds-border_left slds-border_right slds-border_top">
+
+					<lightning-datatable key-field="id" data={medicationRecords} columns={medicationColumns}
+						hide-checkbox-column show-row-number-column="true">
+					</lightning-datatable>
+
+				</div>
+				<template if:false={showMedicationTable}>
+					<div class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+						No Records Found.
+					</div>
+				</template>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VII.f.Child's Healthcare Mental Health">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h4>Was a Mental Health Evaluation Conducted?If,no provider reason(under treatment
+									recommendations)</h4>
+							</div>
+							<div class="slds-p-top_medium"></div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Evaluation Date</b></h4>
+							</div>
+							<div class="slds-p-top_medium"></div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Evaluation done by</b></h4>
+							</div>
+							<div class="slds-p-top_medium"></div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>
+								<h4>Does the child have any diagnosed physical or mental health disabilities(explain and
+									give date of diagnosis)?</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Does_the_child_have_any_diagnosed__c"
+								value={permanencyProgressRecord.Does_the_child_have_any_diagnosed__c}
+								onchange={handleChange}></lightning-textarea>
+							<div>
+								<h4>Has the child experience any episodes of homelessness during this reporting period?
+								</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Homelessness_during_reporting_period__c"
+								value={permanencyProgressRecord.Homelessness_during_reporting_period__c}
+								onchange={handleChange}></lightning-textarea>
+							<div>
+								<h4>If yes indicate the length of time the child was homeless</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Length_Of_Time_Child_Was_Homeless__c"
+								value={permanencyProgressRecord.Length_Of_Time_Child_Was_Homeless__c}
+								onchange={handleChange}></lightning-textarea>
+							<div>
+								<h4>Will the youth require supportive services to live independently after termination
+									of out-of-home services?</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Will_Youth_Require_Supportive_Services__c"
+								value={permanencyProgressRecord.Will_Youth_Require_Supportive_Services__c}
+								onchange={handleChange}></lightning-textarea>
+							<div>
+								<h4>Discuss services the youth will require in order to live independently.List what
+									steps are begin taken to arrange for needed services.Consideration should be given
+									to any documented special needs that the youth may have.If yes,list
+									specific services needed. </h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Discuss_Services_Youth_Will_Require__c"
+								value={permanencyProgressRecord.Discuss_Services_Youth_Will_Require__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VII.g.Child's Health Care Passport/Record">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h4>Passport/Record Confirmation</h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden"
+								name="Passport_Record_Confirmation__c"
+								value={permanencyProgressRecord.Passport_Record_Confirmation__c}
+								onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h4><b>Dates Confirmed</b></h4>
+							</div>
+							<lightning-input class="slds-p-top_medium" date-style="short" type="date"
+								name="Dates_Confirmed__c" value={permanencyProgressRecord.Dates_Confirmed__c}
+								onchange={handleChange}></lightning-input>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div>
+								<h4>Red Flag:Documentation Of Chronic Health Conditions And Allergies</h4>
+							</div>
+							<div class="slds-p-top_medium">
+								<h4><b>Notes:</b></h4>
+							</div>
+							<lightning-textarea class="slds-p-top_medium" variant="label-hidden" name="Notes__c"
+								value={permanencyProgressRecord.Notes__c} onchange={handleChange}></lightning-textarea>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VII.h.Child's Functioning Disabilites">
+				<lightning-card>
+					<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+						<thead>
+							<tr class="slds-line-height_reset">
+								<th class="wrapText" scope="col">Permanently Disabled?</th>
+								<th class="wrapText" scope="col">Disability Type?</th>
+								<th class="wrapText" scope="col">Start Date</th>
+								<th class="wrapText" scope="col">End Date</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Autism_Spectrum_Disorder__c}</th>
+								<th class="wrapText" scope="col">Autism Spectrum Disorder</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Autism_Start_Diagnosis_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time value={childRemovalRec.Autism_End_Resolution_Date__c}
+										year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Cognitive_Developmental_Delay__c}</th>
+								<th class="wrapText" scope="col">Cognitive/Developmental Delay</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Cognitive_Start_Diagnosis_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Cognitive_End_Resolution_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Emotionally_Disturbed__c}</th>
+								<th class="wrapText" scope="col">Emotionally Disturbed</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Emotionally_Start_Diagnosis_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Emotionally_End_Resolution_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Hearing_Disability__c}</th>
+								<th class="wrapText" scope="col">Hearing Disability</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Hearing_Star_Diagnosis_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Hearing_End_Resolution_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Intellectual_Disability__c}</th>
+								<th class="wrapText" scope="col">Intellectual Disability</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Intellectual_Start_Diagnosis_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Intellectual_End_Resolution_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Other_Disability__c}</th>
+								<th class="wrapText" scope="col">Other Disability</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time value={childRemovalRec.Other_Start_Diagnosis_Date__c}
+										year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time value={childRemovalRec.Other_End_Resolution_Date__c}
+										year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Physical_Disability__c}</th>
+								<th class="wrapText" scope="col">Physical Disability</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Physical_Start_Diagnosis_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Physical_End_Resolution_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+							<tr>
+								<th class="wrapText" scope="col">{childRemovalRec.Visual_Disability__c}</th>
+								<th class="wrapText" scope="col">Visual Disability</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time
+										value={childRemovalRec.Visual_Start_Diagnosis_Date__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+								<th class="wrapText" scope="col">
+									<lightning-formatted-date-time value={childRemovalRec.Visual_End_Resolution_Date__c}
+										year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VIII.a.Parent Information Sheet">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Father's Client ID:</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+					</lightning-layout>
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Name: </b>{primaryCaregiver.Name}</h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Birth Date:</b>
+									<lightning-formatted-date-time
+										value={primaryCaregiver.Date_of_Birth__c} year="numeric"
+										month="numeric" day="numeric"></lightning-formatted-date-time>
+								</h4>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Address: </b> {primaryCaregiver.Address_Line_1__c}
+									{primaryCaregiver.Address_Line_2__c}
+									{primaryCaregiver.City__c}
+									{primaryCaregiver.State__c}
+									{primaryCaregiver.Zip_Code__c}
+									{primaryCaregiver.County_Address__c}
+								</h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Social Security Number: </b>{primaryCaregiver.SSN__c}</h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Home Telephone:</b></h4>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Mother's Client ID:</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+					</lightning-layout>
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Name: </b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Birth Date:</b> </h4>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Address: </b> </h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Social Security Number: </b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Home Telephone:</b></h4>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="VIII.b.Child Support">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h4><b> Child Support Referral Date</b></h4>
+							</div>
+							<div class="slds-p-top_medium">
+								<lightning-input date-style="short" variant="label-hidden" type="date"
+									name="Child_Support_Referral_Date__c" value={Child_Support_Referral_Date}
+									onchange={handleChange}></lightning-input>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="slds-p-around_small">
+							<div>
+								<h4><b>Has Child Support Order Been Established?</b></h4>
+							</div>
+							<div class="slds-p-top_medium">
+								<lightning-combobox variant="label-hidden"
+									value={permanencyProgressRecord.Child_Support_Order_Been_Established__c}
+									name="Child_Support_Order_Been_Established__c" onchange={handleChange}
+									options={PickList}></lightning-combobox>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-card>
+			</lightning-accordion-section>
+
+			<lightning-accordion-section label="IX.Child's Financial Resources">
+				<lightning-card>
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-around_small">
+							<div class="slds-text-align_center">
+								<h4>Assets owned or income received by child during assessment/reassessment
+									period(Include income to DHS on child's behalf)</h4>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Income</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<div class="slds-border_left slds-border_right slds-border_top">
+
+						<lightning-datatable key-field="id" data={incomeRecord} columns={incomeColumns}
+							hide-checkbox-column show-row-number-column="true">
+						</lightning-datatable>
+
+					</div>
+
+					<template if:false={showIncomeTable}>
+						<div
+							class="slds-text-align_center slds-p-top_large slds-p-bottom_large slds-text-heading_medium">
+							No Records Found.
+						</div>
+					</template>
+					<lightning-layout>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+							<div>
+								<h4><b>Assets(i.e.SSI,Death Benefits and Trust Funds)</b></h4>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+						<lightning-layout-item size="3" class="slds-p-around_small">
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<div class="slds-border_left slds-border_right slds-border_top">
+
+						<lightning-datatable key-field="id" data={assetRecord} columns={assetColumns}
+							hide-checkbox-column show-row-number-column="true">
+						</lightning-datatable>
+
+					</div>
+					<template if:false={showAssetTable}>
+						<div
+							class="slds-text-align_center slds-p-bottom_large slds-p-top_large slds-text-heading_medium">
+							No Records Found.
+						</div>
+					</template>
+				</lightning-card>
+			</lightning-accordion-section>
+		</lightning-accordion>
+
+		<div class="slds-p-right_medium slds-p-top_medium slds-text-align_right">
+			<lightning-button label="Save" variant="brand" onclick={handleSave}></lightning-button>
+		</div>
+
+	</template>
+</template>

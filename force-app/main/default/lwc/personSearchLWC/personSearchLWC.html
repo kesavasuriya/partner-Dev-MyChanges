@@ -1,0 +1,160 @@
+<template>
+
+    <lightning-card title="Person Search">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </template>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="First Name" name="firstName" onchange={handleChange}
+                    value={searchInput.firstName} onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="Last Name" name="lastName" onchange={handleChange}
+                    value={searchInput.lastName} onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="Date" label="DOB" placeholder="MM/DD/YYYY" name="dob" onchange={handleChange}
+                    value={searchInput.dob} date-style="short" onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <template if:true={istoolTipRendered}>
+                    <c-custom-tooltip css-property={customCss} content-value={tooltipData}></c-custom-tooltip>
+                </template>
+                <span>SSN </span>
+                <lightning-icon icon-name="utility:info" size="xx-small" class="info-tooltip-icon"
+                    onmouseover={handleIconMouseOver} onmouseleave={handleIconMouseLeave} name="Name-Tooltip-SSN">
+                </lightning-icon>
+
+                <lightning-input type="text" label="SSN" placeholder="XXX-XX-XXXX" name="ssn" variant="label-hidden"
+                    message-when-pattern-mismatch="Not a valid SSN number (xxx-xx-xxxx)"
+                    pattern="[0-9]{3}-[0-9]{2}-[0-9]{4}" onchange={handleChange} value={searchInput.ssn}
+                    onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+
+            <lightning-layout-item size="6" padding="around-small">
+                <template if:true={istoolTipRendered}>
+                    <c-custom-tooltip css-property={customCss} content-value={tooltipData}></c-custom-tooltip>
+                </template>
+                <span>Casevault PID </span>
+                <button class="info-tooltip-icon button"   onmouseover={handleIconMouseOver} onmouseleave={handleIconMouseLeave} name="Name-Tooltip-PID">
+                F</button>
+                <div class="wrapper">
+                    <span>PE-</span>
+                    <div class="input-wrapper">
+                        <lightning-input type="text" label="PE-" variant="label-hidden" name="casevaultPid"
+                            onchange={handleChange} value={searchInput.casevaultPid} onkeypress={handleKeyPress}>
+                        </lightning-input>
+                    </div>
+                </div>
+
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="DL.No" name="dlNo" onchange={handleChange} value={searchInput.dlNo}
+                    onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="Address line 1" name="addressLine1" onchange={handleChange}
+                    value={searchInput.addressLine1} onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="Address line 2" name="addressLine2" onchange={handleChange}
+                    value={searchInput.addressLine2} onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="City" name="city" onchange={handleChange}
+                    value={searchInput.city} onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <!--<lightning-input type="text" label="State" name="state" onchange={handleChange}
+                    value={searchInput.state} onkeypress={handleKeyPress}></lightning-input>-->
+                <lightning-combobox label="State" name="state" options={statePicklist} onchange={handleChange}  value={searchInput.state} onkeypress={handleKeyPress}></lightning-combobox>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+               <!-- <lightning-input type="text" label="County" name="county" onchange={handleChange}
+                    value={searchInput.county} onkeypress={handleKeyPress}></lightning-input>-->
+                <lightning-combobox label="County" name="county" onchange={handleChange} value={searchInput.county} onkeypress={handleKeyPress} options={countyPicklist}></lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" label="Zip code" name="state" onchange={handleChange}
+                    value={searchInput.zipcode} onkeypress={handleKeyPress}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <div class="AlignPaddingTop">
+            <lightning-button label="Clear" onclick={handleClearSearch} class="slds-m-left_small"></lightning-button>
+            <lightning-button variant="brand" label="Search" onclick={handleSearch} class="slds-p-around_small">
+            </lightning-button>
+        </div>
+
+        <template if:true={showContactTable}>
+            <lightning-card title={numberOfPersonRecord}>
+                <lightning-datatable key-field="Id" data={visibleDataContact} columns={personColumn}
+                    selected-rows={setSelectedRows} max-row-selection="1" onrowselection={handleRowSelection}
+                    onrowaction={handleContactRowAction} sorted-by={sortBy} sorted-direction={sortDirection}
+                    onsort={doSorting}  min-column-width="170" max-column-width="200">
+                </lightning-datatable>
+                <div class="slds-p-top_small">
+                    <c-pagination-l-w-c total-list={contactList} onupdate={paginationHandlerContact}>
+                    </c-pagination-l-w-c>
+                </div>
+            </lightning-card>
+        </template>
+
+        <lightning-accordion allow-multiple-sections-open>
+
+            <template if:true={showIntake}>
+                <lightning-accordion-section label="Intake">
+                    <lightning-card>
+                        <lightning-datatable key-field="id" data={visibleDataIntake} columns={intakeColumn}
+                            hide-checkbox-column onrowaction={handleRowAction}>
+                        </lightning-datatable>
+                        <div class="slds-p-top_small">
+                            <c-pagination-l-w-c total-list={intakeList} onupdate={paginationHandlerIntake}>
+                            </c-pagination-l-w-c>
+                        </div>
+                    </lightning-card>
+                </lightning-accordion-section>
+            </template>
+
+            <template if:true={showCPSIntake}>
+                <lightning-accordion-section label="Investigation">
+                    <lightning-card>
+                        <lightning-datatable key-field="id" data={visibleDataCPSIntake} columns={cpsIntakecolumn}
+                            hide-checkbox-column onrowaction={handleRowAction}>
+                        </lightning-datatable>
+                        <div class="slds-p-top_small">
+                            <c-pagination-l-w-c total-list={cpsIntakeList} onupdate={paginationHandlerCPSIntake}>
+                            </c-pagination-l-w-c>
+                        </div>
+                    </lightning-card>
+                </lightning-accordion-section>
+            </template>
+
+            <template if:true={showServiceCase}>
+                <lightning-accordion-section label="Service Case">
+                    <lightning-card>
+                        <lightning-datatable key-field="id" data={visibleDataServiceCase} columns={serviceCasecolumn}
+                            hide-checkbox-column onrowaction={handleRowAction}>
+                        </lightning-datatable>
+                        <div class="slds-p-top_small">
+                            <c-pagination-l-w-c total-list={servicecaseList} onupdate={paginationHandlerServiceCase}>
+                            </c-pagination-l-w-c>
+                        </div>
+                    </lightning-card>
+                </lightning-accordion-section>
+            </template>
+        </lightning-accordion>
+
+    </lightning-card>
+</template>

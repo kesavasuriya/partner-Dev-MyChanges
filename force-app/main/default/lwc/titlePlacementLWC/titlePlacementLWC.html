@@ -1,0 +1,56 @@
+<template>
+    
+    <template if:true={loading}>
+        <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+    </template>
+
+        <lightning-record-edit-form
+        record-id={placementrecord.Id}
+        object-api-name="Placement__c" onsuccess={handleSuccess}>
+        <lightning-card variant="Narrow">
+            <div slot="title"><a onclick={handlePlacementNavigate}>Placements</a> and Living Arrangements</div>
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input-field field-name="Name" disabled variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="8">
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input label="Placement/ Living Type" name="" value="Placement" disabled></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input-field field-name="Provider_Name__c" disabled variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input-field field-name="Is_Living_Arrangement_same_as_Placement__c" variant="label-stacked" ></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input-field field-name="Is_Placement_Reimbursible__c" variant="label-stacked" disabled></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input-field field-name="Begin_Date__c" variant="label-stacked" disabled></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input-field field-name="End_Date__c" variant="label-stacked" disabled></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                    <lightning-input type="text" label="Provider" name="" value={providerName} onchange={handlechange} disabled></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-around_small" size="4">
+                 <div class="slds-p-top_small"><h4>Provider Address</h4></div>
+                 <lightning-formatted-address
+                    street={placementProvider.BillingStreet}
+                    city={placementProvider.BillingCity}
+                    province={placementProvider.BillingState}
+                    country={placementProvider.BillingCountry}
+                    postal-code={placementProvider.BillingPostalCode}>
+                </lightning-formatted-address>
+                </lightning-layout-item>
+            </lightning-layout>
+             
+            <div class="slds-text-align_right">
+                <lightning-button label="Save And Confirm" type="submit" variant="brand" class= "slds-var-p-around_x-small"  disabled={readOnly}></lightning-button>
+            </div>
+        </lightning-card>
+        </lightning-record-edit-form>
+</template>
