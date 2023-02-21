@@ -1,0 +1,85 @@
+<template>
+
+    <lightning-tabset>
+        <template for:each={personList} for:item="row" for:index="index">
+
+            <lightning-tab key={row.Person__c} label={row.Person__r.Name} value={row.Person__c} onactive={handleClick}>
+                <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th></th>
+                            <th>Initial Due Date</th>
+                            <th>Worker Name & Completed Date</th>
+                            <th>Supervisor Name & Approval Date</th>
+                            <th>Next Due Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="cellHeight">
+                            <td><a>Safe-C OHP</a></td>
+                            <td><lightning-formatted-date-time value={initialDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                            <td><div>{assessmentRecord.Workers_Name__c}</div>
+                                <lightning-formatted-date-time value={assessmentRecord.Submitted_Date__c} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></div></td>
+                            <td><div>{assessmentRecord.approver}</div>
+                               <div><lightning-formatted-date-time value={assessmentRecord.Safety_Assessment_Approval_Date_Time__c} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></div>
+                            </td>
+                            <td><lightning-formatted-date-time value={nextDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                        </tr>
+                        <tr class="cellHeight">
+                            <td ><a>Service Plan</a></td>
+                            <td ><lightning-formatted-date-time value={initialDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ><lightning-formatted-date-time value={nextDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                        </tr>
+                        <tr class="cellHeight">
+                            <td ><a>Monthly Face to Face Visit</a></td>
+                            <td ><lightning-formatted-date-time value={initialDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                            <td ><div>{notesRecord.ownerName}</div>
+                                <div><lightning-formatted-date-time value={notesRecord.Contact_Date__c} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></div></td>
+                            <td >N/A</td>
+                            <td ><lightning-formatted-date-time value={notesRecord.nextDueDate} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></td>
+                        </tr>
+                        <tr class="cellHeight">
+                            <td ><a onclick={handleExamClick} data-id={initialExam.Id}>Initial Health Examination</a></td>
+                            <td ><lightning-formatted-date-time value={initialDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                            <td ><div class="slds-p-bottom_small">{initialExam.ownerName}</div>
+                                <div><lightning-formatted-date-time value={initialExam.CreatedDate} year="numeric" month="numeric" day="numeric" 
+                                    ></lightning-formatted-date-time></div></td>
+                            <td >N/A</td>
+                            <td >N/A</td>
+                        </tr>
+                        <tr class="cellHeight">
+                            <td ><a onclick={handleExamClick} data-id={comprehensiveExam.Id}>Comprehensive Health Examination</a></td>
+                            <td ><lightning-formatted-date-time value={initialDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                            <td ><div class="slds-p-bottom_small">{comprehensiveExam.ownerName}</div>
+                            <div><lightning-formatted-date-time value={comprehensiveExam.CreatedDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></div></td>
+                            <td >N/A</td>
+                            <td >N/A</td>
+                        </tr>
+                        <tr class="cellHeight">
+                            <td ><a onclick={handleExamClick} data-id={finalExam.Id}>Annual Health Examination</a></td>
+                            <td ><lightning-formatted-date-time value={initialDueDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></td>
+                            <td ><div class="slds-p-bottom_small">{finalExam.ownerName}</div>
+                            <div><lightning-formatted-date-time value={finalExam.CreatedDate} year="numeric" month="numeric" day="numeric" 
+                                ></lightning-formatted-date-time></div></td>
+                            <td >N/A</td>
+                            <td >N/A</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </lightning-tab>
+        </template>
+    </lightning-tabset>
+</template>

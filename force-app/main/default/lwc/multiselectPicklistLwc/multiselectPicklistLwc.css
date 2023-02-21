@@ -1,0 +1,3 @@
+.splitcolumn {
+    columns: var(--columns) !important;
+}

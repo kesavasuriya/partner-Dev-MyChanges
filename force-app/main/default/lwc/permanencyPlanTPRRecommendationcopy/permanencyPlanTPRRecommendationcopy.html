@@ -1,0 +1,39 @@
+<template>
+   
+    
+    <lightning-card variant="Narrow" title="TPR RECOMMENDATION CHECKLIST">
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-input class="slds-p-left_small" type="checkbox" label="Child in care 15 out of the last 22 months / Court has waived/reunification efforts" name="Child_in_care_15_out_of_last_22_months__c"  ></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-input class="slds-p-left_xx-small" type="checkbox" label="Court hearing occurs" name="Court_hearing_occurs__c"  disabled="true" ></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-input class="slds-p-left_xx-small" type="checkbox" label="Court order of TPR for parents" name="Court_order_of_TPR_for_parents__c"   disabled="true" ></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-input class="slds-p-left_small" type="checkbox" label="Information for either parent is unknown" name="Information_for_either_parent_is_unknown__c"  ></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-input class="slds-p-left_xx-small" type="checkbox" label="Petition for TPR sent to court" name="Petition_for_TPR_sent_to_court__c"   disabled="true"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-input class="slds-p-left_xx-small" type="checkbox" label="Primary Permanacy Plan is adoption" name="Primary_Permanacy_Plan_is_adoption__c"   disabled="true" ></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-combobox label="Reason for Recommendation" name="Reason_for_Recommendation__c" options={pickVal}  ></lightning-combobox>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-text-align_right">
+            <lightning-button label="Save" icon-name="utility:save" variant="brand" ></lightning-button>
+        </div>
+    </lightning-card>
+    
+</template>

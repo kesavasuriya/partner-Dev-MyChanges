@@ -1,0 +1,35 @@
+.activecolor{
+    border:  var(--border);
+    border-color: var(--activecolor);
+    border-style: solid;
+    color: black;
+}
+
+.inActivecolor{
+    border:  var(--border);
+    border-color: var(--inactivecolor);
+    border-style: solid;
+    color: black;
+}
+
+.death{
+  border:  var(--border);
+  border-color: black;
+  border-style: solid;
+  color: black;
+}
+
+.avatar {
+  vertical-align: middle;
+  width: 90px;
+  height: 90px;
+  border-color: black;
+  /*border-radius: 50%;*/
+  }
+  .scroll {
+    height:8rem;
+  }
+
+.accordionClass{
+  --sds-c-accordion-heading-font-size:0.8rem;
+}

@@ -1,0 +1,7 @@
+<template>
+    <div><b>{fieldLabel}</b></div>
+    <lightning-checkbox-group  class="splitcolumn" 
+                              options={option} value={selectedValues} 
+                              onchange={handleChange} variant="label-hidden" required={required}>
+    </lightning-checkbox-group>
+</template>

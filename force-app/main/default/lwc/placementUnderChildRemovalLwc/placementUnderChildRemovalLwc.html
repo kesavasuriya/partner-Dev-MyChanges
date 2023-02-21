@@ -1,0 +1,51 @@
+<template>
+
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    
+    <lightning-card title={cardTitle}>
+        <lightning-button-icon slot="actions" icon-name="utility:refresh" onclick={handleRefresh} class="slds-var-p-around_small"></lightning-button-icon>
+        <template if:true={showNew}>
+            <lightning-button slot="actions" label = "New" onclick={handleNew} class="slds-var-p-around_small"></lightning-button>
+        </template>
+        <lightning-tree-grid
+                columns={gridColumns}
+                data={gridData} hide-checkbox-column="true" onrowaction={handleRowAction}
+                key-field="recordName" min-column-width="230" max-column-width="270"
+            ></lightning-tree-grid>
+    </lightning-card>
+
+    <div  class="eventModal" if:true={showModal}>
+        <lightning-record-edit-form object-api-name="Placement__c" record-id="" onsubmit={handleSubmit} onsuccess={handleSuccess}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                        onclick={hideModal}
+                                        alternative-text="close"
+                                        variant="bare-inverse"
+                                        class="slds-modal__close"></lightning-button-icon> 
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">New Placement</h2>
+                </span>
+                <span slot="modalBody">
+                        <lightning-layout multiple-rows="true">
+                        <lightning-layout-item size="6" padding="around-small">
+                            <lightning-combobox label="Child" variant="label-stacked" options={childOptions} value={childId}  placeholder="Select Child" onchange={handleChange}></lightning-combobox>
+                        </lightning-layout-item>
+                            <lightning-layout-item size="6" padding="around-small">
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <lightning-input-field variant="label-stacked" field-name="Begin_Date__c"></lightning-input-field>
+                        </lightning-layout-item>
+                        </lightning-layout>
+                </span>
+                <span slot="modalFooter">
+                    <lightning-button  label="Cancel"  class="slds-p-right_small" onclick={hideModal}></lightning-button> 
+                    <lightning-button  label="Save" type="submit" variant="brand"></lightning-button>  
+                </span>
+        </c-modal-component>
+    </lightning-record-edit-form>
+
+    </div>
+    
+</template>

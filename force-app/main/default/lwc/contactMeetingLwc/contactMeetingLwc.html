@@ -1,0 +1,144 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <template if:false={showRecordPageComponent}> 
+        <div class="slds-box">
+            <lightning-card title={meetingTitle}>
+                <lightning-button label="New" slot="actions"  onclick={openMeetingModal} ></lightning-button>
+            </lightning-card>
+            <template if:true={showTable}>
+                <div class="slds-border_left slds-border_right slds-border_top">
+                    <lightning-datatable
+                        key-field="Id"
+                        columns={columns}
+                        data={meetingList}
+                        hide-checkbox-column show-row-number-column="true"
+                        onrowaction={handleRowAction}  min-column-width="300" max-column-width="350">
+                    </lightning-datatable>
+                </div>
+            </template>
+        </div>
+        <template if:true={showMeetingModal}>
+            <lightning-record-edit-form object-api-name="Meeting__c" record-id={meetingId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+                <div class="slds-modal slds-fade-in-open slds-backdrop">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <lightning-button-icon icon-name="utility:close"
+                                onclick={closeMeetingModal}
+                                alternative-text="close"
+                                variant="bare-inverse"
+                                class="slds-modal__close"></lightning-button-icon> 
+                                <h2>Add Meeting</h2> 
+                        </div>
+                    
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <lightning-layout multiple-rows=true>
+                                <lightning-layout-item size="6" class="slds-p-around_small"> 
+                                    <lightning-input type="Date" label="Date of Meeting" name="Date_of_Meeting__c" onchange={handleChange} value={meetingRecord.Date_of_Meeting__c} date-style="short"></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="12" class="slds-p-around_small">
+                                    <lightning-dual-listbox name="Select_Child_Family_Member__c" label="Select Child/Family Members" source-label="Available" selected-label="Selected" options={childFamilyMembers} disabled={readOnly} onchange={handleChange} required="true" class="required-fields" value={childFamilyMembersValue}>
+                                    </lightning-dual-listbox>
+                                </lightning-layout-item>                
+                                <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Name_of_the_person__c" variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item> 
+                                <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Name_of_the_person_completing_the_report__c" variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>                     
+                                <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Type_of_the_Meeting__c" data-field="Type_of_the_Meeting__c" onchange={handleChange} variant="label-stacked" required class="required-fields"></lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Meeting_Status__c" variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>   
+                                <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Meeting_Decision__c" variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>                         
+                                <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Meeting_Notes__c" variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Follow_up_Meeting__c" data-field="Follow_up_Meeting__c" onchange={handleChange} variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>
+                                <template if:true={showdate}>
+                                    <lightning-layout-item size="6" class="slds-p-around_small">
+                                    <lightning-input type="Date" label="Follow up meeting Start date" name="Follow_up_meeting_Start_date__c" onchange={handleChange} value={meetingRecord.Follow_up_meeting_Start_date__c} required class="required-fields" date-style="short"></lightning-input>
+                                    </lightning-layout-item>
+                                </template>
+                                <template if:true={showType}>
+                                    <lightning-layout-item size="12" class="slds-p-around_small">
+                                            <lightning-input-field field-name="Type__c" variant="label-stacked" required class="required-fields"></lightning-input-field>
+                                    </lightning-layout-item>
+                                </template>
+                                <lightning-layout-item size="12" class="slds-p-around_small">
+                                    <lightning-input-field field-name="Additional_Comments__c" variant="label-stacked"></lightning-input-field>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <lightning-button label="Cancel" onclick={closeMeetingModal} class="slds-p-right_small"></lightning-button>
+                            <lightning-button label="Save" variant="brand" type="submit" disabled={readOnly} onclick={onFormValidate}></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </lightning-record-edit-form>
+        </template>
+    </template>
+
+    <template if:true={showRecordPageComponent}>
+        <lightning-record-edit-form object-api-name="Meeting__c" record-id={meetingId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+            <lightning-layout multiple-rows=true>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-dual-listbox name="Select_Child_Family_Member__c" label="Select Child/Family Members" source-label="Available" selected-label="Selected" options={childFamilyMembers} disabled={readOnly} onchange={handleChange} required="true" class="required-fields"
+                        value={childFamilyMembersValue}>
+                    </lightning-dual-listbox>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input type="Date" label="Date of Meeting" name="Date_of_Meeting__c" onchange={handleChange} value={meetingRecord.Date_of_Meeting__c} date-style="short"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Name_of_the_person__c" variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>     
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Name_of_the_person_completing_the_report__c" variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>            
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Type_of_the_Meeting__c" data-field="Type_of_the_Meeting__c" onchange={handleChange} variant="label-stacked" required class="required-fields"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Meeting_Status__c" variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item> 
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Meeting_Decision__c" variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>                           
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Meeting_Notes__c" variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Follow_up_Meeting__c" data-field="Follow_up_Meeting__c" onchange={handleChange} variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>
+                <template if:true={showdate}>
+                    <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input type="Date" label="Follow up meeting Start date" name="Follow_up_meeting_Start_date__c" onchange={handleChange} value={meetingRecord.Follow_up_meeting_Start_date__c} required class="required-fields" date-style="short"></lightning-input>
+                    </lightning-layout-item>
+                </template>
+                <template if:true={showType}>
+                    <lightning-layout-item size="12" class="slds-p-around_small">
+                            <lightning-input-field field-name="Type__c" variant="label-stacked" required class="required-fields"></lightning-input-field>
+                    </lightning-layout-item>
+                </template>
+                <lightning-layout-item size="12" class="slds-p-around_small">
+                    <lightning-input-field field-name="Additional_Comments__c" variant="label-stacked"></lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+            <div class="slds-text-align_right slds-p-top_small">
+                <lightning-button label="Save" variant="brand" type="submit" disabled={readOnly} onclick={onFormValidate}></lightning-button>
+            </div>
+        </lightning-record-edit-form>
+    </template>
+</template>

@@ -1,0 +1,19 @@
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+.cursorclass {
+    cursor:pointer;
+}
+
+.selectedRowClass {
+    background-color:#808080 !important;
+}
+.spins::after {
+    content: 'Please Wait While Eligibility Determination is Processing...';
+    width: 100%;
+    text-align: center;
+    top: calc(50% + 3em);
+    font-weight: bold;
+    font-size: medium;
+}

@@ -1,0 +1,266 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+<lightning-record-edit-form object-api-name="Permanency_Plan__c" record-id={permanencyRecId} onsuccess={handleSuccess} onsubmit={handleSubmit} onload={handleOnLoad} onerror={handleError}>
+    <lightning-card title="Adoption Subsidy Agreement">
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input type="Date" label="Subsidy Agreement Start Date" name="Subsidy_Agreement_Start_Date__c" required class="required-fields" onchange={handleChange} value={permanencyRec.Subsidy_Agreement_Start_Date__c} date-style="short"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input type="Date" label="Subsidy Agreement End Date" name="Subsidy_Agreement_End_Date__c" required class="required-fields" onchange={handleChange} value={permanencyRec.Subsidy_Agreement_End_Date__c} date-style="short"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Subsidy_Agreement_Under_Appeal__c" variant="label-inline"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Offered_Adoption_subsidy__c" variant="label-inline"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input type="Date" label="Offer Accepted Date" name="Offer_Accepted_Date__c" required class="required-fields" onchange={handleChange} value={permanencyRec.Offer_Accepted_Date__c} date-style="short"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <h1><b>Adoptive Parent</b></h1>
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item class="slds-p-around_small" size="12">
+                <div class="slds-text-align_left">
+                    <lightning-button variant="brand-outline" class="slds-m-right_x-small" label="SEARCH PROVIDER" onclick={handleShowSearch}></lightning-button>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="12">
+                <h4><b> Provider Id : </b>
+                    <lightning-output-field field-name="Subsidy_Provider_Id__c" variant="label-hidden"></lightning-output-field>
+                </h4>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Adoptive_Parent_1__c" variant="label-stacked" value={subsidyAgreementRec.Adoptive_Parent_1__c}></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Single_Parent_Adoption_Check__c" variant="label-inline"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Adoptive_Parent_2__c" variant="label-stacked" value={subsidyAgreementRec.Adoptive_Parent_2__c}></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="12">
+                <h3><b>Original Signature Date</b></h3>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input type="DateTime" label="Adoptive Parent(1) signature date" name="Adoptive_Parent_1_signature_date__c" onchange={handleChange} value={permanencyRec.Adoptive_Parent_1_signature_date__c} date-style="short"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input type="DateTime" label="Adoptive Parent(2) signature date" name="Adoptive_Parent_2_Signature_Date__c" onchange={handleChange} value={permanencyRec.Adoptive_Parent_2_Signature_Date__c} date-style="short"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input type="DateTime" label="LDSS Director/Designee Signature Date" name="LDSS_Director_Designee_Signature_Date__c" onchange={handleChange} value={permanencyRec.LDSS_Director_Designee_Signature_Date__c} date-style="short"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6"></lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <h3>Adoptive Parent(1) Signature</h3>
+                <lightning-button label="Capture/Update Signature" name="Adoptive_Parent_1_Signature__c" title="Capture/Update Signature" onclick={handleSignModal}></lightning-button>
+                <!--<lightning-input-rich-text class="slds-p-around_small" value={subsidyAgreementRec.Adoptive_Parent_1_Signature__c} disabled></lightning-input-rich-text>-->
+                <div class="slds-p-around_small" if:true={showParent1}>
+                    <img src={sourceUrlParent1} class="img"></img>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <h3>Adoptive Parent(2) Signature</h3>
+                <lightning-button label="Capture/Update Signature" name="Adoptive_Parent_2_Signature__c" title="Capture/Update Signature" onclick={handleSignModal}></lightning-button>
+                <!--<lightning-input-rich-text class="slds-p-around_small" value={subsidyAgreementRec.Adoptive_Parent_2_Signature__c} disabled></lightning-input-rich-text>-->
+                <div class="slds-p-around_small" if:true={showParent2}>
+                    <img src={sourceUrlParent2} class="img"></img>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <h3>LDSS Director/Designee Signature</h3>
+                <lightning-button label="Capture/Update Signature" name="LDSS_Director_DESIGNEE_SIGNATURE__c" title="Capture/Update Signature" onclick={handleSignModal}></lightning-button>
+                <!--<lightning-input-rich-text class="slds-p-around_small" value={subsidyAgreementRec.LDSS_Director_DESIGNEE_SIGNATURE__c} disabled></lightning-input-rich-text>-->
+                <div class="slds-p-around_small" if:true={showLDSS}>
+                    <img src={sourceUrlLDSS} class="img"></img>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="adopt_if_a_subsidy_is_paid__c" variant="label-stacked"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Medical_Assistance_only__c" variant="label-inline"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item size="12">
+                <lightning-input-field field-name="Subsidy_Agreement_Comments__c" variant="label-stacked"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="12">
+                <h3><b> Adoptive Placement</b></h3>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Child_Placed_From__c" variant="label-stacked"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="6">
+                <lightning-input-field field-name="Child_Placed_By__c" variant="label-stacked"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small">
+                <h3>Approval Status:
+                    <lightning-output-field field-name="Subsidy_Approval_Status__c" variant="label-hidden"></lightning-output-field>
+                </h3>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <div class="slds-p-around_x-small slds-text-align_right">
+            <lightning-button variant="brand" class="slds-m-right_x-small" label="Save" type="submit" onclick={onFormValidate}></lightning-button>
+            <template if:false={showApprovalBtn}>
+            <lightning-button variant="brand-outline" class="slds-m-right_x-small" label="Submit for Approval" type="submit" onclick={handleSubmitForApproval} disabled={enableSubmitForApprovalBtn}></lightning-button>
+          </template>
+        </div>
+
+    </lightning-card>
+</lightning-record-edit-form>
+
+<div class="eventModal" if:true={showSubmitforApprovalModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  alternative-text="close"
+                                                  onclick={closeSubmiteModal}
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Submit For Approval</h2>
+                    </span>
+        <span slot="modalBody">
+                <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                </c-custom-lookup-component>
+            </span>
+        <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                    <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                    <lightning-button label="Cancel"  title="Cancel"  onclick={closeSubmiteModal} class= "slds-var-p-around_x-small"></lightning-button>
+                </div>
+              </span>
+    </c-modal-component>
+</div>
+
+
+<div class="eventModal" if:true={showSignModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  alternative-text="close"
+                                                  onclick={closeSignModal}
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-06" class="slds-text-heading_medium slds-hyphenate">Signature</h2>
+                    </span>
+        <span slot="modalBody">
+                <lightning-layout>
+                    <lightning-layout-item size="6" class="slds-p-around_small">
+                        <c-signature-lwc onhandlesign ={handleSignature}></c-signature-lwc>
+                    </lightning-layout-item>
+                    </lightning-layout>
+            </span>
+        <span slot="modalFooter">
+                <div class="slds-p-left_x-small">
+                    <lightning-button label="Save" title="Save"   variant="brand" class= "slds-var-p-around_x-small"  onclick={closeSignModal}></lightning-button>
+                </div>
+            </span>
+    </c-modal-component>
+</div>
+
+
+<div class="eventModal" if:true={showSearchProviderModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  onclick={closeSearchModal}
+                                                  alternative-text="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">PROVIDER SEARCH </h2>
+                    </span>
+
+        <span slot="modalBody" class="slds-modal__content">
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_x-small" size="6">
+                        <lightning-combobox label="Provider Type" name="providerType" placeholder="-Select-" options={providerTypes} onchange={searchHandle} value="" ></lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                     <lightning-layout-item class="slds-p-around_x-small" size="4">
+                        <lightning-input type="text" name="firstName" label="First Name" onchange={searchHandle}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_x-small" size="4">
+                        <lightning-input type="text" name="middleName" label="Middle Name" onchange={searchHandle}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_x-small" size="4">
+                        <lightning-input type="text" name="lastName" label="Last Name" onchange={searchHandle}></lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="8">
+                        <lightning-dual-listbox name="childCharacter"
+                                                label="Child Characteristics"
+                                                source-label="Available"
+                                                selected-label="Selected"
+                                                field-level-help="Select One of the following Child Characteristics"
+                                                options={childCharPick}
+                                                onchange={searchHandle}
+                                                value={sepcialNeedsfactorPickVal}
+                                                >
+                        </lightning-dual-listbox> 
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="4">
+                        <lightning-combobox label="Placement Structure" name="placementStructure" placeholder="-Select-" options={placementStructurePick} onchange={searchHandle}></lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="6">
+                        <lightning-combobox label="Local Department" name="localDept" placeholder="-Select-" options={localDeptPick} onchange={searchHandle} value={} ></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-around_small" size="6">
+                        <lightning-combobox label="Bundled Placement Services" name="" placeholder="-Select-" options="" onchange={searchHandle} value={} ></lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="6">
+                        <lightning-input type="text" label="Provider Id" name="providerId" onchange={searchHandle}></lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+        </span>
+        <span slot="modalFooter">
+            <div class="slds-text-align_right">
+                <lightning-button variant="brand-outline" label="Search" onclick={handleSearchProvider}></lightning-button>
+                <lightning-button label="Cancel" title="Cancel"  onclick={closeSearchModal} class= "slds-var-p-around_x-small"></lightning-button>
+            </div>
+        </span>
+    </c-modal-component>
+</div>
+
+
+<div class="eventModal" if:true={showProviderTable}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              onclick={closeShowTableModal}
+                                              alternative-text="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close">
+                    </lightning-button-icon>
+        </span>
+        <span slot="modalBody">
+            <lightning-datatable 
+                key-field="id"
+                data={providerList}
+                columns={columns} 
+                onrowselection={handleRowSelection}
+                max-row-selection=1>
+            </lightning-datatable>
+       </span>
+
+        <span slot="modalFooter">
+        <div class="slds-text-align_right">
+            <lightning-button label="Select Provider" title="Select Provider" onclick={handleSelectedProvider} variant="brand" class= "slds-var-p-around_x-small"></lightning-button>
+            <lightning-button label="Cancel"  title="Cancel"  onclick={closeShowTableModal} class= "slds-var-p-around_x-small"></lightning-button>
+        </div>
+    </span>
+    </c-modal-component>
+</div>
+
+</template>

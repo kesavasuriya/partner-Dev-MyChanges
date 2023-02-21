@@ -1,0 +1,16 @@
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.slds-modal__container {
+    max-width: 80rem !important;
+    width: 80% !important;
+}
+.slds-modal__content {
+    overflow: initial !important;
+}
+.img {
+    height:150px;
+    width:300px;
+}

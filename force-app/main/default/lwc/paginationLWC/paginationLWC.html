@@ -1,0 +1,20 @@
+<template>
+
+    <div class="slds-p-bottom_small"></div>
+    <lightning-layout horizontal-align="space">
+        <lightning-layout-item flexibility="auto">
+            <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={previousHandler} disabled={previousbuttonDisable} variant="brand"></lightning-button>
+        </lightning-layout-item>
+       
+        <lightning-layout-item flexibility="auto">
+                <lightning-combobox label="Size" name="recordSize" value={recordSize} options={sizeList} variant="label-hidden" onchange={handleChange}></lightning-combobox>
+            <div class="slds-text-align_center">Displaying {currentPage} of {totalPages} Page</div>
+        </lightning-layout-item>
+
+        <lightning-layout-item flexibility="auto">
+            <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" onclick={nextHandler} disabled={nextbuttonDisable} variant="brand"></lightning-button>
+        </lightning-layout-item>
+    </lightning-layout>
+    <div class="slds-p-bottom_xx-large"></div>
+    
+</template>

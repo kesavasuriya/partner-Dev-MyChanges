@@ -1,0 +1,29 @@
+.THIS .slds-card__header {
+    background-color: #1798c1;
+}
+
+.THIS .Lightning-card.slds-card__header {
+    background-color: #1798c1;
+}
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.heading {
+    height:30px;
+    background-color:#1798c1;
+    vertical-align:middle;
+    padding-top:8px;
+    padding-left:9px;
+}
+.colorwhite {
+    color:white;
+}
+.textstyle {
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left:30px;
+}
+.selectedRowClass {
+    background-color:#808080 !important;
+}

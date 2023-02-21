@@ -1,0 +1,104 @@
+<template>
+  
+      <div class="alignRight"> 
+          <lightning-button label="ADD" title="ADD" variant="brand" icon-name="utility:add" onclick={handleAddTRPModal} class= "slds-var-p-around_x-small"></lightning-button>
+      </div>
+      <div class="paddingTop"></div>
+          <table class="slds-table slds-table_bordered slds-border_left slds-border_right css-serial">
+              <thead>
+                  <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                      <div title="PARENT'S NAME">PARENT'S NAME</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                      <div title="ROLE">ROLE</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                      <div title="ACTION">ACTION</div>
+                    </th>
+                  </tr>
+                </thead>
+               <tbody>
+                  <template for:each={tprList} for:index="index" for:item="row">  
+                      <tr key={row.Id}>
+                          <td class="wrapText">
+                              <div id={index}></div>
+                          </td>
+                          <td class="wrapText">
+                              <div id={index}></div>
+                          </td>
+                          <td class="wrapText">
+                            <div>
+                                <lightning-button-icon icon-name="utility:edit" onclick={handleEdit} data-id={row.Id}></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:delete" class="slds-p-left_small" onclick={handleDelete} data-id={row.Id}></lightning-button-icon>
+                            </div>
+                        </td>
+                      </tr>
+                  </template>
+              </tbody>
+          </table>
+
+          <div class="eventModal" if:true={showAddTPRModal}>
+            <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              onclick={closeAddTPRModal}
+                                              alternative-text="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Termination of Parental Rights (TPR) Details </h2>
+                </span> 
+                <span slot="modalBody" class="slds-modal__content">
+                    <lightning-layout>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-combobox  label="Parent Name" name="ParentName__c" options={TPRPicklist.contactPicklist} value={tprRec.ParentName__c}  onchange={handleChange} disabled={readOnly} required></lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" class="slds-p-around_small viewDateOutModal">
+                          <lightning-input type="date" label="Date Parent Served" name="Date_Parent_Served__c" value={tprRec.Date_Parent_Served__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-combobox  label="Method of Service" name="Method_of_Service__c" options={TPRPicklist.MethodofServicePicklist} value={tprRec.Method_of_Service__c}  onchange={handleChange} disabled={readOnly}></lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                                    <lightning-radio-group label="TPR Decision"
+                                    name="TPR_Status__c"
+                                    options={tprStatus}
+                                    value={tprRec.TPR_Status__c}
+                                    onchange={handleChange}
+                                    type="radio"></lightning-radio-group>
+                        </lightning-layout-item>
+                            <lightning-layout-item size="4" class="slds-p-around_small viewDateOutModal">
+                                <lightning-input type="date" label="TPR Decision Date" name="TPR_Decision_Date__c" value={tprRec.TPR_Decision_Date__c} onchange={handleChange} disabled={readOnly} required></lightning-input>          
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" class="slds-p-around_small">
+                                 <lightning-combobox  label="Relationship" name="Relationship__c" options={TPRPicklist.RelationshipPicklist} value={tprRec.Relationship__c} onchange={handleChange} disabled={readOnly}></lightning-combobox>
+                            </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                            <lightning-layout-item size="6" class="slds-p-around_small">
+                                <div class="viewDateOutModal"> <lightning-combobox  label="Termination" name="Termination__c" options={TPRPicklist.TerminationPicklist} value={tprRec.Termination__c} onchange={handleChange} disabled={readOnly}></lightning-combobox></div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="slds-p-around_small">
+                                 <lightning-input class="slds-p-top_small" type="checkbox" label="Termination Appealed"   name="Termination_Appealed__c" checked={tprRec.Termination_Appealed__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+                            </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                            <lightning-layout-item size="12" class="slds-p-around_small">
+                                 <lightning-textarea label="Reason" name="Reason__c"  value={tprRec.Reason__c}  onchange={handleChange} disabled={readOnly}></lightning-textarea>
+                            </lightning-layout-item>
+                    </lightning-layout>
+                </span>
+                <span slot="modalFooter">
+                    <div class="alignRight">
+                        <lightning-button label="Cancel" title="Cancel" onclick={closeAddTPRModal} variant="destructive" class= "slds-var-p-around_x-small" icon-name="utility:close"></lightning-button>
+                        <lightning-button label="Save" title="Save"  variant="brand" class= "slds-var-p-around_x-small" icon-name="utility:save" ></lightning-button>
+                    </div>
+                </span>
+            </c-modal-component>
+        </div>
+</template>

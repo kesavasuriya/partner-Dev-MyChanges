@@ -1,0 +1,68 @@
+<template>
+
+    <template if:true={loading}>
+        <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+    </template>
+
+<lightning-record-edit-form object-api-name="Title_Iv_E__c" record-id={titleIvERec.Id} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+    <lightning-card variant="Narrow" title="SSI/SSA Data">
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="8">
+                <p>Is the child recelving SSI or SSA during review period?</p>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="2">
+                <lightning-input-field variant="label-hidden" field-name="child_receive_SSI_SSA_during_review__c"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="8">
+                <p>Has the agency opted to suspend the SSI payment and claim Iv.</p>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="2">
+                <lightning-input-field variant="label-hidden" field-name="Agency_opted_to_suspend_SSI_claim_IV_E__c"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="8">
+                <p>Is the Agency the RepresentativePayee.</p>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="2">
+                <lightning-input-field variant="label-hidden" field-name="IsThe_Agency_TheRepresentativePayee__c"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+    <lightning-card variant="Narrow" title="Supporting Document">
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <lightning-input-field variant="label-stacked" field-name="Citizenship_How_verified__c" required class="required-fields"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <lightning-input-field variant="label-stacked" field-name="Age_How_verified__c" required class="required-fields"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <lightning-input-field variant="label-stacked" field-name="Asset_Information_How_verified__c" required class="required-fields"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <lightning-input-field variant="label-stacked" field-name="SSI_SSA_Information_How_verified__c" required class="required-fields"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="8">
+                <p>Does the IV-E case/record financial information citing income and resources/assets of all assistance unit members?
+                    <span class="textcolor"> *</span></p>
+
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <lightning-input-field variant="label-hidden" field-name="IV_E_case_has_income_assets_of_AU_member__c" required class="required-fields"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+    <div class="slds-text-align_right">
+        <!-- <lightning-button label="SAVE AS DRAFT" title="SAVE AS DRAFT" onclick={handleSave} variant="brand" class= "slds-var-p-around_x-small"  disabled={readOnly}></lightning-button>-->
+        <lightning-button label="Save and Confirm" title="Save and Confirm" type="submit" variant="brand" class="slds-var-p-around_x-small" onclick={onFormValidate}></lightning-button>
+    </div>
+</lightning-record-edit-form>
+</template>

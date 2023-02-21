@@ -1,0 +1,51 @@
+<template>
+    <template if:true={loading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <lightning-tabset>
+        <lightning-tab label="Approved">
+            <template if:true={visibleData}>
+            <lightning-datatable key-field="Id" data={visibleData}  columns={Columns}   hide-checkbox-column>
+        </lightning-datatable>
+    </template>
+    <template if:true={showPagination}>
+            <c-pagination-l-w-c total-list={approvedPlacements} onupdate={paginationHandler}></c-pagination-l-w-c>
+        </template>
+        </lightning-tab>
+        <lightning-tab label="Pending">
+            <lightning-datatable key-field="Id"  data={visibleData1} onrowaction={handleRowAction} columns={Columns1} hide-checkbox-column>
+        </lightning-datatable>
+        <template if:true={showPagination}>
+        <c-pagination-l-w-c total-list={pendingPlacements} onupdate={paginationHandler1}></c-pagination-l-w-c>
+    </template>
+        </lightning-tab>
+    </lightning-tabset>
+
+    <div class="eventModal" if:true={showWarning}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                <lightning-button-icon icon-name="utility:close"
+                                        onclick={handleCloseModal}
+                                        alternative-text="close"
+                                        variant="bare-inverse"
+                                        class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Warning!</h2>
+                    </span>
+
+            <span slot="modalBody">
+                <p><b>Do you need to change the child’s placement?</b></p>
+
+            </span>
+            <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                    <lightning-button label="No" title="No" onclick={handleCancel}
+                        class="slds-var-p-around_x-small">
+                    </lightning-button>
+                    <lightning-button label="Yes" title="Yes" variant="brand" onclick={handleProcced}
+                        class="slds-var-p-around_x-small"></lightning-button>
+                </div>
+            </span>
+
+        </c-modal-component>
+</div>
+</template>

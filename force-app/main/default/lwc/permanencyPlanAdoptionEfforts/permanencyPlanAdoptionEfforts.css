@@ -1,0 +1,10 @@
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+.paddingTop {
+    padding-top:10px;
+}
+.layoutIteam {
+    padding : 'around-small';
+}

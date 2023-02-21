@@ -1,0 +1,35 @@
+<template>
+    <div class="slds-text-align_right slds-p-bottom_small">
+        <lightning-button label="Add Assessment" variant="brand" icon-name="utility:add" onclick={handleAdd}></lightning-button>
+    </div>
+    <table class="slds-table slds-table_bordered slds-border_left slds-border_right slds-p-bottom_large">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th scope="col">
+                    <div title="Assessment Name">Assessment Name</div>
+                </th>
+                <th  scope="col">
+                    <div title="Completion Date">Completion Date</div>
+                </th>
+                <th  scope="col">
+                    <div title="Action">Action</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={localList} for:item="row" for:index="index">
+                <tr key={row.index}>
+                    <td>
+                        <lightning-input label=" " variant="label-hidden" value={row.Name} name="Name" data-index={index} data-row={row} onchange={handleChange}></lightning-input>
+                    </td>
+                    <td>
+                        <lightning-input type="date" label=" " variant="label-hidden" value={row.Completion_Date__c} data-index={index} data-row={row} name="Completion_Date__c" onchange={handleChange} date-style="short"></lightning-input>
+                    </td>
+                    <td>
+                        <lightning-button-icon icon-name="utility:delete" onclick={handleDelete} data-rowid={row.Id} data-rowname={row.Name}></lightning-button-icon>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</template>

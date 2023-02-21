@@ -1,0 +1,194 @@
+<template>
+
+    <template if:true={loading}>
+        <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+    </template>
+
+<lightning-card variant="Narrow">
+   <div slot="title"><a onclick={handlePersonNavigate}>Age and Citizenship</a></div>
+    <lightning-layout>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="date" name="" value={titleIvERec.Child_Removal__r.Child__r.Date_of_Birth__c} date-style="short" label="Date of Birth" disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" name="" value={titleIvERec.Child_Removal__r.Child__r.Age__c} label="Age of the Child" disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" label="Is the Child a US Citizen?" name="" value={titleIvERec.Child_Removal__r.Child__r.Is_a_US_citizen__c} onchange={handlechange} disabled="readOnly"></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" name="" value={IsAlien} label="Is the Child a Qualified Alien?" onchange={handleChange} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" name="" value={titleIvERec.Child_Removal__r.Child__r.Alien_Status__c} label="Qualified Alien Status" onchange={handleChange} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" name="" value={titleIvERec.Child_Removal__r.Child__r.Allien_Registartion_Number__c} label="Alien Registration Number" onchange={handleChange} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+</lightning-card>
+<lightning-card variant="Narrow" title="Deprivation">
+    <lightning-button label="Add Deprivation" slot="actions" variant="brand" onclick={handleCreate}></lightning-button>
+
+    <lightning-datatable
+        key-field="id"
+        data={titleIVEDeprivationList}
+        hide-checkbox-column="true"
+        onrowaction={handleRowAction}
+        columns={deprivationTable}>
+</lightning-datatable>
+
+</lightning-card>
+
+<lightning-card variant="Narrow" title="Income Summary">
+    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th scope="col">
+                    <div title="Name">Name</div>
+                </th>
+                <th  scope="col">
+                    <div title="In Au">In AU</div>
+                </th>
+                <th  scope="col">
+                    <div title="Is income deemed">Is Income Deemed</div>
+                </th>
+                <th  scope="col">
+                    <div title="Disregard">Disregard</div>
+                </th>
+                <th scope="col">
+                    <div title="Action">Action</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={titleIVEIncomeList} for:index="index" for:item="row">  
+                    <tr key={row.index}>
+                        <td  data-label="">
+                            <div id={index} accesskey={index} title={row.Name}> {row.Contact__r.Name}</div>
+                        </td>
+                        <td >
+                            <div id={index}>
+                                <lightning-combobox data-index={index} name="In_AU__c" value={row.In_AU__c} variant="label-hidden" options={inAuPicklist} onchange={handleIncomeChange}></lightning-combobox>
+                                
+                            </div>
+                        </td>
+                        <td >
+                            <div id={index}>
+                                <lightning-input data-index={index} name="Is_income_deemed__c" type="checkbox" label="Is income deemed" variant="label-hidden" aria-labelledby="otherlabel" checked={row.Is_income_deemed__c} onchange={handleIncomeChange}></lightning-input>
+                            </div>
+                        </td>
+                        <td >
+                            <div id={index}>
+                                <lightning-input data-index={index} name="Disregard__c" type="checkbox" label="Disregard" variant="label-hidden" aria-labelledby="otherlabel"  checked={row.Disregard__c} onchange={handleIncomeChange}></lightning-input>
+                            </div>
+                        </td>
+                        <td >
+                            <div class="slds-p-around_medium lgc-bg">
+                                
+                                <lightning-button-icon icon-name="utility:apps" name="action" data-childid={row.Contact__c} data-id={row.Id} alternative-text="Income" class="slds-m-left_xx-small" title="Person Income" onclick={handleIconAction}></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:delete" name="delete" data-childid={row.Contact__c} data-incomeid={row.Id} alternative-text="Delete"   class="slds-m-left_xx-small" title="Delete" onclick={handleIconAction}></lightning-button-icon>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+        </tbody>
+    </table>
+   <template if:true={showIncomeButtons}>
+       <div class="slds-text-align_right slds-p-top_small">
+           <lightning-button label="Save" variant="brand" onclick={handleIncomeSave}></lightning-button>
+           <lightning-button class="slds-p-left_small" label="Cancel" variant="destructive" onclick={handleCancel}></lightning-button>
+
+       </div>
+   </template>
+</lightning-card>
+<template if:true={showPersonIncomeModal}>
+        <c-title-person-income child-id ={contactId} onhandlechild={handleChildCmp}></c-title-person-income>
+    </template>
+
+
+    <template if:true={showDeprivationModal}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <lightning-record-edit-form object-api-name="Deprivation__c" record-id={deprivationId} onsubmit={handleSubmit}  onsuccess={handleSuccess}>
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                        onclick={closeDeprivationModal}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon> 
+                        <h2>Deprivation</h2> 
+                </div>
+            <div class="slds-modal__content slds-p-around_medium">
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-combobox type="string" name="Parent__c" data-field="Parent__c" label="Parent" required  value={deprivationRecord.Parent__c} options={deprivationPicklist.parentPicklist} onchange={handleDeprivationChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Child_deprived_of_parental_support__c"> </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Deprivation_factor__c" data-field="Deprivation_factor__c" onchange={handleDeprivationChange}> </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Reason_for_absence__c" data-field="Reason_for_absence__c" onchange={handleDeprivationChange}> </lightning-input-field>
+                    </lightning-layout-item>
+                    <template if:true={showDeathofParentDate}>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <lightning-input-field field-name="Date_of_parent_death__c"> </lightning-input-field>
+                        </lightning-layout-item>
+                    </template>
+                    <template if:false={showDeathofParentDate}>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <h4>Date of Parent Death</h4><br>
+                            <h4>Not Applicable</h4>
+                        </lightning-layout-item>
+                    </template>
+                    <template if:true={showIncarcerationDate}>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Incarceration_date__c"> </lightning-input-field>
+                    </lightning-layout-item>
+                    </template>
+                    <template if:false={showIncarcerationDate}>
+                        <lightning-layout-item size="6" padding="around-small">
+                            <h4>Incarceration Date</h4><br>
+                            <h4>Not Applicable</h4>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </div>
+            <div class="slds-modal__footer"> 
+                <lightning-button variant="brand" type="submit" label="Save"></lightning-button>
+                <lightning-button label="Cancel"  onclick={closeDeprivationModal} class="slds-p-right_small slds-p-left_small"></lightning-button>
+            </div> 
+        </lightning-record-edit-form>
+        </div>
+        </div>
+    </template>
+
+    <template if:true={showPopover}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                        onclick={closeShowPopover}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon> 
+                        <h1><b>Choose Action</b></h1> 
+                </div>
+             <div class="slds-modal__content slds-p-around_medium">
+
+                        <div class="slds-p-top_small slds-text-align_center"><lightning-button label="Income"   name="Person_Incomes__r" variant="brand-outline" onclick={handleAdd}></lightning-button></div>
+                        <div class="slds-p-top_small slds-text-align_center"><lightning-button label="Asset" name="Assets__r" variant="brand-outline" onclick={handleAdd}></lightning-button></div>
+                        <div class="slds-p-top_small slds-text-align_center"><lightning-button label="Child Support" name="Child_Support__r" variant="brand-outline" onclick={handleAdd}></lightning-button></div>
+
+                </div>
+            </div>
+        </div>
+
+    </template>
+
+</template>

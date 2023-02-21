@@ -1,0 +1,26 @@
+<template>
+    <div class="backgroundcolor">
+    <lightning-layout>
+        <lightning-layout-item size="3" class="slds-p-around_small">
+            <p class="slds-p-bottom_xx-small">Child Name : <lightning-icon class="slds-p-right_xxx-small" size="small" icon-name="utility:user_role"></lightning-icon>{titleIvERec.childName} </p>
+            <p class="slds-p-bottom_xx-small">Child Jurisdiction : {titleIvERec.childJurisdiction}  </p>           
+            <p class="slds-p-bottom_xx-small">Assigned To : <lightning-icon class="slds-p-right_xxx-small" size="small" icon-name="utility:user_role"></lightning-icon>{titleIvERec.assignedTo} </p>
+        </lightning-layout-item>
+        <lightning-layout-item size="3" class="slds-p-around_small">
+            <p class="slds-p-bottom_xx-small"> Client Id : {titleIvERec.clientId}</p>
+            <p class="slds-p-bottom_xx-small"> Removal Date : <lightning-formatted-date-time value={titleIvERec.removalDate} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></p>
+            <p class="slds-p-bottom_xx-small"> Assignment Status : {titleIvERec.assignmentStatus} </p>
+        </lightning-layout-item>
+        <lightning-layout-item size="3" class="slds-p-around_small">
+            <p class="slds-p-bottom_xx-small"> Case Number : {titleIvERec.caseNumber}</p>
+            <p class="slds-p-bottom_xx-small"> Date Of Birth :  <lightning-formatted-date-time value={titleIvERec.DOB} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></p>                        
+            <p class="slds-p-bottom_xx-small">Eligible Status : {titleIvERec.eligibleStatus}</p>
+        </lightning-layout-item>
+        <lightning-layout-item size="3" class="slds-p-around_small">
+            <p class="slds-p-bottom_xx-small"> Child Agency  : {titleIvERec.childAgency}  </p>
+            <p class="slds-p-bottom_xx-small"> Removal Age   : {titleIvERec.removalAge} </p>
+            <p class="slds-p-bottom_xx-small"> Review Period : {titleIvERec.reviewPeriod} </p>                        
+        </lightning-layout-item>
+    </lightning-layout>
+    </div>
+    </template>

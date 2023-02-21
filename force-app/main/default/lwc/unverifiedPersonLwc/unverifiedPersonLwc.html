@@ -1,0 +1,172 @@
+<template>
+	<div class="slds-card_boundary">
+		<lightning-card title={cardtitle} variant="narrow">
+			<template if:true={showAddButton}>
+				<lightning-button slot="actions" label="Quick Add" title="Quick Add" onclick={handleAddNew}>
+				</lightning-button>
+			</template>
+
+			<div class="slds-p-horizontal_small">
+				<template if:true={showpersontable}>
+					<div class="slds-border_top"></div>
+					<lightning-layout multiple-rows="true">
+						<template for:each={unverifiedPersonsList} for:item="row" for:index="index">
+							<lightning-layout-item size="4" padding="around-small" flexibility="auto" key={row.Id}>
+								<div class="border">
+									<lightning-card>
+										<div class="slds-text-heading_medium slds-hyphenate  slds-p-around_small"
+											slot="title"><a class="slds-p-right_large" data-id={row.Id}
+												onclick={handleNavigate}>{row.Name}</a></div>
+										<div class="slds-scrollable slds-border_top scroll">
+											<div class="slds-p-left_large slds-grid slds-p-top_small">
+												<div class=" slds-col slds-size_2-of-3" >
+													<div class="slds-p-top_xx-small"><b> First Name</b> : {row.FirstName}
+													</div>
+
+													<div class="slds-p-top_xx-small"><b> Last Name</b> : {row.LastName}
+													</div>
+
+													<div class="slds-p-top_xx-small"><b> DOB </b> :
+														<lightning-formatted-date-time value={row.Date_of_Birth__c}></lightning-formatted-date-time></div>
+
+													<div class="slds-p-top_xx-small"><b> Role </b> :
+														{row.Intake_Person_Role__c}</div>
+												</div>
+											</div>
+										</div>
+										<div slot="footer" class="slds-text-align_right slds-p-right_small">
+											<div class="slds-grid">
+												<div class="slds-col slds-text-align_left">
+													<lightning-button-icon icon-name="utility:delete" data-id={row.Id}
+														onclick={handleDeleteRec}></lightning-button-icon>
+												</div>
+												<div class="slds-col slds-text-align_right">
+													<lightning-button label="Search" onclick={handleSearch}
+														data-index={index} data-id={row.Id}
+														data-firstname={row.First_Name__c}
+														data-lastname={row.Last_Name__c}></lightning-button>
+												</div>
+											</div>
+										</div>
+									</lightning-card>
+								</div>
+							</lightning-layout-item>
+						</template>
+					</lightning-layout>
+				</template>
+			</div>
+
+		</lightning-card>
+	</div>
+	<template if:true={showModal}>
+
+		<c-person-search record-id={recordId} onhandleadd={handleAdd} onclosesearch={handleCancel} contact-rec={unVerifiedPersonRecord}></c-person-search>
+
+		<!--<c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_large'>
+			<span slot="modalClose">
+							<lightning-button-icon icon-name="utility:close"
+												onclick={handleCancel}
+												alternative-text="close"
+												variant="bare-inverse"
+												class="slds-modal__close"></lightning-button-icon> 
+												<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Unverified Person</h2>
+					</span>
+			<span slot="modalBody" class="slds-modal__content">
+	
+							<template if:true={showSearchResults}>
+										<div class="slds-border_left slds-border_right slds-border_top ">
+									<lightning-datatable
+									key-field="Id"
+									data={visibleDataContact}
+									columns={columns} 
+									max-row-selection="1"								
+									onrowselection={handleRowSelection}>
+								</lightning-datatable>
+								<div>
+								<c-pagination-l-w-c total-list={personList} onupdate={paginationHandlerSearchContact}>
+								</c-pagination-l-w-c>
+						<lightning-accordion allow-multiple-sections-open>
+	
+							<template if:true={showIntake}>
+								<lightning-accordion-section label="Intake">
+									<lightning-card>
+										<lightning-datatable key-field="Id" data={intakeList} columns={intakeColumn}
+											hide-checkbox-column onrowaction={handleRowAction}></lightning-datatable>
+									</lightning-card>
+								</lightning-accordion-section>
+	
+							</template>
+	
+							<template if:true={showCPSIntake}>
+								<lightning-accordion-section label="Investigation">
+									<lightning-card>
+										<lightning-datatable key-field="Id" data={cpsIntakeList} columns={cpsIntakecolumn}
+											hide-checkbox-column onrowaction={handleRowAction}></lightning-datatable>
+									</lightning-card>
+								</lightning-accordion-section>
+							</template>
+	
+							<template if:true={showServiceCase}>
+								<lightning-accordion-section label="Service Case">
+									<lightning-card>
+										<lightning-datatable key-field="Id" data={servicecaseList}
+											columns={serviceCasecolumn} hide-checkbox-column onrowaction={handleRowAction}>
+										</lightning-datatable>
+									</lightning-card>
+								</lightning-accordion-section>
+							</template>
+						</lightning-accordion>
+							</div>
+							</div>
+								</template>
+								<template if:false={showSearchResults}>
+									<h1 class="slds-text-heading_medium slds-hyphenate slds-text-align_center"><b>No Matching Record Found.</b></h1>
+								</template>
+
+								<template if:false={showpersontable}>
+									<h1 class="slds-text-heading_medium slds-hyphenate slds-text-align_center"><b>No Matching Record Found.</b></h1>
+								</template>
+								
+							</span>
+			<span slot="modalFooter">
+								<div class="slds-grid">
+									<div class="slds-col slds-text-align_left">
+									<lightning-button  label="Add New" variant="brand" onclick={handleAddNew}></lightning-button>
+									</div>
+									<div class="slds-col slds-text-align_right">
+									<lightning-button label="Cancel"   class="slds-p-right_small" onclick={handleCancel}></lightning-button> 
+									<lightning-button  label="Select" variant="brand" onclick={handleSelect}></lightning-button> </div>
+								</div>
+						</span>
+		</c-modal-component>-->
+		
+	</template>
+
+	<div class="eventModal" if:true={showWarning}>
+		<c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+			<span slot="modalClose">
+				<lightning-button-icon icon-name="utility:close"
+										onclick={handleCancel}
+										alternative-text="close"
+										variant="bare-inverse"
+										class="slds-modal__close"></lightning-button-icon>
+						<h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Warning!</h2>
+					</span>
+
+			<span slot="modalBody">
+				<p><b>{warningMessage}</b></p>
+
+			</span>
+			<span slot="modalFooter">
+				<div class="slds-text-align_right">
+					<lightning-button label="No" title="No" onclick={handleCancel}
+						class="slds-var-p-around_x-small">
+					</lightning-button>
+					<lightning-button label="Yes" title="Yes" variant="brand" onclick={handleProcced}
+						class="slds-var-p-around_x-small"></lightning-button>
+				</div>
+			</span>
+
+		</c-modal-component>
+</div>
+</template>

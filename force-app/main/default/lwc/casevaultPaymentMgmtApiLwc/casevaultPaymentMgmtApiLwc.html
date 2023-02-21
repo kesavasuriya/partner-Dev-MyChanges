@@ -1,0 +1,219 @@
+<template>
+
+    <lightning-layout>
+        <lightning-layout-item class="slds-p-around_small" size="4"></lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4"></lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <div onkeyup={handleKeyUp}>
+                <lightning-input
+                    name="enter-search"
+                    label=""
+                    variant="label-hidden"
+                    type="search"
+                ></lightning-input>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-card variant="Narrow" title="Payment Summary">                        
+        <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                    <div  title="Payment Id">Payment Id</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Vendor Id">Vendor Id</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Period Start Date">Period Start Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Period End Date">Period End Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Payment Amount">Payment Amount</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Payment Date">Payment Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Payment Type">Payment Type</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Vendor Type">Vendor Type</div>
+                    </th>
+                </tr>
+            </thead>
+            <template if:true={isLoadingPaymentSummaryData}>
+                <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+            </template>
+            <template if:false={isLoadingPaymentSummaryData}>
+                <tbody>            
+                    <template for:each={visibleData} for:index="index" for:item="row">  
+                            <tr key={row.Id} data-name={row.paymentSummaryID} data-label={index} class={row.selectedRow} onclick={handleRowClick}>
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.paymentSummaryID}> {row.paymentSummaryID}</div>
+                                </td>
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.vendorID}> {row.vendorID}</div>
+                                </td>
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.periodStartDate}> {row.periodStartDate}</div>
+                                </td>
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.periodEndDate}> {row.periodEndDate}</div>
+                                </td>
+                                
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.paymentAmount}>{row.paymentAmount}</div>
+                                </td>
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.paymentDate}> {row.paymentDate}</div>
+                                </td>
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.paymentType}> {row.paymentType}</div>
+                                </td>
+                                <td class="wrapText cursorclass" data-label="">
+                                    <div id={index} accesskey={index} title={row.vendorType}>{row.vendorType}</div>
+                                </td>
+                            </tr>
+                    </template>
+                </tbody>
+           </template>
+        </table>
+       <div>
+        <template if:true={showChild}>
+            <c-pagination-l-w-c total-list={paymentSummaryData} onupdate={paginationHandler}></c-pagination-l-w-c>
+        </template>
+       </div>
+        
+    </lightning-card>   
+    <div class="slds-p-top_medium"></div>
+    <lightning-card variant="Narrow" title="Payment Details" > 
+        <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                    <div  title="Client Id">Client Id</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Period Start Date">Period Start Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                    <div title="Period End Date">Period End Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Payment Amount">Service Type</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Payment Date">Days of Service</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Payment Type">Perdium Rate</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Vendor Type">Payment Amount</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Vendor Type">Placement Id</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Vendor Type">Linked Payment Header</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Vendor Type">Reference Payment Detail</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Vendor Type">Final Amount</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Vendor Type">Payment Date</div>
+                    </th>
+                </tr>
+            </thead>
+            <template if:true={isLoadingPaymentDetailData}>
+                <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+            </template>
+            <template if:false={isLoadingPaymentDetailData}>
+                <tbody>          
+                    <template for:each={visibleData1} for:index="index" for:item="row">  
+                        <tr key={row.Id}>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.detailID}> {row.detailID}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.periodStart}> {row.periodStart}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.periodEnd}> {row.periodEnd}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.serviceType}> {row.serviceType}</div>
+                            </td>
+                            
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.daysOfService}>{row.daysOfService}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.perdiemRate}>{row.perdiemRate}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.paymentAmount}>{row.paymentAmount}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.placementID}>{row.placementID}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.paymentHeader}>{row.paymentHeader}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.linkedPaymentDetail}>{row.linkedPaymentDetail}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.finalAmount}>{row.finalAmount}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.paymentDate}>{row.paymentDate}</div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </template>
+        </table>-->
+        <lightning-datatable
+            key-field="id"
+            columns={paymentSummarycolumns}
+            data={visibleData}
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            max-row-selection="1"  selected-rows={setSelectedRows}
+            onrowselection={handleRowClick}>
+    </lightning-datatable>
+    <template if:true={showChild}>
+            <c-pagination-l-w-c total-list={paymentSummaryData} onupdate={paginationHandler}></c-pagination-l-w-c>
+    </template>
+    <div class="slds-p-around_large"></div>
+    <lightning-datatable
+            key-field="id"
+            columns={paymentDetailColumns}
+            data={visibleData1} min-column-width="230" max-column-width="280"
+            hide-checkbox-column>
+    </lightning-datatable>
+        <div>
+            <template if:true={showChild1}>
+                <c-pagination-l-w-c total-list={paymentDetailData} onupdate={paginationHandler1}></c-pagination-l-w-c>
+            </template> 
+        </div>
+         
+        
+    </lightning-card>
+        <!--<c-casevault-summary-details-mgmt-api-lwc summary-id={summaryId}></c-casevault-summary-details-mgmt-api-lwc>-->
+                                
+        <!-- -->
+
+   
+    
+</template>

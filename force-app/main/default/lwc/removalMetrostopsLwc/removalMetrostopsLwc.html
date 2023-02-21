@@ -1,0 +1,56 @@
+<template>
+
+    <lightning-card title="Removal Metrostops">
+
+        <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+            <lightning-progress-step label="Citizenship/ICWA" value="1" onclick={handleActionStage1}></lightning-progress-step>
+            <lightning-progress-step label="Legal Custody" value="2" onclick={handleActionStage2}></lightning-progress-step>
+            <lightning-progress-step label="Child Removal" value="3" onclick={handleActionStage3}></lightning-progress-step>
+            <lightning-progress-step label="Placement" value="4" onclick={handleActionStage4}></lightning-progress-step>
+        </lightning-progress-indicator>
+
+        <template if:true={showChild}>
+
+            <lightning-flow flow-api-name='Child_Removal_Metrostops' flow-input-variables={inputVariables}
+                onstatuschange={handleStatusChange}>
+            </lightning-flow>
+
+        </template>
+
+        <template if:true={showStep1}>
+
+            <p class="slds-p-top_small">Child : <b>{selectedChildRec.Name}</b> </p>
+            <lightning-flow flow-api-name="Citizenship_Removal_Metrostops" flow-input-variables={inputVariables1}
+                onstatuschange={handleStatusChange1}></lightning-flow>
+
+        </template>
+
+        <template if:true={showStep2}>
+
+            <lightning-flow flow-api-name="Legal_Custody_Removal_Metrostops" flow-input-variables={inputVariables2}
+                onstatuschange={handleStatusChange2}></lightning-flow>
+
+
+        </template>
+
+        <template if:true={showStep3}>
+
+            <p class="slds-p-top_small">Child : <b>{selectedChildRec.Name}</b> </p>
+            <lightning-flow flow-api-name="Child_Removal_Removal_Metrostops" flow-input-variables={inputVariables2}
+                onstatuschange={handleStatusChange3}></lightning-flow>
+
+        </template>
+
+        <template if:true={showStep4}>
+
+            <p class="slds-p-top_small">Child : <b>{selectedChildRec.Name}</b> </p>
+            <lightning-flow flow-api-name="Placement_Removal_Metrostops" flow-input-variables={inputVariables3}
+                onstatuschange={handleStatusChange4}></lightning-flow>
+
+        </template>
+
+        <lightning-button label="Exit Removal Metrostops" slot="actions" onclick={handleChildScreen}></lightning-button>
+
+    </lightning-card>
+
+</template>

@@ -1,0 +1,72 @@
+<template>
+
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    </div>
+
+    <template if:true={showList}>
+        <lightning-card title={heading}>
+            <!--<div class="slds-text-align_right slds-p-bottom_medium">-->
+                <lightning-button label="New" slot="actions" icon-name="utility:add" variant="brand" onclick={handleNew} ></lightning-button>
+            <!--</div>-->
+            <lightning-datatable key-field="id" data={assessmentList} columns={dataColumn} onrowaction={handleRow} hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+            <div if:true={showMsg} class="slds-text-align_center slds-p-top_medium"><b>No records found</b></div>
+        </lightning-card>
+    </template>
+
+    <template if:false={showList}>
+
+        <div class="slds-text-align_right slds-p-bottom_medium">
+            <lightning-button label="Back"  variant="brand" onclick={handleBack} ></lightning-button>
+        </div>
+        <div class="slds-p-bottom_small"><lightning-input type="checkbox" label="The Department is unable to locate the family/child" checked={showActionStage} onchange={handleChange} disabled={readOnly}></lightning-input></div>
+    
+        <template if:false={showActionStage}>
+            <lightning-progress-indicator current-step={currentStage} type="path" variant="base">
+                <template for:each={stageList} for:item="stage" for:index="index">
+                    <lightning-progress-step class="slds-path__item slds-is-incomplete" label={stage.label} value={stage.value} key={stage.value} onclick={stageAction}></lightning-progress-step>
+                </template>
+            </lightning-progress-indicator>
+        </template>
+
+        <template if:true={showActionStage}>
+            <lightning-progress-indicator current-step={currentActionStage} type="path" variant="base">
+                <template for:each={actionStageList} for:item="stage" for:index="index">
+                    <lightning-progress-step class="slds-path__item slds-is-incomplete" label={stage.label} value={stage.value} key={stage.value} onclick={stageAction}></lightning-progress-step>
+                </template>
+            </lightning-progress-indicator>
+        </template>
+
+        <div class="slds-p-top_medium">
+
+            <template if:true={showfamilyandHouseholdCompositionLwc}>
+                <c-familyand-household-composition-lwc service-case-id={recordId} object-api-name={objectApiName} onstage={handleStage} assessment-id={assessmentId} table-action={tableAction}></c-familyand-household-composition-lwc>
+            </template>
+
+            <template if:true={showNeglectAbuseIndex}>
+                <c-neglected-abuse-index-lwc service-case-id={recordId} onstage={handleStage} assessment-id={assessmentId} table-action={tableAction}></c-neglected-abuse-index-lwc>
+            </template>
+
+            <template if:true={showScoringOverrides}>
+                <c-scoring-overrides-l-w-c service-case-id={recordId} onstage={handleStage} assessment-id={assessmentId} table-action={tableAction}></c-scoring-overrides-l-w-c>
+            </template>
+
+            <template if:true={showSupplementalQuestion}>
+                <c-supplemental-question-lwc service-case-id={recordId} onstage={handleStage} assessment-id={assessmentId} table-action={tableAction}></c-supplemental-question-lwc>
+            </template>
+
+            <template if:true={showApproval}>
+                <c-family-initial-risk-assessment-approval-lwc ondoinit={handleDoInit} service-case-id={recordId} assessment-id={assessmentId} table-action={tableAction}></c-family-initial-risk-assessment-approval-lwc>
+            </template>
+
+            <template if:true={showActionCmp}>
+                <c-assessment-action-taken service-case-id={recordId} object-api-name={objectApiName} onstage={handleStage} assessment-id={assessmentId} table-action={tableAction}></c-assessment-action-taken>
+            </template>
+        </div>
+
+    </template>
+    
+    
+</template>

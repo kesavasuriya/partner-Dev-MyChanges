@@ -1,0 +1,45 @@
+<template>
+
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    </div>
+
+    <lightning-layout class="slds-p-bottom_large">
+        <lightning-layout-item class="slds-p-around_small" size="3">
+            <div>Client Name</div>
+            <div>{contactRec.Name}</div>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="3">
+            <div>Client Id</div>
+            <div>{contactRec.Casevault_PID__c}</div>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="3">
+            <div>D.O.B.</div>
+            <div>{contactRec.Date_of_Birth__c}</div>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="3">
+            <div>Gender</div>
+            <div>{contactRec.Gender__c}</div>
+        </lightning-layout-item>
+    </lightning-layout>
+    
+    <lightning-tabset active-tab-value={activeTab} >
+        <lightning-tab label="Subsidy Agreement" value="default"  onactive={handleTabClick} >
+           <c-adoption-case-subsidy-agreement adoption-case-id={recordId} ></c-adoption-case-subsidy-agreement>
+        </lightning-tab>
+        <lightning-tab label="Subsidy Rates" onactive={handleTabClick} value="rate" >
+            <c-adoption-case-subsidy-rates case-id={recordId} ></c-adoption-case-subsidy-rates>
+        </lightning-tab>
+        <lightning-tab label="Annual Reviews" onactive={handleTabClick} value="Annual" >
+            <c-adoption-case-annual-review case-id={recordId}></c-adoption-case-annual-review>
+        </lightning-tab>
+        <lightning-tab label="Suspension of Payments" onactive={handleTabClick} value="Payment" >
+            <c-adoption-suspension-of-payment adoption-case-id={recordId}></c-adoption-suspension-of-payment>
+        </lightning-tab>
+        <lightning-tab label="Subsidy Downloads" onactive={handleTabClick} value="Download" >
+            <c-permanency-plan-subsidy-downloads></c-permanency-plan-subsidy-downloads>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

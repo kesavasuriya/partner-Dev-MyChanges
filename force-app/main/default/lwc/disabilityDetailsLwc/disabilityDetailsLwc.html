@@ -1,0 +1,138 @@
+<template>
+
+    <lightning-card>
+        <lightning-button label="New" slot="actions" variant="brand-outline" onclick={handleNew} ></lightning-button>
+    </lightning-card>
+    <div class="slds-border_left slds-border_right slds-border_top">
+    <lightning-datatable
+    key-field="Id"
+    data={disabilityRecordList}
+    columns={columns}
+    hide-checkbox-column show-row-number-column="true"
+    onrowaction={handleRowAction}>
+  </lightning-datatable>
+  </div>
+    <div class="eventModal" if:true={showModal}>
+
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                <span slot="modalClose">
+                            <lightning-button-icon icon-name="utility:close"
+                                                    onclick={handleCancel}
+                                                    alternative-text="close"
+                                                    variant="bare-inverse"
+                                                    class="slds-modal__close"></lightning-button-icon>
+                            <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Disability Details</h2>
+                        </span>
+
+                <span slot="modalBody">
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item size="12" padding="around-small">
+                            <lightning-radio-group required name="Does_the_person_have_disabilities__c" label="Does the person have disabilities?" options={option} value={disabilityRecord.Does_the_person_have_disabilities__c} type="radio" onchange={handleChange}></lightning-radio-group>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" padding="around-small">
+                            <h6><b>Please Answer All The Questions Below:</b></h6>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Autism_Spectrum_Disorder__c" label="Autism Spectrum Disorder" options={options} value={disabilityRecord.Autism_Spectrum_Disorder__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Cognitive_Development_Delay__c" label="Cognitive/Developmental Delay" options={options} value={disabilityRecord.Cognitive_Development_Delay__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Emotionally_Disturbed__c" label="Emotionally Disturbed" options={options} value={disabilityRecord.Emotionally_Disturbed__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Hearing_Disability__c" label="Hearing Disability" options={options} value={disabilityRecord.Hearing_Disability__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Intellectual_Disability__c" label="Intellectual Disability" options={options} value={disabilityRecord.Intellectual_Disability__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Other_Disability__c" label="Other Disability" options={options} value={disabilityRecord.Other_Disability__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Physical_Disability__c" label="Physical Disability" options={options} value={disabilityRecord.Physical_Disability__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item> 
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-radio-group required name="Visual_Disability__c" label="Visual Disability" options={options} value={disabilityRecord.Visual_Disability__c} type="radio" onchange={handleChange}></lightning-radio-group>
+
+                        </lightning-layout-item>
+
+                    </lightning-layout>
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button onclick={handleCancel} label="Cancel" class="slds-p-around_small"></lightning-button>
+                        <lightning-button onclick={handleSave} label="Save" variant="brand" class="slds-p-around_small"></lightning-button>
+                    </div>
+                </span>
+
+            </c-modal-component>
+    </div>
+
+    <div class="eventModal" if:true={showAddModal}>
+
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                onclick={handleClose}
+                                                alternative-text="close"
+                                                variant="bare-inverse"
+                                                class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Details</h2>
+                    </span>
+
+            <span slot="modalBody">
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input  name={fieldApiNames.DiagnosedDisablity.label} label="Diagnosed Disablity"  value={fieldApiNames.DiagnosedDisablity.value} type="text" onchange={handleDisablityChange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="4" padding="around-small">
+                        <lightning-input  name={fieldApiNames.StartDiagnosis.label} label="Start/Diagnosis Date"  value={fieldApiNames.StartDiagnosis.value} type="date" onchange={handleDisablityChange}></lightning-input>
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="4" padding="around-small">
+                        <lightning-input  name={fieldApiNames.EndResolution.label} label="End/Resolution Date"  value={fieldApiNames.EndResolution.value} type="date" onchange={handleDisablityChange}></lightning-input>
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="4" padding="around-small">
+                        <lightning-input  name={fieldApiNames.EvaluationDate.label} label="Evaluation Date" value={fieldApiNames.EvaluationDate.value} type="date" onchange={handleDisablityChange}></lightning-input>
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="4" padding="around-small">
+                        <lightning-input  name={fieldApiNames.EvalutorClinicanName.label} label="Evalutor/Clinican Name"  value={fieldApiNames.EvalutorClinicanName.value} type="text" onchange={handleDisablityChange}></lightning-input>
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="4" padding="around-small">
+                        <lightning-combobox name={fieldApiNames.PersonalHygiene.label}  label="Personal Hygiene" options={personHygienePickvalue} value={fieldApiNames.PersonalHygiene.value}  onchange={handleDisablityChange}></lightning-combobox>
+
+                    </lightning-layout-item>
+                   <lightning-layout-item size="4" padding="around-small">
+                        <lightning-combobox  name={fieldApiNames.SpecialNeeds.label} label="Special Needs" options={specialNeedsPickvalue} value={fieldApiNames.SpecialNeeds.value}  onchange={handleDisablityChange}></lightning-combobox>
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="4" padding="around-small">
+                        <lightning-input  name={fieldApiNames.Comments.label} label="Comments"  value={fieldApiNames.Comments.value} type="text" onchange={handleDisablityChange}></lightning-input>
+
+                    </lightning-layout-item>
+
+                </lightning-layout>
+            </span>
+            <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                    <lightning-button onclick={handleAdd} label="Add" variant="brand" class="slds-p-right_small"></lightning-button>
+                    <lightning-button onclick={handleClose} label="Cancel" ></lightning-button>
+                </div>
+            </span>
+
+        </c-modal-component>
+</div>
+
+</template>

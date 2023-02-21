@@ -1,0 +1,94 @@
+<template>
+    
+    <template if:true={isSpinner}>
+        <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+    </template>
+<lightning-card variant="Narrow">
+    <div slot="title"><a onclick={handleNavigate}>Removal</a></div>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input class="slds-p-left_x-small" date-style="short" type="date" label="Child physical removal date" name="" value={titleIvERec.Child_Removal__r.Removal_Date_of_DT_F__c} onchange={handlechange} disabled="readOnly"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" label="Type of Removal" name="" value={titleIvERec.Child_Removal__r.Removal_Type__c} onchange={handlechange} disabled="readOnly"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" label="Is the child a safe haven baby?" name="" value={safeHaveBaby} onchange={handlechange} disabled="readOnly"></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" label="Child physical address after removal" name="" value={locationAddress} onchange={handlechange} disabled="readOnly"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" label="From whom the child was physically removed" name="" value={titleIvERec.Child_Removal__r.Primary_Caregiver__r.Name} onchange={handlechange} disabled="readOnly"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input class="slds-p-left_x-small" type="text" label="Relationship of person from whom child was physically removed" name="" value={titleIvERec.Child_Removal__r.Relationship_of_Person_Involved__c} onchange={handlechange} disabled="readOnly"></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="4">
+               <lightning-input class="slds-p-left_x-small" type="text" label="Removal End Date" name="" value={titleIvERec.Child_Removal__r.Removal_End_Date_Time__c} onchange={handlechange} disabled="readOnly"></lightning-input>
+           </lightning-layout-item>
+        </lightning-layout>
+</lightning-card>
+<lightning-card variant="Narrow">
+    <template if:true={showCourtRec}>
+        <div slot="title"><a onclick={handleCourtNavigate}>Judicial Determination</a></div>
+    </template>
+    <template if:false={showCourtRec}>
+        <div slot="title">Judicial Determination</div>
+    </template>
+    <lightning-record-edit-form object-api-name="Title_Iv_E__c" record-id={titleIvERec.Id} onsuccess={handleSuccess} onerror={handleError}>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input label="Name of subject of CTW finding" name="" value={titleIvERec.Child_Removal__r.Child__r.Name} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="text" label="Judge name" name="" value={petitionHearingRecord.Judge_s_Name__c} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="text" label="Is the court order signed by Judge?" name="Is_Court_Order_Signed_By_Judge__c" value={Court_Order_Signed_By_Judge} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="text" label="CTW Decision" name="CTW_Decision__c" value={CTW_Decision} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="DateTime" date-style="short" label="Date of next hearing" name="Date_Of_Next_Hearing__c" value={petitionHearingRecord.Hearing_Date_and_Time__c} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="DateTime" date-style="short" label="Date of court hearing" name="Date_Of_Court_Hearing__c" value={courtObj.Court_Order_Date__c} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input label="Date of finding of CTW decision" date-style="short" type="DateTime" name="" value={titleIvERec.Child_Removal__r.Removal_Date_of_DT_F__c} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input label="Date of reasonable efforts courts hearing" date-style="short" type="DateTime" value={petitionHearingRecord.Hearing_Date_and_Time__c} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="text" label="Does the court order approve a delay of placement into foster care?" name="Court_order_delay_removal__c" value={Court_order_delay_removal} onchange={handlechange} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="text" label="Were reasonable efforts made to prevent removal of child?" name="" value={preventRemoval} disabled="readOnly"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <lightning-input class="slds-p-left_x-small" type="text" label="Were reasonable efforts not necessary due to emergent circumstances?" name="D_Were_reasonable_efforts_not_made__c" value={reasonableEffortsNotNecessary} onchange={handlechange} disabled="readOnly"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="3">
+                <div>
+                    <h2>Is IV-E agency responsible for placement and care? </h2>
+                </div>
+                <lightning-input-field field-name="Is_IV_E_agency_responsible_for_placement__c" variant="label-hidden"> </lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-text-align_right">
+            <lightning-button label="Save and Confirm" type="submit" variant="brand" class="slds-var-p-around_x-small"></lightning-button>
+        </div>
+    </lightning-record-edit-form>
+</lightning-card>
+</template>

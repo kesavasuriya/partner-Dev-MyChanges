@@ -1,0 +1,125 @@
+<template>
+
+<template if:true={loading}>
+	<lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+</template>
+<template if:false={loading}>
+	<template if:true={showTielView}>
+		<div class="slds-border_top"></div>
+		<lightning-layout multiple-rows="true">
+			<template for:each={visibleDataList} for:item="row" for:index="index">
+				<lightning-layout-item  padding="around-small"  size="4"  flexibility="auto" key={row.Id}>
+					<div class={row.border}>
+					<!--<lightning-card>-->
+						<div class="slds-text-heading_medium slds-hyphenate"><a data-id={row.Person__c} onclick={handlePersonNavigate}  class="slds-p-right_large">{row.Person__r.Name}</a></div>
+						<!--<a data-id={row.Id} onclick={handlePersonNavigate}  class="slds-p-right_large"><b>{row.Name}</b></a>-->
+						<div><b>Active Program Area </b> :
+							<a onclick={handleProgramAreaNavigate} class="slds-p-left_xx-small" data-id={row.Person__c}>{row.Person__r.Active_Program_Area__c}</a> </div>
+						<div class="slds-scrollable slds-border_top scroll" >
+							<div class="slds-grid slds-p-top_small">
+								<div class="slds-col slds-size_1-of-3">
+									<template if:true={row.showImg}>
+										<img src={row.Person__r.Person_Image_URL__c} class="avatar" alt="Profile photo" />
+									</template>
+									<template if:false={row.showImg}>
+				 						<img src={unknownImg} class="avatar" alt="Profile photo" />
+									</template>
+                                </div>
+									<div class="slds-col slds-size_2-of-3">
+										<div class="slds-p-top_xx-small"><b>PID</b> : {row.Person__r.Casevault_PID__c}</div>
+										<div class="slds-p-top_xx-small"><b>Date of Birth </b> :
+											<lightning-formatted-date-time class="slds-p-left_xx-small" value={row.Person__r.Date_of_Birth__c} year="numeric"
+												month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time>
+										</div>
+										<div class="slds-p-top_xx-small"><b>Age </b> : {row.Person__r.Age__c}</div>
+										<div class="slds-p-top_xx-small"><b><a onclick={handleRoleEdit} data-id={row.Id}>Role </a></b> : {row.Person_Role__c}</div>
+										<div class="slds-p-top_xx-small"><b>Date of Death </b> :
+											<lightning-formatted-date-time class="slds-p-left_xx-small" value={row.Person__r.Date_of_Death__c} year="numeric"
+												month="numeric" day="numeric"></lightning-formatted-date-time>
+										</div>
+									</div>
+								</div>
+								<div class="slds-p-top_xx-small">
+									<p><b>Client Address : </b></p>
+									<!--<p class="slds-p-left_xx-small">{row.Person__r.Address_Line_1__c}</p>
+									<p class="slds-p-left_xx-small">{row.Person__r.Address_Line_2__c}</p>
+									<p class="slds-p-left_xx-small">{row.Person__r.Address_City__c}<template if:true={row.showComma}>,</template>{row.Person__r.Address_State__c} {row.Person__r.Address_ZipCode__c}</p>
+									<p class="slds-p-left_xx-small">{row.Person__r.County_Address__c}</p>-->
+									<lightning-formatted-address street={row.street} locale="en-US"
+										city={row.Person__r.Address_City__c} country={row.Person__r.County_Address__c}
+										province={row.Person__r.Address_State__c} postal-code={row.Person__r.Address_ZipCode__c}>
+									</lightning-formatted-address>
+								</div>
+								<template if:false={isIntake}>
+								<!--<div class="slds-border_top border slds-p-top_xx-small"><b>Active Program Area </b> :
+									<a onclick={handleProgramAreaNavigate} class="slds-p-left_xx-small" data-id={row.Id}>{row.Active_Program_Area__c}</a> </div>-->
+								<div class="slds-border_top border slds-p-top_xx-small"><b>Removal Status</b> : <div class={row.removalbadge}>
+										{row.removalStatus}</div>
+								</div>
+								<lightning-accordion allow-multiple-sections-open class="accordionClass">
+								<lightning-accordion-section name="A" label="Child Removal">
+									<div class="slds-p-top_xx-small"><b>Current Removal Start Date</b> : 
+										<lightning-formatted-date-time class="slds-p-left_xx-small" value={row.RemovalDate} year="numeric"
+												month="numeric" day="numeric"></lightning-formatted-date-time>
+									</div>
+									<div class="slds-p-top_xx-small"><b>Current Removal End Date</b> : 
+										<lightning-formatted-date-time class="slds-p-left_xx-small" value={row.RemovalEndDate} year="numeric"
+												month="numeric" day="numeric"></lightning-formatted-date-time>
+									</div>
+									<div class="slds-p-top_xx-small"><a data-id={row.Id} onclick={handleChildRemovalNavigate}>Removal History</a></div>
+								</lightning-accordion-section>
+										<lightning-accordion-section name="A" label="Placement">
+											<div class="slds-p-top_xx-small">
+												<b>Current Placement :  <a onclick={handlePlacementNavigate} class="slds-p-left_xx-small" data-id={row.placementId}>{row.placementName}</a></b>
+											</div>
+											<div class="slds-p-top_xx-small"><b>Current Placement Start Date</b> :
+												<lightning-formatted-date-time class="slds-p-left_xx-small" value={row.placementStartDate} year="numeric"
+													month="numeric" day="numeric" hour="2-digit" minute="2-digit">
+												</lightning-formatted-date-time>
+											</div>
+											<div class="slds-p-top_xx-small"><b>Current Placement Address</b> :<lightning-formatted-address
+																											street={row.BillingStreet}
+																											city={row.BillingCity}
+																											country={row.BillingCountry}
+																											province={row.BillingState}
+																											postal-code={row.BillingPostalCode}
+																										></lightning-formatted-address> </div>
+											<div class="slds-p-top_xx-small"><b>Level of Care</b> : {row.Placement_Structure__c}</div>
+											<div class="slds-p-top_xx-small"><b>Caregivers Associated with the Child</b> : {row.caregiver}</div>
+										</lightning-accordion-section>
+									</lightning-accordion>
+								<div class="slds-p-top_xx-small"><a onclick={handleLegalCustodyNavigate} data-id={row.Id}><b>Legal Custody</b></a> </div>
+								<div class="slds-p-top_xx-small"><b>Most Recent Legal Custody</b> : 
+									<lightning-formatted-date-time class="slds-p-left_xx-small" value={row.legalCustodytDate} year="numeric"
+												month="numeric" day="numeric"></lightning-formatted-date-time>
+								</lightning-formatted-date-time></div>
+								<div class="slds-p-top_xx-small"><b>Most Recent Court Date</b> : 
+									<lightning-formatted-date-time class="slds-p-left_xx-small" value={row.courtDate} year="numeric"
+									month="numeric" day="numeric" hour="2-digit" minute="2-digit">
+								</lightning-formatted-date-time></div>
+								<div class="slds-p-top_xx-small"><b>IVE Status</b> : {row.titleIveStatus}</div>
+								</template>
+							</div>
+							<div slot="footer" class="slds-text-align_right slds-p-right_small">
+								<div class="slds-grid">
+									<div class="slds-col slds-text-align_left">
+										<template if:true={showDelete}>
+											<lightning-button-icon icon-name="utility:delete" data-id={row.Id}
+											onclick={handleDelete}></lightning-button-icon>
+										</template>
+									</div>
+									<div class="slds-col slds-text-align_right">
+										
+									</div>
+								</div>
+							</div>
+						<!--</lightning-card>-->
+					</div>
+				</lightning-layout-item>
+			</template>
+		</lightning-layout>
+	</template>
+
+	
+</template>
+</template>

@@ -1,0 +1,575 @@
+<template>
+    <div class="spinner">
+         <template if:true={loading}>
+              <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+         </template>
+     </div>
+     <lightning-card title={safectitle}>
+         <template if:true={hideNewBtn}>
+             <!--<div class="slds-text-align_right slds-p-bottom_medium">-->
+                 <lightning-button label="New" slot="actions" title="new" icon-name="utility:add" onclick={showNew} variant="brand" ></lightning-button> 
+             <!--</div>-->     
+         </template>
+     
+         <!--<template if:true={ShowAssessmentTable}>-->
+           <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+             <thead>
+                 <tr class="slds-line-height_reset">
+                   <th class="" scope="col">
+                     <div class="slds-truncate" title="Assessment Name">Assessment Name</div>
+                   </th>
+                   <th class="" scope="col">
+                     <div class="slds-truncate" title="Safety Assessment Completion Date Time
+                     ">Safety Assessment Completion Date Time
+                 </div>
+                   </th>
+                   <th class="" scope="col">
+                     <div class="slds-truncate" title="Approval Status">Approval Status</div>
+                   </th>
+                 </tr>
+               </thead>
+              <tbody>
+                 <template for:each={visibleData} for:index="index" for:item="row">  
+                     <tr key={row.Id}>
+                     <td data-label=Name>
+                         
+                         <a  id={index} name={row.Id} accesskey={index} class="slds-truncate" title={row.Name} onclick={getAssessmetRecord}> {row.Name}</a>
+                       </td>
+                       <td data-label="Safety_Assessment_Completion_Date_Time__c">
+                         <div id={index} accesskey={index} class="slds-truncate" title={row.Safety_Assessment_Completion_Date_Time__c}> {row.Safety_Assessment_Completion_Date_Time__c}</div>
+                       </td>
+                       <td data-label="Approval_Status__c">
+                         <div id={index} class="slds-truncate" title={row.Approval_Status__c}>{row.Approval_Status__c}</div>
+                       </td>
+                     </tr>
+                 </template>
+             </tbody>
+             </table>-->
+             <lightning-datatable key-field="id" 
+                             data={visibleData} 
+                             columns={columnlist} 
+                             hide-checkbox-column show-row-number-column="true"
+                             onrowaction={handleRowAction} >
+             </lightning-datatable>
+             <template if:false={ShowAssessmentTable}>
+                 <div class="slds-text-align_center slds-p-top_large textFont">There is no existing SAFEC record(s) found</div>
+             </template>
+             <br/>
+             <div>
+                 <template if:true={showChild}>
+                     <c-pagination-l-w-c total-list={assessmentList} onupdate={paginationHandler}></c-pagination-l-w-c>
+                 </template>
+             </div> 
+      <!--</template>-->
+         
+     </lightning-card>
+ 
+ 
+     <template if:true={showSubmitModal}> 
+         <div class="eventModal" if:true={showSubmitModal} >
+             <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                 <span slot="modalClose">
+                     <lightning-button-icon icon-name="utility:close"
+                                               onclick={cancelSubmitModal}
+                                               alternative-text="close"
+                                               variant="bare-inverse"
+                                               class="slds-modal__close"></lightning-button-icon>
+                     <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Submit for Approval</h2>
+                 </span> 
+                 <span slot="modalBody">
+                     <template if:true={showingErrorModal}> 
+                         <p><b>{showErrorMsg}</b></p>
+                     </template>
+ 
+                     <template if:false={showingErrorModal}> 
+                         <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}  disabled={readOnly} >
+                         </c-custom-lookup-component>
+                     </template>
+                 </span>
+ 
+                 <span slot="modalFooter">
+                     <div class="slds-text-align_right">
+                             <lightning-button label="Cancel" variant="destructive" title="Cancel" icon-name="utility:close" onclick={cancelSubmitModal} class= "slds-var-p-around_x-small"></lightning-button>
+                             <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                     </div>
+                 </span>
+             </c-modal-component>
+         </div>
+     </template>
+ 
+ <template if:true={showCmp}> 
+         <div class="eventModal" if:true={showCmp} >
+             <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                 <span slot="modalClose">
+                     <lightning-button-icon icon-name="utility:close"
+                                               onclick={closeEventModal}
+                                               alternative-text="close"
+                                               variant="bare-inverse"
+                                               class="slds-modal__close"></lightning-button-icon>
+                     
+                     <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">SAFE-C Details</h2>
+                 </span> 
+           <span slot="modalBody">
+             <lightning-accordion class="example-accordion" active-section-name="A">
+             <lightning-accordion-section name="A" label="SAFE - C">                
+                             <lightning-card  variant="Narrow"  title="Section I : Other Children in Household">
+                                 
+                             </lightning-card>
+                             
+                         <template if:true={chlidList}>
+                     
+                             <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                                 <thead>
+                                     <tr class="slds-line-height_reset">
+                                         <th class="" scope="col">
+                                         <div class="slds-truncate" title="Child Name">Child Name</div>
+                                         </th>
+                                         <th class="" scope="col">
+                                         <div class="slds-truncate" title="Age">Age</div>
+                                         </th>
+                                         <!--<th class="" scope="col">
+                                             <div class="slds-truncate" title="ID">ID</div>
+                                         </th>-->
+                                         <th class="" scope="col">
+                                         <div class="slds-truncate" title="Client ID">Client ID</div>
+                                         </th>
+                                         <th class="" scope="col">
+                                         <div class="slds-truncate" title="close">Cancel</div>
+                                         </th>
+                                         </tr>
+                                     </thead>
+                                 <tbody>
+                                     <template for:each={chlidList} for:index="index" for:item="row">  
+                                         <tr key={row.Id}>
+                                         <td data-label=chidName>
+                                             <div id={index} accesskey={index} class="slds-truncate" title={row.chidName}> {row.chidName}</div>
+                                             </td>
+                                             <td data-label="age">
+                                             <div id={index} accesskey={index} class="slds-truncate" title={row.age}> {row.age}</div>
+                                             </td>
+                                             <!--<td data-label="contactId">
+                                             <div id={index} class="slds-truncate" title={row.childId}>{row.childId}</div>
+                                             </td>-->
+                                             <td data-label="childId">
+                                                 <div id={index} accesskey={index} class="slds-truncate" title={row.clientId}> {row.clientId}</div>
+                                             </td>
+                                             <td>
+                                             <div id={index} class="slds-truncate">
+                                                 <lightning-button-icon icon-name="utility:close"  name={index} alternative-text="close" title="close" onclick={handleSelection} disabled={readOnly}></lightning-button-icon>
+                                             </div>
+                                             </td>
+                                         </tr>
+                                     </template>
+                                 </tbody>
+                             </table>
+                             <!--<lightning-datatable key-field="Id" 
+                                 data={chlidList} 
+                                 columns={childcolumn} 
+                                 hide-checkbox-column
+                                 onrowaction={handleRowActionChild} >
+                             </lightning-datatable>-->
+                             <!--<div>
+                                 <template if:true={showChild1}>
+                                     <c-pagination-l-w-c total-list={chlidList} onupdate={paginationHandler1}></c-pagination-l-w-c>
+                                 </template>
+                             </div>-->
+ </template><br/>
+ <lightning-card variant="Narrow" title="">
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" date-style="short" type="datetime" name="SAFEC_Date_Time_Assessment_Initiated__c" value={safecRec.SAFEC_Date_Time_Assessment_Initiated__c} label="Date Time Assessment Initiated" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" date-style="short" type="datetime" name="SAFEC_Date_Time_of_Last_Safety_Plan__c" value={safecRec.SAFEC_Date_Time_of_Last_Safety_Plan__c} label="Date Time of Last Safety Plan" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="SAFEC_Legal_Guardian_Name__c" value={safecRec.SAFEC_Legal_Guardian_Name__c} label="Legal Guardian Name" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="SAFEC_CPS_Case_ID__c" disabled value={safecRec.SAFEC_CPS_Case_ID__c} label="CPS/Case ID" onchange={handleChange} ></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="SAFEC_Head_of_Household__c" disabled value={safecRec.SAFEC_Head_of_Household__c} label="Head of Household" onchange={handleChange} ></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="SAFEC_Relationship__c" value={safecRec.SAFEC_Relationship__c} label="Relationship" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+     
+     <lightning-combobox name="SAFEC_Caregiver__c" label="Caregivers" value={safecRec.SAFEC_Caregiver__c} placeholder="-Select-" options={cargiverNamesPicklist} onchange={handleChange} disabled={readOnly}> </lightning-combobox>
+ </lightning-card>
+ <lightning-card variant="Narrow" title="Section II : Time-frame for Completion">
+     <p>
+         <lightning-input type="checkbox" label="At the initial face to face contact with the alleged victim and contact or attempted contact with the caregiver" name="SAFEC_At_the_Initial_face_to_facecontact__c" checked={safecRec.SAFEC_At_the_Initial_face_to_facecontact__c}
+             onchange={handleChange} disabled={readOnly}></lightning-input>
+         <lightning-input type="checkbox" label="At the completion/closure of the investigation if the case has been opened longer than 3 months" name="SAFEC_At_the_completion_closure__c" onchange={handleChange} checked={safecRec.SAFEC_At_the_completion_closure__c}
+             disabled={readOnly}></lightning-input>
+         <lightning-input type="checkbox" label="When the safety plan is re-evaluated.Date of last Safety Plan" name="SAFEC_When_the_safety_plan__c" disabled={readOnly}></lightning-input>
+         <lightning-input type="checkbox" label="When The case Assessor discovers there is a significant change in the composition of the individuals in the home" name="SAFEC_When_The_case_Assessor_discovers__c" checked={safecRec.SAFEC_When_The_case_Assessor_discovers__c}
+             onchange={handleChange} disabled={readOnly}></lightning-input>
+         <lightning-input type="checkbox" label="When Circumstances Suggest That the Child's/Youth's Safety May be Jeopardized." name="SAFEC_When_circumstances_suggest__c" onchange={handleChange} checked={safecRec.SAFEC_When_circumstances_suggest__c} disabled={readOnly}></lightning-input>
+         <lightning-input type="checkbox" label="Within 7 Working days of case acceptance in service" name="SAFEC_Within_7_Working_days_of_case__c" onchange={handleChange} checked={safecRec.SAFEC_Within_7_Working_days_of_case__c} disabled={readOnly}></lightning-input>
+         <lightning-input type="checkbox" label="Before Completing a case reconsideration" name="SAFEC_Before_Completing_a_case__c" checked={safecRec.SAFEC_Before_Completing_a_case__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+     </p>
+     <lightning-card variant="Narrow" title="Out of Home Placement Services">
+         <p>
+             <lightning-input type="checkbox" label="At time of trial home visit with caregiver" name="SAFEC_At_time_of_trial_home_visit__c" onchange={handleChange} checked={safecRec.SAFEC_At_time_of_trial_home_visit__c} disabled={readOnly}></lightning-input>
+             <lightning-input type="checkbox" label="Within ten(10) working days of the assignment or transfer of the case to the assessor" name="SAFEC_Within_ten_10_working_days__c" checked={safecRec.SAFEC_Within_ten_10_working_days__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+             <lightning-input type="checkbox" label="Before completing a case reconsideration" name="SAFEC_Out_HOME_Before_completing_a_case__c" checked={safecRec.SAFEC_Out_HOME_Before_completing_a_case__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+             <lightning-input type="checkbox" label="Within 7 working days prior to beginning unsupervised visitation" name="SAFEC_within_7_working_days_prior__c" checked={safecRec.SAFEC_within_7_working_days_prior__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+             <lightning-input type="checkbox" label="Within 7 working days prior to returning a child home" name="SAFEC_Within_7_working_days_prior_to__c" checked={safecRec.SAFEC_Within_7_working_days_prior_to__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+             <lightning-input type="checkbox" label="When the case assessor discovers there is a significant change in the composition of the individuals in the home" checked={safecRec.SAFEC_OUT_HOME_When_the_case_assessor__c} name="SAFEC_OUT_HOME_When_the_case_assessor__c"
+                 disabled={readOnly}></lightning-input>
+             <lightning-input type="checkbox" label="When circumstances suggest that the child's safety may be jeopardized" name="SAFEC_When_circumstances_suggest_that__c" checked={safecRec.SAFEC_When_circumstances_suggest_that__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+         </p>
+     </lightning-card>
+ </lightning-card><br/>
+ 
+ <lightning-card variant="Narrow" title="Section III. Factors Influencing Child">
+ 
+     <lightning-input type="checkbox" label="Age 0-5 years old" name="SAFEC_Age_0_5_Years_old__c" value={safecRec.SAFEC_Age_0_5_Years_old__c} checked={safecRec.SAFEC_Age_0_5_Years_old__c} onchange={handleChange} disabled={readOnly}> </lightning-input>
+     <lightning-input type="checkbox" label="Diminished physical capacity (e.g., non-ambulatory, limited use of limbs)" name="SAFEC_Diminished_Physical_capacity__c" checked={safecRec.SAFEC_Diminished_Physical_capacity__c} value={safecRec.SAFEC_Diminished_Physical_capacity__c}
+         onchange={handleChange} disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="Diminished mental capacity (e.g., developmental delay, non-verbal)" name="SAFEC_Diminished_mental_capacity__c" checked={safecRec.SAFEC_Diminished_Physical_capacity__c} value={safecRec.SAFEC_Diminished_mental_capacity__c}
+         onchange={handleChange} disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="School age, but not attending school" name="SAFEC_School_age_but_not_attending__c" value={SAFEC_School_age_but_not_attending__c} checked={safecRec.SAFEC_School_age_but_not_attending__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="Significant diagnosed medical or mental disorder" name="SAFEC_Significant_diagnosed_medical_or__c" checked={safecRec.SAFEC_Significant_diagnosed_medical_or__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="child's extreme anxiety or fear about the current placement or home environment" name="SAFEC_Child_s_extreme_anxiety_or_fear__c" checked={safecRec.SAFEC_Child_s_extreme_anxiety_or_fear__c} value={safecRec.SAFEC_Significant_diagnosed_medical_or__c}
+         onchange={handleChange} disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="When circumstances suggest that the child's safety may be jeopardized" name="SAFEC_When_circumstances_suggest_that__c" checked={safecRec.SAFEC_When_circumstances_suggest_that__c} value={safecRec.SAFEC_When_circumstances_suggest_that__c}
+         onchange={handleChange} disabled={readOnly}></lightning-input>
+ </lightning-card><br/>
+ 
+ <lightning-card variant="Narrow" title="Section IV. Danger Influences">
+     <!--<template for:each ={qesList} for:item='qes' for:index="index">
+                                     <div  key={qes.fieldApiName}>
+                                     <lightning-combobox key={index}  name={index} label="1. Caregiver fails to protect the child from serious harm or threatened harm by others.(This may include failure to protect the child from physical abuse,sexual abuse, or neglect)" value={SAFEC_Caregiver_fails_to_protect__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange}  required > </lightning-combobox>
+                                 <template if:true={qes.commentRequired}>
+                                     <lightning-textarea  key={index}  label="comments" name={index} value={SAFEC_Caregiver_fails_Comments} onchange={commentsOnChange} required></lightning-textarea>
+                                 </template>
+                             </div>
+                                 </template>-->
+ 
+     <lightning-combobox name="SAFEC_Caregiver_fails_to_protect__c" data-index=1 label="1. Caregiver fails to protect the child from serious harm or threatened harm by others.(This may include failure to protect the child from physical abuse,sexual abuse, or neglect)"
+         value={safecRec.SAFEC_Caregiver_fails_to_protect__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregiver_fails_to_protect__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregiver_fails_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregiver_fails_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Caregiver_made_a_plausible_threat__c" data-index=2 label="2. Caregiver made a plausible threat to cause serious physical harm to the child or HAS caused serious physical harm to the child as indicated by : verbal thread of serious injury to the child OR threat of retaliation against the child OR caregiver fears he/she will harm the child."
+         value={safecRec.SAFEC_Caregiver_made_a_plausible_threat__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregiver_made_a_plausible_threat__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregiver_made_a_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregiver_made_a_Comments__c} required  disabled={readOnly}></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_There_has_been_current_act__c" data-index=3 label="3. There has been current act of maltreatment since the last SAFE-C, Where excessive discipline or Physical force against the child, in which a weapon or object (e.g., gun, knife, cord, hanger, etc.,,) was used to inflict or threaten harm to the child."
+         value={safecRec.SAFEC_There_has_been_current_act__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_There_has_been_current_act__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_There_has_been_current_actComments__c" onchange={handleCommentChange} value={safecRec.SAFEC_There_has_been_current_actComments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Child_sexual_abuse_is_suspected__c" data-index=4 label="4. Child sexual abuse is suspected and circumstances suggest that the child's safety may be of immediate concern." value={safecRec.SAFEC_Child_sexual_abuse_is_suspected__c}
+         placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Child_sexual_abuse_is_suspected__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Child_sexual_abuse_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Child_sexual_abuse_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Caregiver_describes_the_child__c" data-index=5 label="5. Cargiver describes the child in predominately negative terms or acts towards the child in negative way that result in the child being a danger to self or others, acting out aggressively, or being severely withdrawn and/or suicidal."
+         value={safecRec.SAFEC_Caregiver_describes_the_child__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregiver_describes_the_child__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregiver_describes_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregiver_describes_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Cargiver_s_suspected_or_observed__c" data-index=6 label="6. Cargiver's suspected or observed substance abuse/use seriously impairs his/her ability to supervise, protect or care for the child is a drug exposed newborn/infant and the caregiver is unable or unwilling to corporate with treatment for substance abuse/use"
+         value={safecRec.SAFEC_Cargiver_s_suspected_or_observed__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Cargiver_s_suspected_or_observed__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Cargiver_s_suspected_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Cargiver_s_suspected_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Caregiver_s_emotional_instability__c" data-index=7 label="7. Caregiver's emotional instability, developmental status, lack of knowledge, Skills or motivation to parent, cognitive deficiency or behaviors resulting from mental or physical illness or disability, seriously impairs  his/her current ability to supervise,protect or care for the child"
+         value={safecRec.SAFEC_Caregiver_s_emotional_instability__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregiver_s_emotional_instability__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregiver_s_emotional_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregiver_s_emotional_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Caregiver_s_explanation__c" data-index=8 label="8. Caregiver's explanation for an injury to the child is questionable or inconsistent with the type of injury and nature of the injury suggests that the child's safety may be of immediate concern."
+         value={safecRec.SAFEC_Caregiver_s_explanation__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregiver_s_explanation__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregiver_s_explanation_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregiver_s_explanation_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Caregivers_justification_or_denial__c" data-index=9 label="9. Caregiver's justification or denial of his/her own harmful behavior or the harmful behavior of others, places the child in immediate danger." value={safecRec.SAFEC_Caregivers_justification_or_denial__c}
+         placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregivers_justification_or_denial__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregivers_justification_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregivers_justification_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Caregiver_does_not_or_refuse__c" data-index=10 label="10. Caregiver does not or refuse to provide supervision to protect the child, based on the child's age and there is no substitute caregiver to adequately plan for the child's supervision. and this places the child in immediate danger."
+         value={safecRec.SAFEC_Caregiver_does_not_or_refuse__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregiver_does_not_or_refuse__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregiver_does_not_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregiver_does_not_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Domestic_violence_exists__c" data-index=11 label="11. Domestic violence exists in the home and poses an imminent danger of serious physical and or emotional harm to the child." value={safecRec.SAFEC_Domestic_violence_exists__c}
+         placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Domestic_violence_exists__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Domestic_violence_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Domestic_violence_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Caregiver_does_not_meet_the_childs__c" data-index=12 label="12. Caregiver does not meet the child's current/imminent environment need for food or clothing or adequate shelter and there are no substitue  caregiver who are capable of obtaining resource to meet the needs."
+         value={safecRec.SAFEC_Caregiver_does_not_meet_the_childs__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Caregiver_does_not_meet_the_childs__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Caregiver_does_not_meet_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Caregiver_does_not_meet_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_The_childs_whereabouts_are_unknown__c" data-index=13 label="13. The child's whereabouts are unkonwn, the family refuses access to the child or there is reason to belive that the family is about to flee." value={safecRec.SAFEC_The_childs_whereabouts_are_unknown__c}
+         placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_The_childs_whereabouts_are_unknown__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_The_childs_whereabouts_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_The_childs_whereabouts_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_The_child_has_special_needs__c" data-index=14 label="14. The child has special needs, behaviors or medical concerns and the cargiver does not meet the child's need for current/immediate medical,dental or mental healthcare."
+         value={safecRec.SAFEC_The_child_has_special_needs__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_The_child_has_special_needs__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_The_child_has_special_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_The_child_has_special_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_The_child_is_extremely_anxious__c" data-index=15 label="15. The child is extermely anxious or fearful about the current home environment." value={safecRec.SAFEC_The_child_is_extremely_anxious__c} placeholder="-Select-"
+         options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_The_child_is_extremely_anxious__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_The_child_is_extremely_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_The_child_is_extremely_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_The_child_is_unable_to_protect__c" data-index=16 label="16. The child is unable to protect self and conditiions in the home indicate immediate danger." value={safecRec.SAFEC_The_child_is_unable_to_protect__c} placeholder="-Select-"
+         options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_The_child_is_unable_to_protect__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_The_child_is_unable_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_The_child_is_unable_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_Previous_services_to_the_caregiver__c" data-index=17 label="17. Previous services to the caregiver regarding similar harmful behaviors. resulted in to change in the caregiver's behavisors towards the child(ren)." value={safecRec.SAFEC_Previous_services_to_the_caregiver__c}
+         placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_Previous_services_to_the_caregiver__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_Previous_services_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_Previous_services_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+     <lightning-combobox name="SAFEC_There_have_been_multiple_reports__c" data-index=18 label="18. There have been multiple reports from the community or since the last SAFE-C regarding this family, Where ther were previous concerns about  the safety of the child(ren)."
+         value={safecRec.SAFEC_There_have_been_multiple_reports__c} placeholder="-Select-" options={caregiverDescribesTheChildPicklist} onchange={handleChange} disabled={readOnly} required> </lightning-combobox>
+     <template if:true={safecCommentsObj.SAFEC_There_have_been_multiple_reports__c}>
+                                     <lightning-textarea label="comments" name="SAFEC_There_have_been_multiple_Comments__c" onchange={handleCommentChange} value={safecRec.SAFEC_There_have_been_multiple_Comments__c}  disabled={readOnly} required></lightning-textarea>
+                                 </template>
+ 
+ 
+ 
+ </lightning-card><br/>
+ 
+ <lightning-card variant="Narrow" title="Section V : Protective Capacity of the Child">
+     <h3><b>Child</b></h3>
+     <lightning-input type="checkbox" label="Child has the congnitive, physical and emotional capacity to participate in safety interventions." name="SAFEC_Child__c" checked={safecRec.SAFEC_Child__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+     <h3><b>Caregiver</b></h3>
+     <lightning-input type="checkbox" label="Caregiver is able and willing to participate in creating and carrying out safety interventions to protect child." name="SAFEC_Caregiver_is_able__c" checked={safecRec.SAFEC_Caregiver_is_able__c} onchange={handleChange}
+         disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="Caregiver is able and willing to use resources that are necessary to protect child." name="SAFEC_Caregiver_is_able_and_willing__c" checked={safecRec.SAFEC_Caregiver_is_able_and_willing__c} onchange={handleChange}
+         disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="Cargiver has supportive relationships with one or more persons ho maybe willing to participate in safety planning AND cargiver is willing and able to accept their assistance." name="SAFEC_Caregiver_has_supportive__c"
+         checked={safecRec.SAFEC_Caregiver_has_supportive__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="Cargiver exhibits self control and puts the child's safety ahead of his/her own needs and for wants." name="SAFEC_Caregiver_exhibits_self_control__c" checked={safecRec.SAFEC_Caregiver_exhibits_self_control__c} onchange={handleChange}
+         disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="There is evidence of a healthy relationship between cargiver and child." name="SAFEC_There_is_evidence_of_a_healthy__c" checked={safecRec.SAFEC_There_is_evidence_of_a_healthy__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+     <lightning-input type="checkbox" label="Caregiver has demonstrated effective problem solving." name="SAFEC_Caregiver_demonstrated_effective__c" checked={safecRec.SAFEC_Caregiver_demonstrated_effective__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+     <h3><b>Community</b></h3>
+     <lightning-input type="checkbox" label="Relevent community services or resources are immediately available." name="SAFEC_Relevant_community_services__c" checked={safecRec.SAFEC_Relevant_community_services__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+ </lightning-card><br/>
+ <lightning-card variant="Narrow" title="Section VI : Safety Decision ">
+     <lightning-input type="radio" label=" Child is Safe (Influences 1-18 Marked No)" name="safetyDecison" checked={safeCheck} disabled></lightning-input>
+     <lightning-input type="radio" label="Child is conditionally Safe (Any Influences 1-16 is Checked And There is A completed Safety Plan That is Signed by All Parties)" name="safetyDecison"  checked={conditionsafeCheck1}
+         disabled={readOnly}></lightning-input>
+     <lightning-input type="radio" label="Child is Conditionally Safe (Any Influences 17-18 is Checked Yes All Actions in A Required Case     Staffing Have Been Implemented)" name="safetyDecison"  checked={conditionsafeCheck2}
+         disabled={readOnly}></lightning-input>
+     <lightning-input type="radio" label="Child is UnSafe" name="safetyDecison" disabled={readOnly} checked={unSafeCheck}></lightning-input>
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="2"></lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="10">
+             <lightning-input type="checkbox" name="SAFEC_Any_Influences_1_18_was_checked__c" checked={safecRec.SAFEC_Any_Influences_1_18_was_checked__c} label="Any Infuences 1-18 was checked Yes and there is no Safety Plan" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+ 
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="2"></lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="10">
+             <lightning-input type="checkbox" name="SAFEC_Child_currently_has_Out_of_Home__c" checked={safecRec.SAFEC_Child_currently_has_Out_of_Home__c} label="Child currently has an Out of Home Program Assignment and it is not Safe for the child to return to this caregiver"
+                 onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="2"></lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="10">
+             <lightning-input type="checkbox" name="SAFEC_Caregiver_did_not_agree_to_safety__c" checked={safecRec.SAFEC_Caregiver_did_not_agree_to_safety__c} label="Caregiver did not agree to a safety Plan" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="2"></lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="10">
+             <lightning-input type="checkbox" name="SAFEC_Danger_cannot_be_addressed_via__c" checked={safecRec.SAFEC_Danger_cannot_be_addressed_via__c} label="Danger cannot be addressed via Safety Plan" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+ </lightning-card>
+ <lightning-card variant="Narrow" title="Section VII : Safety plan">
+     <span><b>F: DANGER INFLUENCE RESPONSES: </b> (Identify an appropriate response when deciding what action is required to complete the Safety Plan. When using one of the following responses by very clear as to whom or what resource will be supporting the family.)</span><br/>
+     <span>1. Use family resources, neighbours, or individuals in the community as safety resources (Protective Factors). </span><br/>
+     <span>2. Use community agencies or services as supportive resources.</span><br/>
+     <span>3. The alleged perpetrator will leave the home. either voluntarily or in response to legal action.</span><br/>
+     <span>4. The non-maltreating caregiver will move to a safe environment with child.</span><br/>
+     <span>5. The cargiver(s) will place the child outside the home (formal voluntary placement). Note: Include explanation below regarding why responses 1-4 above could not be used to keep the child safe.</span><br/>
+     <span><b>Other: </b>Place explain In Section I Action required</span><br/>
+ 
+ 
+     <lightning-datatable columns={safetyListColumn} data={safetyPlanQesList} hide-checkbox-column="true" show-row-number-column="false" key-field="Question_Name__c" draft-values={draftValues} onsave={handleDraft}></lightning-datatable>
+ 
+    
+ 
+     <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+         <thead>
+             <tr class="slds-line-height_reset">
+                 <th class="wrapText" scope="col">
+                     <b>DANGER INFLUENCE Number from the SAFE_C</b>
+                 </th>
+                 <th class="wrapText" scope="col">
+                     <b>Specific DANGER INFLUENCE</b> (Specifically Identify individuals and the issue.)
+                 </th>
+                 <th class="wrapText" scope="col">
+                     <b>Action Required</b> (Clearly identify resourrces/individuals and/or actions that need to occur in order to help address the Danger influences.)
+                 </th>
+                 <th class="wrapText" scope="col">
+                     <b>Date to be completed</b>
+                 </th>
+                 <th class="wrapText" scope="col">
+                     <b>Responsible Parties</b>
+                 </th>
+                 <th class="wrapText" scope="col">
+                     <b>Re-evaluation Date</b>
+                 </th>
+             </tr>
+         </thead>
+         <template if:true={safetyPlanQesList.length}>
+             <tbody>
+                 <template for:each={safetyPlanQesList} for:index="index" for:item="row">
+                     <tr key={row.Id}>
+                         <td class="wrapText" id={index} data-label="DANGER INFLUENCE Number from the SAFE_C">
+                             <span>{row.Question_Name__c}</span>
+                         </td>
+                         <td class="wrapText" data-label="Specific DANGER INFLUENCE (Specifically Identify individuals and the issue.)">
+                             <lightning-layout>
+                                 <lightning-layout-item padding="around-small" size="10">
+                                     <lightning-input id={index} data-id={index} type="text" name="Specific_Danger_Influence__c" value={row.Specific_Danger_Influence__c} variant="label-hidden" onchange={safetyPlanOnChange} required></lightning-input>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="2">
+                             <p class="slds-text-color_error">*</p>
+                             </lightning-layout-item>
+                             </lightning-layout>
+                             
+                         </td>
+                         <td class="wrapText" data-label="Action Required">
+                             <lightning-layout>
+                                 <lightning-layout-item padding="around-small" size="10">
+                             <lightning-input id={index} data-id={index} type="text" name="Action_Required__c" value ={row.Action_Required__c} variant="label-hidden" onchange={safetyPlanOnChange} required></lightning-input>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="2">
+                             <p class="slds-text-color_error">*</p>
+                         </lightning-layout-item>
+                         </lightning-layout>
+                         </td>
+                         <td class="wrapText" data-label="Date to be completed">
+                             <lightning-layout>
+                                 <lightning-layout-item padding="around-small" size="10">
+                                     <lightning-input id={index} data-id={index}  date-style="short" type="datetime" name="Date_to_be_Completed__c" variant="label-hidden" value={row.Date_to_be_Completed__c} onchange={safetyPlanOnChange} required></lightning-input>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="2">
+                             <p class="slds-text-color_error">*</p>
+                             </lightning-layout-item>
+                             </lightning-layout>
+                             
+                         </td>
+                         <td class="wrapText" data-label="Responsible Parties">
+                             <lightning-layout>
+                                 <lightning-layout-item padding="around-small" size="10">
+                                     <lightning-input id={index} data-id={index} value={row.Responsible_Parties__c} type="text" name="Responsible_Parties__c" variant="label-hidden" onchange={safetyPlanOnChange} required></lightning-input>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="2">
+                             <p class="slds-text-color_error">*</p>
+                             </lightning-layout-item>
+                             </lightning-layout>
+                             
+                         </td>
+                         <td class="wrapText" data-label="Re-evaluation Date">
+                             <lightning-layout>
+                                 <lightning-layout-item padding="around-small" size="10">
+                                     <lightning-input id={index} data-id={index} date-style="short" type="datetime" value={row.Re_evaluation_Date__c} name="Re_evaluation_Date__c" variant="label-hidden" onchange={safetyPlanOnChange}  disabled={readOnly} required></lightning-input>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="2">
+                             <p class="slds-text-color_error">*</p>
+                             </lightning-layout-item>
+                             </lightning-layout>
+                             
+                         </td>
+                     </tr>
+                 </template>
+         </tbody>
+         </template>
+         <template if:false={safetyPlanQesList.length}>
+             <span class="textFont"><b> No existing safety plan record(s) found. </b></span></center> 
+         </template>
+     </table>-->
+     <template if:false={safetyPlanQesList.length}>
+         <div class="textFont slds-p-top_large slds-text-align_center"> No existing safety plan record(s) found</div>
+     </template>
+ 
+ </lightning-card><br/>
+ <lightning-card variant="Narrow" title="SECTION VIII: Comments">
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="SAFEC_LDSS__c" value={safecRec.SAFEC_LDSS__c} label="LDSS" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="Workers_Name__c" value={safecRec.Workers_Name__c} label="Workers Name" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="Supervisor_Name__c" value={safecRec.Supervisor_Name__c} label="Supervisor Name" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-combobox name="Submit_for_Approval__c" label="Submit for Approval" value={safecRec.Submit_for_Approval__c} placeholder="-Select-" options={submitforApprovalPickList} onchange={handleChange} disabled={readOnly}> </lightning-combobox>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="" value="" label="Case Worker Signature" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" type="text" name="" label="Re-Route Supervisor Name" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+     <lightning-layout>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-textarea label="Case Worker comments" name="SAFEC_Case_Worker_Comments__c" value={safecRec.SAFEC_Case_Worker_Comments__c} disabled={readOnly}></lightning-textarea>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" date-style="short" type="datetime" name="Safety_Assessment_Approval_Date_Time__c" value={safecRec.Safety_Assessment_Approval_Date_Time__c} label="Safety Assessment Approval Date Time" onchange={handleChange} disabled={readOnly}></lightning-input>
+         </lightning-layout-item>
+         <lightning-layout-item padding="around-small" size="4">
+             <lightning-input class="slds-p-left_x-small" date-style="short" type="datetime" name="Safety_Assessment_Completion_Date_Time__c" value={safecRec.Safety_Assessment_Completion_Date_Time__c} label="Safety Assessment Completion Date Time" onchange={handleChange} disabled={readOnly}
+                 required></lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+ </lightning-card>
+ 
+ <!--<div class="slds-text-align_right">
+                             <lightning-button label="Save" title="Save" onclick={handleSave} variant="brand" class= "slds-var-p-around_x-small"></lightning-button>
+                             <lightning-button label="Submit for Approval" title="Submit for Approval" variant="brand-outline" onclick={onSumbitforApproval} class= "slds-var-p-around_x-small"></lightning-button>
+                         </div>-->
+ </lightning-accordion-section>
+ </lightning-accordion>
+ </span>
+ 
+ <span slot="modalFooter">
+             <div class="slds-text-align_right">
+                 <!--<template if:false={showingErrorModal}>
+                     <lightning-button label="Submit" title="Submit" onclick={showSubmitApprovalModal} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                 </template>-->
+                 <lightning-button label="Cancel" variant="destructive" icon-name="utility:close" title="Cancel" onclick={closeEventModal}  class= "slds-var-p-around_x-small"></lightning-button>
+                 <lightning-button label="Download" variant="brand"  title="Download" onclick={handleDownload}  class= "slds-var-p-around_x-small"></lightning-button>
+                 <template if:false={showApprovalBtn}>
+                     <lightning-button label="Submit for Approval" title="Submit for Approval"  onclick={onSumbitforApproval} class= "slds-var-p-around_x-small"  disabled={readOnly}></lightning-button>
+                </template>
+                 <lightning-button label="Save" title="Save" onclick={handleSave} icon-name="utility:save" variant="brand" class= "slds-var-p-around_x-small"  disabled={readOnly}></lightning-button>
+                   
+  
+             </div>
+           </span>
+ </c-modal-component>
+ </div>
+ </template>
+ </template>

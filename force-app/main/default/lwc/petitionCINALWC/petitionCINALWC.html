@@ -1,0 +1,1269 @@
+<template>
+        <lightning-card  variant="Narrow"  title="">
+                <div><h1>Petition (CINA)</h1></div>
+                <div><h1>Child In need of Assitance</h1></div>
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="12">
+                        <lightning-combobox name="New_Review__c" 
+                                            label="New Review" 
+                                            placeholder="-Select-"
+                                            options={newReviewPick} 
+                                            onchange={handleChange} 
+                                            value={petCINARec.New_Review__c}
+                                            required> 
+                        </lightning-combobox>
+                    </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                       <lightning-layout-item padding="around-small" size="12">
+                           <lightning-combobox name="Emergency_Non_Emergency__c" 
+                                            label="Emergency/Non-Emergency" 
+                                            value={petCINARec.Emergency_Non_Emergency__c} 
+                                            placeholder="-Select-" 
+                                            options={emerengcyPick}
+                                            onchange={handleChange}
+                                           required> 
+                            </lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <lightning-input  type="text" 
+                                              name="Police_Complaint_No_if_not_foster_home__c" 
+                                              label="Police Complaint No(if not foster home):"
+                                              value={petCINARec.Police_Complaint_No_if_not_foster_home__c}
+                            >
+                            </lightning-input>
+                         </lightning-layout-item>
+                    </lightning-layout>
+                    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="Name of Child">Name of Child  </div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="D.O.B:">D.O.B </div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="Race">Race</div>
+                                </th>
+                                <th class="" scope="col">
+                                        <div class="wrapText" title="Gender">Gender</div>
+                                    </th>
+                            </tr>
+                       </thead>
+                   </table>
+                   <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <lightning-dual-listbox name="Child_s_Current_placement_if_not_foster__c"
+                                                    label="2.Child's Current placement (If not foster home) :"
+                                                    source-label="Available"
+                                                    selected-label="Selected"
+                                                    options={childCurrentPlacementpick}
+                                                    onchange={handleChange}
+                                                    value=""
+                                                    >
+                            </lightning-dual-listbox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                            <lightning-layout-item padding="around-small" size="2">
+                                    <lightning-input  type="text" 
+                                                      name="Kin_Placement_Name__c"
+                                                      label="Kin Placement Name" 
+                                                      onchange={handleChange}
+                                                      value={petCINARec.Kin_Placement_Name__c}>
+                                    </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="3">
+                                    <lightning-input  type="text" 
+                                                      name="Address_ZipCode__c" 
+                                                      label="Address/ZipCode" 
+                                                      onchange={handleChange}
+                                                      value={petCINARec.Address_ZipCode__c}>
+                                    </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="2">
+                                    <lightning-input  type="text" 
+                                                      name="Plaement_Relationship__c" 
+                                                      label="Relationship" 
+                                                      onchange={handleChange}
+                                                      value={petCINARec.Plaement_Relationship__c}>
+                                    </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="2">
+                               <p>The person(s) with Legal Custody is:</p>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="3">
+                                <lightning-combobox name="The_person_s_with_Legacy_Custody_is__c" 
+                                                    varient="label-hidden" 
+                                                    placeholder="-Select-" 
+                                                    options={parentNamePick} 
+                                                    onchange={handleChange} 
+                                                    value={petCINARec.The_person_s_with_Legacy_Custody_is__c}> 
+                                </lightning-combobox>
+                            </lightning-layout-item>
+                  </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="8">
+                                        <p>The person(s) whom has/had Physical Custody</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="4">
+                                            <lightning-combobox name="The_person_s_whom_has_had_Physical__c" 
+                                                                varient="label-hidden" 
+                                                                value={petCINARec.The_person_s_whom_has_had_Physical__c} 
+                                                                placeholder="-Select-" 
+                                                                options={parentNamePick} 
+                                                                onchange={handleChange} > 
+                                            </lightning-combobox>
+                                    </lightning-layout-item>
+                            </lightning-layout>                
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="8">
+                                        <p>The child's relationship to the Legal custodian is </p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="4">
+                                        <lightning-input  type="text" 
+                                                          name="The_child_s_relationship_to_the_Legal__c"
+                                                          varient="label-hidden" 
+                                                          onchange={handleChange}
+                                                          value={petCINARec.The_child_s_relationship_to_the_Legal__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="8">
+                                    <p>3.Parent 1 Name </p>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="4">
+                                    <lightning-combobox name="Parent_1_Name__c" 
+                                                        varient="label-hidden" 
+                                                        value={petCINARec.Parent_1_Name__c} 
+                                                        placeholder="-Select-" 
+                                                        options={parentNamePick} 
+                                                        onchange={handleChange}> </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="3">
+                                        <p>Id:</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="3">
+                                        <p>Address:</Address></p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="2">
+                                        <p>D.O.B:</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="2">
+                                        <p>Race:</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="2">
+                                        <p>SSN:</p>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <lightning-input  type="checkbox" 
+                                                          name="The_Parent_1_has_been_notified__c" 
+                                                          label="The Parent 1 has been notified of this action by DSS" 
+                                                          onchange={handleChange}
+                                                          value={petCINARec.The_Parent_1_has_been_notified__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <lightning-input  type="checkbox" 
+                                                          name="Reason_for_not_notifying__c" 
+                                                          label="Reason for not notifying:" 
+                                                          onchange={handleChange}
+                                                          value={petCINARec.Reason_for_not_notifying__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="8">
+                                        <p>4.Parent 2 Name </p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="4">
+                                        <lightning-combobox name="Parent_2_Name__c" 
+                                                            varient="label-hidden" 
+                                                            value={petCINARec.Parent_2_Name__c} 
+                                                            placeholder="-Select-" 
+                                                            options={parentNamePick} 
+                                                            onchange={handleChange}> 
+                                        </lightning-combobox>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                                <lightning-layout>
+                                        <lightning-layout-item padding="around-small" size="3">
+                                            <p>Id:</p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="3">
+                                            <p>Address:</Address></p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="2">
+                                            <p>D.O.B:</p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="2">
+                                            <p>Race:</p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="2">
+                                            <p>SSN:</p>
+                                        </lightning-layout-item>
+                                </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="12">
+                                        <lightning-input  type="checkbox" 
+                                                          name="The_Parent_2_has_been_notified__c" 
+                                                          label="The Parent 2 has been notified of this action by DSS" 
+                                                          onchange={handleChange}
+                                                          checked={petCINARec.The_Parent_2_has_been_notified__c}>
+                                        </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <lightning-input  type="checkbox" 
+                                                          name="Parent2_Reason_for_not_notifying__c" 
+                                                          label="Reason for not notifying:" 
+                                                          onchange={handleChange}
+                                                          checked={petCINARec.Parent2_Reason_for_not_notifying__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <p>5.Case Worker Details:</p>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="6">
+                                   <lightning-input  type="text" 
+                                                     name="Case_Worker_Name__c" 
+                                                     label="Name" 
+                                                     onchange={handleChange}
+                                                     value={petCINARec.Case_Worker_Name__c}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-input  type="number" 
+                                                      name="Case_Worker_Phone_Number__c" l
+                                                      abel="Phone Number" 
+                                                      onchange={handleChange}
+                                                      value={petCINARec.Case_Worker_Phone_Number__c}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <p>6.Supervisor Details:</p>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="6">
+                                   <lightning-input  type="text" 
+                                                     name="Supervisor_Name__c" 
+                                                     label="Name" 
+                                                     onchange={handleChange}
+                                                     value={petCINARec.Supervisor_Name__c}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-input  type="number" 
+                                                      name="Supervisor_Phone_Number__c" 
+                                                      label="Phone Number" 
+                                                      onchange={handleChange}
+                                                      value={petCINARec.Supervisor_Phone_Number__c}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <lightning-input  type="date" 
+                                                          name="Date_Request_Completed__c" 
+                                                          label="7.Date Requested Completed" 
+                                                          onchange={handleChange}
+                                                          value={petCINARec.Date_Request_Completed__c}>
+                                        </lightning-input>    
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="12">
+                                   <lightning-input  type="date" 
+                                                     name="Child_in_Shelter_Care_on__c" 
+                                                     label="8.Child in Shelter Care on" 
+                                                     onchange={handleChange}
+                                                     value={petCINARec.Child_in_Shelter_Care_on__c}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="12">
+                                       <lightning-input  type="date"
+                                                         name="Date_of_Emergency_Shelter_Care__c" 
+                                                         label="9.Date of Emergency Shelter Care" 
+                                                         onchange={handleChange}
+                                                         value={petCINARec.Date_of_Emergency_Shelter_Care__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="12">
+                                    <lightning-combobox name="X10_Previous_Juvenile_Court__c"
+                                                        label="10.Previous Juvenile Court:" 
+                                                        value={petCINARec.X10_Previous_Juvenile_Court__c} 
+                                                        placeholder="-Select-" 
+                                                        options={previousJuvenileCourtPick} 
+                                                        onchange={handleChange} >
+                                     </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="12">
+                                    <p>Summary of Problems:</p>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small" size="12">
+                                    <h1> PHYSICAL ABUSE RESPONEND/SIBILING</h1>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item padding="around-small" size="4">
+                                        <lightning-input  type="text" 
+                                                          name="Nature_of_Physical_Abuse__c" 
+                                                          label="Nature of Physical Abuse"
+                                                          onchange={handleChange}
+                                                          value={petCINARec.Nature_of_Physical_Abuse__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="4">
+                                        <lightning-input  type="text" 
+                                                          name="Medical_Exam_Where__c" 
+                                                          label="Medical Exam?Where?"
+                                                          onchange={handleChange}
+                                                          value={petCINARec.Medical_Exam_Where__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="4">
+                                        <lightning-input  type="text"
+                                                          name="Documentation_of_injury__c"
+                                                          label="Documentation of injury"
+                                                          onchange={handleChange}
+                                                          value={petCINARec.Documentation_of_injury__c}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                          </lightning-layout>
+                          <lightning-layout>
+                             <lightning-layout-item padding="around-small" size="4">
+                                <lightning-input  type="text"
+                                                  name="Failed_to_protect_mother_father__c" 
+                                                  label="Failed to protect:(mother/father)"
+                                                  onchange={handleChange}
+                                                  value={petCINARec.Failed_to_protect_mother_father__c}
+                                                  >
+                                </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="4">
+                                <lightning-input  type="text" 
+                                                  name="Respondent_disclosed_to_Disclosed_what__c" 
+                                                  label="Respondent disclosed to: Disclosed what?"
+                                                  onchange={handleChange}
+                                                  value={petCINARec.Respondent_disclosed_to_Disclosed_what__c}>
+                                </lightning-input>
+                            </lightning-layout-item>
+                          </lightning-layout>
+
+        <div><b>SEXUAL ABUSE OF RESPONDENT/SIBILING</b></div>
+        <lightning-layout>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text" 
+                                 label="Nature of Sexual Abuse:(mother/father)did what?"
+                                 name="Nature_of_Sexual_Abuse_mother_father__c" 
+                                 placeholder="Nature of Sexual Abuse:(mother/father)did what?" 
+                                 variant="label-hidden"
+                                 onchange={handleChange}
+                                 value={petCINARec.Nature_of_Sexual_Abuse_mother_father__c}>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text" 
+                                 label="Medical Exam?Where?" 
+                                 name="Sexual_Medical_Exam_Where__c" 
+                                 value={petCINARec.Sexual_Medical_Exam_Where__c}
+                                 placeholder="Medical Exam?Where?"
+                                 onchange={handleChange} 
+                                 variant="label-hidden">
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text" 
+                                label="Documentation of injury" 
+                                name="Sexual_Documentation_of_injury__c" 
+                                placeholder="Documentation of injury"
+                                onchange={handleChange}
+                                value={petCINARec.Sexual_Documentation_of_injury__c}
+                                variant="label-hidden">
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text"
+                                 label="Failed to protect:(mother/father)" 
+                                 name="Sexual_Failed_to_protect_mother_father__c"
+                                 value={petCINARec.Sexual_Failed_to_protect_mother_father__c}
+                                 placeholder="Failed to protect:(mother/father)" 
+                                 onchange={handleChange} 
+                                 variant="label-hidden">
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text"
+                                 label="Respondent disclosed to:Disclosed what?" 
+                                 name="Sexual_Respondent_disclosed_to__c" 
+                                 onchange={handleChange} 
+                                 value={petCINARec.Sexual_Respondent_disclosed_to__c}
+                                 placeholder="Respondent disclosed to:Disclosed what?"
+                                 variant="label-hidden">
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div><b>NEGLECT OF RESPONDENT/SIBILING</b></div>
+        <lightning-layout>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text"
+                                 label="Nature of Neglect:(mother/father)did what?" 
+                                 name="Nature_of_neglect_mother_father__c"
+                                  value={petCINARec.Nature_of_neglect_mother_father__c}
+                                  placeholder="Nature of Neglect:(mother/father)did what?" 
+                                  variant="label-hidden"
+                                  onchange={handleChange} >
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text"
+                                 label="Medical Exam?Where?" 
+                                 name="Neglect_Medical_Exam_Where__c" 
+                                 value={petCINARec.Neglect_Medical_Exam_Where__c}
+                                 placeholder="Medical Exam?Where?" 
+                                 variant="label-hidden"
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text" 
+                                 label="Documentation of Neglect"
+                                 name="Document_of_Neglect__c"
+                                 value={petCINARec.Document_of_Neglect__c}
+                                 placeholder="Documentation of Neglect" 
+                                 variant="label-hidden"
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text" 
+                                 label="Failed to protect:(mother/father)" 
+                                 name="Neglect_Failed_to_protect_mother_father__c" 
+                                 value={petCINARec.Neglect_Failed_to_protect_mother_father__c}
+                                 placeholder="Failed to protect:(mother/father)" 
+                                 variant="label-hidden"
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text" 
+                                 label="Respondent disclosed to:Disclosed what?" 
+                                 name="Neglect_Respondent_disclosed__c" 
+                                 value={petCINARec.Neglect_Respondent_disclosed__c}
+                                 placeholder="Respondent disclosed to:Disclosed what?" 
+                                 variant="label-hidden"
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item>
+                <div><b>ALTERNATIVE GROUNDS for CINA PETITION:</b></div>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="8">
+                <p>Within the first 12 month of the child's birth, was drug treatment made available to the mother and the mother refuses the recommended level of treatment for substance use disorder, or does not successfully complete the recommended level of treatment?:</p>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-combobox name="Within_the_first_12_month_of_the_child_s__c" 
+                                    varient="label-hidden" 
+                                    value={petCINARec.Within_the_first_12_month_of_the_child_s__c}
+                                    placeholder="-Select-" 
+                                    options={previousJuvenileCourtPick}
+                                    onchange={handleChange} > 
+                </lightning-combobox>
+            </lightning-layout-item>
+      </lightning-layout>
+      <lightning-layout>
+        <lightning-layout-item padding="around-small" size="8">
+            <p>Severe/chronic developmental disability:</p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-combobox name="Severe_chronic_development_disability__c"
+                                varient="label-hidden" 
+                                value={petCINARec.Severe_chronic_development_disability__c}
+                                placeholder="-Select-" 
+                                options={previousJuvenileCourtPick} 
+                                onchange={handleChange} > 
+            </lightning-combobox>
+        </lightning-layout-item>
+  </lightning-layout>
+  <lightning-layout>
+    <lightning-layout-item padding="around-small" size="8">
+        <p>Mental health disorder (behavioral or emotional illness that result from a pyschiatric or neurclogical disorder):</p>
+    </lightning-layout-item>
+    <lightning-layout-item padding="around-small" size="4">
+        <lightning-combobox name="Mental_health_disorder__c" 
+                            varient="label-hidden" 
+                            value={petCINARec.Mental_health_disorder__c}
+                            placeholder="-Select-" 
+                            options={previousJuvenileCourtPick} 
+                            onchange={handleChange} >
+         </lightning-combobox>
+    </lightning-layout-item>
+</lightning-layout>
+<div><b>CONDITION OF THE RESPONDENT</b></div>
+<lightning-layout>
+    <lightning-layout-item size="6" padding="around-small">
+        <div>A.Physical/mental issues of the Respondent</div>
+    </lightning-layout-item>
+    <lightning-layout-item size="6" padding="around-small">
+        <lightning-input type="text" 
+                         label="A.Physical/mental issues of the Respondent" 
+                         name="A_Physical_mental_issues_of_the_Respond__c" 
+                         value={petCINARec.A_Physical_mental_issues_of_the_Respond__c}
+                         onchange={handleChange}
+                         variant="label-hidden">
+        </lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item padding="around-small" size="8">
+        <p>B.Was Respondent born substance exposed?</p>
+    </lightning-layout-item>
+    <lightning-layout-item padding="around-small" size="4">
+        <lightning-combobox name="B_Was_Respondent_born_substance_exposed__c"
+                            varient="label-hidden" 
+                            value={petCINARec.B_Was_Respondent_born_substance_exposed__c}
+                            placeholder="-Select-" 
+                            options={previousJuvenileCourtPick} 
+                            onchange={handleChange} > 
+        </lightning-combobox>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="3" padding="around-small">
+        <div>C.Current location of the Respondent?</div>
+    </lightning-layout-item>
+    <lightning-layout-item size="6" padding="around-small">
+        <lightning-input type="text" 
+                         label="C.Current location of the Respondent?"
+                         name="C_Current_location_of_the_Respondent__c" 
+                         value={petCINARec.C_Current_location_of_the_Respondent__c}
+                         onchange={handleChange}
+                         variant="label-hidden">
+        </lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-dual-listbox name="D_Special_needs_of_Respondent__c"
+                                    label="D.Special needs of Respondent:"
+                                    source-label="Available"
+                                    selected-label="Selected"
+                                    options={specialneedsofRespondentPick}
+                                    onchange={handleChange}
+                                    >
+            </lightning-dual-listbox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+            <lightning-layout-item size="3" padding="around-small">
+                <div>E.Status of child's relationship with parents</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" 
+                                 label="E.Status of child's relationship with parents" 
+                                 name="E_Status_of_child_s_relationship_with_p__c"
+                                 value={petCINARec.E_Status_of_child_s_relationship_with_p__c}
+                                 variant="label-hidden"
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="3" padding="around-small">
+                <div>F.Legal status of Respondent</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" 
+                                 label="F.Legal status of Respondent" 
+                                 name="F_Legal_status_of_Respondent__c" 
+                                 value={petCINARec.F_Legal_status_of_Respondent__c}
+                                 variant="label-hidden"
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div><b>CONDITION OF THE RESPONDENT'S HOME</b></div>
+        <lightning-layout>
+            <lightning-layout-item size="3" padding="around-small">
+                <div>A.Detailed Description of Home Conditions (if relevant)</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input type="text" 
+                                 label="A.Detailed Description of Home Conditions (if relevant)" 
+                                 name="A_Detailed_Description_of_Home__c" 
+                                 value={petCINARec.A_Detailed_Description_of_Home__c} 
+                                 variant="label-hidden"
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+                <lightning-layout-item padding="around-small" size="6">
+                    <p>B.Inadequate Housing</p>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="4">
+                        <lightning-combobox name="B_Inadequate_Housing__c" 
+                                            varient="label-hidden" 
+                                            value={petCINARec.B_Inadequate_Housing__c}
+                                            placeholder="-Select-" 
+                                            options={previousJuvenileCourtPick} 
+                                            onchange={handleChange}>
+                       </lightning-combobox>
+                </lightning-layout-item>
+          </lightning-layout>
+          <div><b>PARENT'S CIRCUMSTANCES(answer for mother and father)</b></div>
+          <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <lightning-dual-listbox name="PARENT_S_CIRCUMSTANCE__c"
+                                            label="PARENT'S CIRCUMSTANCES(answer for mother and father):"
+                                            source-label="Available"
+                                            selected-label="Selected"
+                                            options={parentsCircumstancePick}
+                                            onchange={handleChange}
+                                            >
+                    </lightning-dual-listbox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <div><b>RESPONDENT's PARENT HISTORY</b></div>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <div>CPS:</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <lightning-input type="text" 
+                                         name="CPS__c" 
+                                         value={petCINARec.CPS__c}  
+                                         variant="label-hidden"
+                                         onchange={handleChange}>
+                        </lightning-input>
+                    </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <div>Child Welfare Services:</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <lightning-input type="text"
+                                         name="Child_Welfare_Services__c" 
+                                         value={petCINARec.Child_Welfare_Services__c}
+                                         ariant="label-hidden"
+                                         onchange={handleChange}>
+                        </lightning-input>
+                    </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <div>Criminal:</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <lightning-input type="text" 
+                                         name="Criminal__c" 
+                                         value={petCINARec.Criminal__c}
+                                         variant="label-hidden"
+                                         onchange={handleChange}>
+                        </lightning-input>
+                    </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <div>CINA/TPR- respondent/siblings:</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <lightning-input type="text" 
+                                         name="CINA_TPR_respondent_siblings__c" 
+                                         value={petCINARec.CINA_TPR_respondent_siblings__c}  
+                                         variant="label-hidden"
+                                         onchange={handleChange}>
+                        </lightning-input>
+                    </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="12">
+                    <div class="slds-text-align_right">
+                        <lightning-button label="ADD" title="Add" onclick={addSibling} variant="brand" class= "slds-var-p-around_x-small"></lightning-button>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+            <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="wrapText" title="SIBLING Name">SIBLING Name </div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="wrapText" title="IS SIBLING IN DAY CARE ">IS SIBLING IN DAY CARE  </div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="wrapText" title="CPS">CPS</div>
+                        </th>
+                        <th class="" scope="col">
+                           <div class="wrapText" title="CHILD WALFARE SERVICE">CHILD WALFARE SERVICE</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="wrapText" title="CHILD CINA">CHILD CINA</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="wrapText" title="RELATIONSHIP STATUS">RELATIONSHIP STATUS</div>
+                        </th>
+                        <th class="" scope="col"> 
+                            <div class="wrapText" title="ACTION">ACTION</div>
+                        </th>
+                    </tr>
+               </thead>
+               <tbody>
+                <template for:each={siblingsList} for:index="index" for:item="row">
+                    <tr key={row.Id}>
+                        <td>
+                            <div class="wrapText" title={row.Siblings_Name__c}>{row.Siblings_Name__c}</div>
+                        </td>
+                        <td>
+                            <div class="wrapText" title={row.is_Sibling_is_in_Child_Care__c}>{row.is_Sibling_is_in_Child_Care__c}</div>
+                        </td>
+                        <td>
+                            <div class="wrapText" title={row.CPS__c}>{row.CPS__c}</div>
+                        </td>
+                        <td>
+                            <div class="wrapText" title={row.Child_welfare_Services__c}>{row.Child_welfare_Services__c}</div>
+                        </td>
+                        <td>
+                            <div class="wrapText" title={row.CPS__c}></div>
+                        </td>
+                        <td>
+                            <div class="wrapText" title={row.C_Status_of_sibling_s_relationship__c}>{row.C_Status_of_sibling_s_relationship__c}</div>
+                        </td>
+                        <td>
+                            <div class="slds-p-around_medium lgc-bg">
+                                <lightning-button-icon icon-name="utility:edit" name="edit" data-childid={row.Id} alternative-text="Edit" class="slds-m-left_xx-small" title="Edit Sibling" onclick={handleIconAction}></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:delete" name="delete" data-childid={row.Id} alternative-text="Delete"   class="slds-m-left_xx-small" title="Delete" onclick={handleIconAction}></lightning-button-icon>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+               </tbody>
+           </table>
+           <template if:true={showSubpoenaedModal}> 
+            <div class="eventModal" if:true={showSubpoenaedModal}>
+                <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                    <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  onclick={canceSubpoenaedModal}
+                                                  alternative-text="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">SUBPOENAED</h2>
+                    </span> 
+              <span slot="modalBody">
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="3">
+                        <lightning-input  type="text" 
+                                              name="Institution__c" 
+                                              varient="label-hidden"
+                                              onchange={handleChangeSubpoened}
+                                              value={subpoenedRec.Institution__c}
+                                              placeholder="Institution"
+                                              requried>
+                        </lightning-input>  
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="3">
+                        <lightning-input  type="text" 
+                                              name="Supoenaed_Name__c" 
+                                              varient="label-hidden"
+                                              placeholder="Name"
+                                              onchange={handleChangeSubpoened}
+                                              value={subpoenedRec.Supoenaed_Name__c}>
+                        </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="3">
+                        <lightning-input  type="text" 
+                                              name="Type_of_Records__c" 
+                                              varient="label-hidden"
+                                              onchange={handleChangeSubpoened}
+                                              placeholder = "Type of Records"
+                                              value={subpoenedRec.Type_of_Records__c}
+                                              disabled>
+                        </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="3">
+                        <lightning-input  type="text" 
+                                              name="Subpoenaed_Address__c" 
+                                              varient="label-hidden"
+                                              onchange={handleChangeSubpoened}
+                                              placeholder="Address"
+                                              value={subpoenedRec.Subpoenaed_Address__c}>
+                        </lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="3">
+                        <lightning-input  type="text" 
+                                              name="Subpoenaed_Person__c" 
+                                              varient="label-hidden"
+                                              onchange={handleChangeSubpoened}
+                                              placeholder="Person"
+                                              value={subpoenedRec.Subpoenaed_Person__c}>
+                        </lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <lightning-input  type="checkbox"
+                                              name="For_each_subpoena__c" 
+                                              checked={subpoenedRec.For_each_subpoena__c}
+                                              label="For each subpoena, is a releases or consent necessary ? is it in the file ?"                                             onchange={handleChangeSibling}>
+                        </lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+             </span>
+             <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                    <lightning-button label="ADD" 
+                                      title="add" 
+                                      onclick={addHandleSubpoenaed} 
+                                      variant="brand" 
+                                      class= "slds-var-p-around_x-small">
+                    </lightning-button>
+                    <lightning-button label="CANCEL" 
+                                      variant="destructive" 
+                                      itle="Cancel" 
+                                      onclick={canceSubpoenaedModal} 
+                                      class= "slds-var-p-around_x-small">
+                    </lightning-button>
+                </div>
+              </span>
+              </c-modal-component>
+              </div>
+           </template>
+
+           <template if:true={showSiblingModal}> 
+            <div class="eventModal" if:true={showSiblingModal}>
+                <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                    <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  onclick={cancelSiblingModal}
+                                                  alternative-text="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Add Siblings</h2>
+                    </span> 
+              <span slot="modalBody">
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="4">
+                           <p>A. Siblings Name:  </p>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="4">
+                            <lightning-input  type="text" 
+                                              name="Siblings_Name__c" 
+                                              varient="label-hidden"
+                                              onchange={handleChangeSibling}
+                                              value={siblingRec.Siblings_Name__c}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12"> 
+                            <lightning-input  type="checkbox"
+                                              name="is_Sibling_is_in_Child_Care__c" 
+                                              checked={siblingRec.is_Sibling_is_in_Child_Care__c}
+                                              label="is Sibling is in Child Care"
+                                              onchange={handleChangeSibling}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <lightning-input  type="checkbox" 
+                                              name="is_Abuse_Neglect__c"  
+                                              label="is Abuse Neglect"
+                                              checked={siblingRec.is_Abuse_Neglect__c} 
+                                              onchange={handleChangeSibling}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <lightning-input  type="checkbox"
+                                              name="Other__c"  
+                                              label="Other" 
+                                              checked={siblingRec.Other__c}
+                                              onchange={handleChangeSibling}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <div><b>B. SIBLING HISTORY</b></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                         <lightning-input  type="text" name="CPS__c"
+                                           placeholder="CPS"  
+                                           varient="label-hidden" 
+                                           value={siblingRec.CPS__c}
+                                           onchange={handleChangeSibling}>
+                        </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <lightning-input  type="text" 
+                                              name="Child_welfare_Services__c" 
+                                              placeholder="Child welfare Services" 
+                                              varient="label-hidden" 
+                                              value={siblingRec.Child_welfare_Services__c}
+                                              onchange={handleChangeSibling}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12"> 
+                            <lightning-input  type="text" 
+                                              name="CINA_TPR_respondent_Siblings__c" 
+                                              placeholder="CINA/TPR - respondent/Siblings" 
+                                              varient="label-hidden" 
+                                              value={siblingRec.CINA_TPR_respondent_Siblings__c}
+                                              onchange={handleChangeSibling}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="8">
+                            <div><b>C. Status of sibling's relationship with parents: (mother/father)</b></div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="4">
+                            <lightning-input  type="text" 
+                                              name="C_Status_of_sibling_s_relationship__c" 
+                                              varient="label-hidden" 
+                                              value={siblingRec.C_Status_of_sibling_s_relationship__c}
+                                              onchange={handleChangeSibling}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <lightning-textarea label="D.Narrative" 
+                                                name="D_Narrative__c"
+                                                value={siblingRec.D_Narrative__c}
+                                                onchange={handleChangeSibling}
+                            ></lightning-textarea>
+                        </lightning-layout-item>
+                    </lightning-layout>
+              </span>
+              <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                    <lightning-button label="ADD" 
+                                      title="add" 
+                                      onclick={handleAdd} 
+                                      variant="brand" 
+                                      class= "slds-var-p-around_x-small">
+                    </lightning-button>
+                    <lightning-button label="CANCEL" 
+                                      variant="destructive" 
+                                      itle="Cancel" 
+                                      onclick={cancelSiblingModal} 
+                                      class= "slds-var-p-around_x-small">
+                    </lightning-button>
+                </div>
+              </span>
+              </c-modal-component>
+              </div>
+        </template>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="12">
+                <div><b>7. REASONABLE EFFORTS TO PREVENT PLACEMENT(Check all that apply)</b></div>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="8">
+                <p>A. Was there an active Child Welfare case at the time of removal:
+                </p>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-combobox name="A_Was_there_an_active_Child_Welfare__c" 
+                                    varient="label-hidden" 
+                                    value={petCINARec.A_Was_there_an_active_Child_Welfare__c} 
+                                    placeholder="-Select-"
+                                    options={previousJuvenileCourtPick} 
+                                    onchange={handleChange}>
+                </lightning-combobox>
+            </lightning-layout-item>
+      </lightning-layout>
+        <lightning-layout>
+                <lightning-layout-item padding="around-small" size="8">
+                    <p>B. What services were offered efforts made to prevent removal/assure child safety(active or prior case)?</p>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="4">
+                    <lightning-input  type="text"
+                                      name="B_What_services_were_offered_efforts__c" 
+                                      varient="label-hidden"
+                                      value={petCINARec.B_What_services_were_offered_efforts__c}
+                                      onchange={handleChange}>
+                    </lightning-input>
+                </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="12">
+                <lightning-dual-listbox name="C_What_Services_were_offered_prior__c"
+                                        label="C. What Services were offered prior to removal: (for every checked item, please explain)"
+                                        source-label="Available"
+                                        selected-label="Selected"
+                                        value=""
+                                        options={whatServicesWereOfferedPick}
+                                        onchange={handleChange}
+                                        >
+                </lightning-dual-listbox>
+             </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="8">
+                <p>D. Were reasonable efforts not made because emergency circumstance existed requiring removal to protect the safety of the child?                    </p>
+            </lightning-layout-item>
+            <!--need to changes options-->
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-combobox name="D_Were_reasonable_efforts_not_made__c" varient="label-hidden" 
+                                   value=""    
+                                    placeholder="-Select-" 
+                                    options={wereReasonableEffortsNotMadePick} 
+                                    onchange={handleChange}> 
+                </lightning-combobox>
+        </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="12">
+                <lightning-textarea label="D.Narrative" name="D_Narrative__c"></lightning-textarea>
+            </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="8">
+            <P>E. A Family Involvement Meeting:</P>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-combobox name="D_Were_reasonable_efforts_not_made__c"
+                                varient="label-hidden" 
+                                value={petCINARec.D_Were_reasonable_efforts_not_made__c}
+                                placeholder="-Select-" 
+                                options={familyInvolvementMeetingPick} 
+                                onchange={handleChange}> 
+            </lightning-combobox>          
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input  type="text" 
+                              name="Resonable_Date__c" 
+                              varient="label-hidden" 
+                              placeholder="Date" 
+                              value={petCINARec.Resonable_Date__c}
+                              onchange={handleChange}>
+            </lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input  type="text" 
+                              name="Participants__c" 
+                              varient="label-hidden" 
+                              placeholder="Participants?" 
+                              onchange={handleChange}>
+            </lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="4">
+            <lightning-input  type="text" 
+                              name="Outcome__c" 
+                              varient="label-hidden" 
+                              placeholder="outcome" 
+                              value={petCINARec.Outcome__c}
+                              onchange={handleChange}>
+            </lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <div><b>8. REMOVAL INFORMATION</b></div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="4">
+                <lightning-input  type="date"
+                                  name="Removal_Date__c" 
+                                  varient="label-hidden" 
+                                  placeholder="Removal Date"
+                                  value={petCINARec.Removal_Date__c}
+                                  onchange={handleChange}>
+                </lightning-input>    
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input  type="time" 
+                                  name="Removal_Time__c" 
+                                  varient="label-hidden" 
+                                  placeholder="Removal Time" 
+                                  value={petCINARec.Removal_Time__c}
+                                  onchange={handleChange}>
+                </lightning-input>    
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-combobox name="Type_of_Placement__c" 
+                                    varient="label-hidden" 
+                                    value={petCINARec.Does_this_information_exist__c}   
+                                    placeholder="-Select-" 
+                                    options={parentNamePick} 
+                                    onchange={handleChange}> 
+                </lightning-combobox>          
+            </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="4">
+            <div><b>9. OTHER INFORMATION</b></div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-textarea label="notes" name="notes__c"></lightning-textarea>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <div><b>10. WITNESS LIST</b></div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="wrapText" title="NAME">NAME </div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="wrapText" title="ADDRESS">ADDRESS </div>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <div><b>11. PHOTOGRAPHS/VIDEO/AUDIOS</b></div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-input  type="checkbox" 
+                              value={petCINARec.Does_this_information_exist__c}
+                              name="Does_this_information_exist__c" 
+                              label="Does this information exist?" 
+                              onchange={handleChange}>
+            </lightning-input>            
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <div><b>12. RECORDS TO BE SUBPOENAED</b></div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <div class="slds-text-align_right">
+                <lightning-button label="ADD" 
+                                  title="Add" 
+                                  onclick={addSubpoenaed} 
+                                  variant="brand" 
+                                  class= "slds-var-p-around_x-small">
+                </lightning-button>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+                <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="INSTITUTION">INSTITUTION </div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="NAME OF CUSTODIAN OF RECORDS">NAME OF CUSTODIAN OF RECORDS</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="TYPE OF RECORD">TYPE OF RECORD</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="ADDRESS/ZIP CODE">ADDRESS/ZIP CODE</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="PERSON TO WHOM RECORDS PERTAIN">PERSON TO WHOM RECORDS PERTAIN</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="wrapText" title="ACTION">ACTION</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={subpoenaedList} for:index="index" for:item="row">
+                            <tr key={row.Id}>
+                                <td>
+                                    <div class="wrapText" title={row.Institution__c}>{row.Institution__c}</div>
+                                </td>
+                                <td>
+                                    <div class="wrapText" title={row.Supoenaed_Name__c}>{row.Supoenaed_Name__c}</div>
+                                </td>
+                                <td>
+                                    <div class="wrapText" title={row.Type_of_Records__c}>{row.Type_of_Records__c}</div>
+                                </td>
+                                <td>
+                                    <div class="wrapText" title={row.Subpoenaed_Address__c}>{row.Subpoenaed_Address__c}</div>
+                                </td>
+                                <td>
+                                    <div class="wrapText" title={row.Subpoenaed_Person__c}>{row.Subpoenaed_Person__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-p-around_medium lgc-bg">
+                                        <lightning-button-icon icon-name="utility:edit" name="subpoenaedEdit" data-childid={row.Id} alternative-text="Edit" class="slds-m-left_xx-small" title="Edit Sibling" onclick={handleIconAction}></lightning-button-icon>
+                                        <lightning-button-icon icon-name="utility:delete" name="subpoenaedDelete" data-childid={row.Id} alternative-text="Delete"   class="slds-m-left_xx-small" title="Delete" onclick={handleIconAction}></lightning-button-icon>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                    </table>
+        </lightning-layout-item>
+    </lightning-layout>
+</lightning-card> 
+</template>

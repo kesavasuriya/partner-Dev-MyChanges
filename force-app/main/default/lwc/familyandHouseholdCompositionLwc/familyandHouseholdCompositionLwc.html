@@ -1,0 +1,30 @@
+<template>
+
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <lightning-card title="Family And Household Composition">
+
+        <lightning-layout>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input date-style="short" type="date" onchange={handleChange} label="Date Assessment Initiated" name="FRRE_Date_Assessment_Initiated__c" value={assessmentRec.FRRE_Date_Assessment_Initiated__c}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input label="Head of Household Name" name="Head of Household Name"  value={serviceCaseRec.headOfHousehold} disabled="true"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input label="CPS/Service Case ID" name="CPS/Service Case ID" value={serviceCaseRec.Name} disabled="true"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <lightning-datatable key-field="id" data={childList} columns={childColumns} onrowaction={handleRowAction} hide-checkbox-column></lightning-datatable>
+
+        <div class="slds-text-align_right slds-p-top_medium">
+            <lightning-button label="Save" icon-name="utility:save" variant="brand" onclick={handleSave} disabled={readOnly}></lightning-button>
+        </div>
+
+    </lightning-card>
+</template>

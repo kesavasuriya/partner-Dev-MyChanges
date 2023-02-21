@@ -1,0 +1,41 @@
+<template>
+    
+    <template if:true={isSpinner}>
+        <lightning-spinner
+            variant="brand"
+            size="large">
+        </lightning-spinner>
+    </template>
+
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+        <div class="slds-modal__container">
+            
+            <header class="slds-modal__header">
+                <lightning-button-icon icon-name="utility:close" variant="bare-inverse" class="slds-modal__close" onclick={closeModal} alternative-text="close"></lightning-button-icon>
+            <!-- if:true={showModel}-->
+                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Person Income</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <template if:true={showPersonIncomeTable}>
+                    <lightning-datatable
+                            key-field="id"
+                            data={data}
+                            hide-checkbox-column
+                            columns={columns}>    
+                    </lightning-datatable>
+                </template>
+                <template if:false={showPersonIncomeTable}>
+                    <span><h1> There is no Person Income records found</h1></span>
+                </template>
+            </div>
+            <footer class="slds-modal__footer">
+                <lightning-button variant="neutral" 
+                                  label="Cancel"
+                                  title="Cancel"
+                                  onclick={closeModal}></lightning-button>
+                                  </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+        
+</template>

@@ -1,0 +1,202 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+    </div>
+    <lightning-card title="ADOPTION SUBSIDY RATES">
+            <lightning-button label="ADD" title="ADD" slot="actions" variant="brand" icon-name="utility:add" onclick={handleRateModal} class="slds-p-around_x-small"></lightning-button>            
+        </lightning-card>
+    <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right css-serial">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="wrapText" scope="col">
+                    <div title="ADOPTION PLAN BEGIN DATE">TRANSACTION DATE</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="PROVIDER ID">PROVIDER ID</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="RATE BEGIN DATE">RATE BEGIN DATE</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="RATE END DATE">RATE END DATE</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="MONTHLY PAYMENT AMOUNT">MONTHLY PAYMENT AMOUNT</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="APPROVAL DATE">APPROVAL DATE</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="STATUS">STATUS</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="ACTION">ACTION</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={rateRecordList} for:index="index" for:item="row">  
+            <tr key={row.Id}>
+                <td>
+                    <div class="slds-p-left_small">{row.Transaction_Date__c}</div>
+                </td>
+                <td class="wrapText">
+                    <div class="slds-p-left_small">{providerId}</div>
+                </td>
+                <td class="wrapText">
+                    <div class="slds-p-left_small">{row.Rate_Begin_Date__c}</div>
+                </td>
+                <td class="wrapText">
+                    <div class="slds-p-left_small">{row.Rate_End_Date__c}</div>
+                </td>
+                <td class="wrapText">
+                    <div class="slds-p-left_small">${row.Monthly_Payment_Amount__c}</div>
+                </td>
+                <td class="wrapText">
+                    <div class="slds-p-left_small">{row.SSA_Approval_Date__c}</div>
+                </td>
+                <td class="wrapText">
+                    <div class="slds-p-left_small">{row.Adoption_Case_Rate_Status__c}</div>
+                </td>
+                <td class="wrapText">
+                    <div><lightning-button-icon data-id={row.Id}  icon-name="utility:preview" title="View" onclick={handleViewModal}></lightning-button-icon>
+                    <lightning-button-icon data-id={row.Id}  icon-name="utility:edit" title="Edit" onclick={handleEditModal}></lightning-button-icon></div>
+
+                </td>
+            </tr>
+            </template>
+        </tbody>
+    </table>-->
+    <lightning-datatable
+        key-field="Id"
+        data={rateRecordList}
+        columns={columns}
+        hide-checkbox-column
+        onrowaction={handleRowAction}>
+    </lightning-datatable>
+
+    <div class="eventModal" if:true={showRateModal}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  onclick={closeRateModal}
+                                                  alternative-text="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">View Subsidy Review/Rates</h2>
+                    </span>
+    
+            <span slot="modalBody">
+                    <lightning-layout>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-input type="date" label="Transaction Date" name="Transaction_Date__c" value={rateRecord.Transaction_Date__c} disabled={readOnly} onchange={handleChange}></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-input type="date" label="Start Date" name="Rate_Begin_Date__c" value={rateRecord.Rate_Begin_Date__c} disabled={readOnly} onchange={handleChange} required></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-input type="date" label="End Date" name="Rate_End_Date__c" value={rateRecord.Rate_End_Date__c} disabled={readOnly} onchange={handleChange} required></lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="4" class="slds-p-around_small">
+                            <lightning-input type="number" label="Monthly Payment Amount" name="Monthly_Payment_Amount__c" formatter="currency" value={rateRecord.Monthly_Payment_Amount__c} disabled={readOnly} onchange={handleChange}></lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <div>SSA Approval</div>
+                            <lightning-radio-group variant="label-hidden" name="SSA_Approval__c" value={rateRecord.SSA_Approval__c} options={options} disabled={readOnly} onchange={handleChange}></lightning-radio-group>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input type="date" label="SSA Approval Date" name="SSA_Approval_Date__c" value={rateRecord.SSA_Approval_Date__c} disabled={readOnly} onchange={handleChange}></lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <div>Does the Child have Special Needs?</div>
+                            <lightning-radio-group variant="label-hidden" name="Does_the_child_have_special_needs__c" value={rateRecord.Does_the_child_have_special_needs__c} options={options} disabled={readOnly} onchange={handleChange}></lightning-radio-group>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-combobox label="Primary Basis for Special Needs?" name="Primary_Basics_for_Special_Needs__c" value={rateRecord.Primary_Basics_for_Special_Needs__c} disabled={readOnly} onchange={handleChange} options={primaryBasisPickValue}></lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div>Adoptive Parent1 : {adoptiveParent1}</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div>Provider ID : {providerId}</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input label="Adoptive Family's Relationship to Child" name="Adoptive_Family_s_Relationship_to_Child__c" value={rateRecord.Adoptive_Family_s_Relationship_to_Child__c} disabled={readOnly} onchange={handleChange}></lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div> </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div>Adoptive Parent2 : {adoptiveParent2}</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div>Provider ID : {providerId}</div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div> </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" class="slds-p-around_small">
+                            <div></div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <div class="slds-p-left_small"><lightning-textarea label="Note" name="Note__c" value={rateRecord.Note__c} disabled={readOnly} onchange={handleChange}></lightning-textarea></div>
+                    </span>
+            <span slot="modalFooter">
+                <lightning-button label="SAVE" icon-name="utility:save" variant="brand" onclick={handleSave} disabled={readOnly} ></lightning-button>
+                <template if:false={showApprovalBtn}>
+                    <lightning-button label="SEND FOR APPROVAL" variant="brand" class="slds-p-left_small"  onclick={handleSubmitForApproval} disabled={enableSendforApproval}></lightning-button>
+                </template>
+                <lightning-button label="CANCEL" class="slds-p-left_small" icon-name="utility:close" variant="destructive" onclick={closeRateModal}></lightning-button>
+            </span>
+        </c-modal-component>
+    </div>
+    <div class="eventModal" if:true={showSubmitforApprovalModal}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  alternative-text="close"
+                                                  onclick={closeSubmiteModal}
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Submit For Approval</h2>
+                    </span>
+            <span slot="modalBody">
+                <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                </c-custom-lookup-component>
+            </span>
+            <span slot="modalFooter">
+                <div class="slds-text-align_right">
+                
+                    <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                    <lightning-button label="Cancel" variant="destructive" title="Cancel" icon-name="utility:close" onclick={closeSubmiteModal} class= "slds-var-p-around_x-small"></lightning-button>
+                </div>
+              </span>
+        </c-modal-component>
+    </div>
+</template>

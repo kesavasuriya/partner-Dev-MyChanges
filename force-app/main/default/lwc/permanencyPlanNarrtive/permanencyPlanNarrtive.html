@@ -1,0 +1,24 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+</div>
+<h5 class="padding5px"><b>NARRATIVE</b></h5>
+<lightning-layout>
+    <lightning-layout-item size="4" padding="around-small">
+        <lightning-input date-style="short" type="date" label="Adoption Plan Begin Date" name="Adoption_Plan_Begin_Date__c" value={permanencyPlanRec.Adoption_Plan_Begin_Date__c} onchange={handleChange} disabled={readOnly} required></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+<h5><b>BIO-PSYCHO-SOCIO-CULTURAL HISTORY FOR CHILD PRESENTATION AND DISCLOSURE</b></h5>
+<lightning-layout>
+    <lightning-layout-item size="12" padding="around-small">
+        <lightning-input-rich-text name="Notes_for_narrative__c" value={permanencyPlanRec.Notes_for_narrative__c} variant="label-hidden" onchange={handleChange} disabled={readOnly}></lightning-input-rich-text>
+    </lightning-layout-item>
+</lightning-layout>
+<div class="alignPaddingTop10px">
+    <lightning-button label="SAVE AND PROCEED TO NEXT" title="SAVE AND PROCEED TO NEXT" icon-name="utility:jump_to_right" variant="brand" onclick={handleSaveNext} class="slds-var-p-around_x-small"></lightning-button>
+    <lightning-button label="SAVE" title="SAVE" variant="brand" icon-name="utility:save" onclick={handleSaveNext} class="slds-var-p-around_x-small"></lightning-button>
+</div>
+
+</template>

@@ -1,0 +1,366 @@
+<template>
+  <template if:true={isLoading}>
+    <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+  </template>
+
+
+
+  <div class="slds-card_boundary">
+    <lightning-card title="Hearing Details">
+      <lightning-button slot="actions" label="Scheduled Hearing" title="Scheduled Hearing" variant="brand-outline"
+        onclick={showHearingDetail} class="slds-var-p-around_x-small"></lightning-button>
+      <lightning-button slot="actions" label="Court Case Number" title="Court Case Number" variant="brand"
+        onclick={showCourtCaseNumber} class="slds-var-p-around_x-small"></lightning-button>
+
+      <div class="slds-p-top_medium">
+        <table class="slds-table slds-table_bordered slds-border_left slds-border_right css-serial">
+          <thead>
+            <tr class="slds-line-height_reset">
+              <th class="wrapText" scope="col">
+                <div title="S.No">S.No</div>
+              </th>
+              <th class="wrapText" scope="col">
+                <div title="Court Petition Id">Court Case Id</div>
+              </th>
+              <th class="wrapText" scope="col">
+                <div title="Hearing Clients">Hearing Clients</div>
+              </th>
+              <th class="wrapText" scope="col">
+                <div title="Scheduled Hearing Type">Scheduled Hearing Type</div>
+              </th>
+              <th class="wrapText" scope="col">
+                <div title="Hearing Date/Time">Hearing Date/Time</div>
+              </th>
+              <th class="wrapText" scope="col">
+                <div title="Hearing Status">Hearing Status</div>
+              </th>
+              <th class="wrapText" scope="col">
+                <div title="Hearing Notes">Hearing Notes</div>
+              </th>
+              <th class="wrapText" scope="col">
+                <div title="Action">Action</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <template for:each={visibleData} for:index="index" for:item="row">
+              <tr key={row.Id}>
+                <td class="wrapText">
+                  <div id={index} title={index}></div>
+                </td>
+                <td class="wrapText">
+                  <div id={index} title={row.CourtPetition_Id__c}>{row.CourtPetition_Id__c}</div>
+                </td>
+                <td class="wrapText">
+                  <template if:true={row.Court__r.Other_Client_named_on_Petition__r}>
+                    <div id={index} title={row.Court__r.Petition_for_Child__r.Name}>
+                      <p>{row.Court__r.Petition_for_Child__r.Name}</p>
+                      <div class="slds-p-top_small"></div>
+                      <h1><b>Other Client Name</b></h1>
+                      <div class="slds-p-top_small"></div>
+                      <p>{row.Court__r.Other_Client_named_on_Petition__r.Name}</p>
+                    </div>
+                  </template>
+                  <template if:false={row.Court__r.Other_Client_named_on_Petition__r}>
+                    <div id={index} title={row.Court__r.Petition_for_Child__r.Name}>
+                      {row.Court__r.Petition_for_Child__r.Name}</div>
+                  </template>
+                </td>
+                <td class="wrapText">
+                  <div id={index} title={row.Scheduled_Hearing_Type__c}>{row.Scheduled_Hearing_Type__c}</div>
+                </td>
+                <td class="wrapText">
+                  <lightning-input type="datetime" name="input6" label="" value={row.Hearing_Date_and_Time__c}
+                    variant="label-hidden" date-style="short" disabled></lightning-input>
+                  <!--<div id={index} title={row.Hearing_Date_and_Time__c}>{row.Hearing_Date_and_Time__c}</div>-->
+                </td>
+                <td class="wrapText">
+                  <div id={index} title={row.Hearing_Status__c}>{row.Hearing_Status__c}</div>
+                </td>
+                <td class="wrapText">
+                  <div id={index} title={row.Hearing_Notes__c}>{row.Hearing_Notes__c}</div>
+                </td>
+                <td class="wrapText">
+                  <div id={index}>
+                    <lightning-button-icon icon-name="utility:edit" title="Edit" onclick={showEditModal}
+                      data-name={row.Id}></lightning-button-icon>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <div slot="footer">
+          <template if:true={showChild}>
+            <c-pagination-l-w-c total-list={hearingScheduledList} onupdate={paginationHandler}></c-pagination-l-w-c>
+          </template>
+        </div>
+      </div>
+    </lightning-card>
+  </div>
+
+
+  <template if:true={showHearingModal}>
+    <div class="eventModal" if:true={showHearingModal}>
+      <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open'>
+        <span slot="modalClose">
+          <lightning-button-icon icon-name="utility:close" onclick={closeModal} alternative-text="close"
+            variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+          <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Upcoming Hearing</h2>
+        </span>
+
+        <span slot="modalBody">
+
+
+
+          <lightning-combobox name="Court__c" value={hearingRec.Court__c} label="Court Petition ID"
+            placeholder="-Select-" options={petitionIdList} onchange={handleChange} required> </lightning-combobox>
+          <br />
+          <template if:true={showPetitionClient}>
+
+          </template>
+          <lightning-dual-listbox name="Scheduled_Hearing_Type__c" label="Scheduled Hearing Type"
+            source-label="Available" selected-label="Selected" field-level-help="Select your hearing types"
+            options={hearingTypeList} onchange={handleChange} required>
+          </lightning-dual-listbox>
+          <!--<lightning-combobox name="SAFEC_Caregiver__c" label="Scheduled Hearing Type" value="" placeholder="-Select-" options={cargiverNamesPicklist} onchange={handleChange} required> </lightning-combobox>-->
+          <lightning-input date-style="short" type="datetime" value={hearingRec.Hearing_Date_and_Time__c}
+            name="Hearing_Date_and_Time__c" label="Hearing Date/Time value" onchange={handleChange} required>
+          </lightning-input>
+        </span>
+
+        <span slot="modalFooter">
+          <div class="slds-text-align_right">
+            <lightning-button label="Cancel" title="Cancel" onclick={closeModal} class="slds-var-p-around_x-small">
+            </lightning-button>
+
+            <lightning-button label="Clear" title="Clear" onclick={clearHearingDetail} variant="brand-outline"
+              class="slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+            <lightning-button label="Add Hearing" title="Add Hearing" onclick={addHearingDetail} variant="brand"
+              class="slds-var-p-around_x-small"></lightning-button>
+
+          </div>
+        </span>
+      </c-modal-component>
+    </div>
+  </template>
+  <template if:true={showCourtCaseNumberModal}>
+
+    <div class="eventModal" if:true={showCourtCaseNumberModal}>
+      <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_large'>
+        <span slot="modalClose">
+          <lightning-button-icon icon-name="utility:close" onclick={closeModal} alternative-text="close"
+            variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+          <h2 class="slds-text-heading_medium slds-hyphenate">Court Case Numbers</h2>
+        </span>
+
+        <span slot="modalBody">
+          <lightning-card title="">
+            <lightning-button label="Court Case Number" slot="actions" onclick={addCourtCaseNumber}></lightning-button>
+            <template if:true={addCaseNumber}>
+              <lightning-layout>
+                <lightning-layout-item size="3" padding="around-small">
+                  <lightning-combobox name="Client_Name_Case_Number__c" options={clientPickList}
+                    value={courtCaseNumber.Client_Name_Case_Number__c} label="Client"
+                    onchange={handleCourtCaseNumberChange}></lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item size="3" padding="around-small">
+                  <lightning-input type="text" label="Case Number" name="Court_Case_Number__c"
+                    value={courtCaseNumber.Court_Case_Number__c} onchange={handleCourtCaseNumberChange}>
+                  </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="3" padding="around-small">
+                  <lightning-input type="date" date-style="short" label="Start Date" name="Court_Start_Date__c"
+                    value={courtCaseNumber.Court_Start_Date__c} onchange={handleCourtCaseNumberChange}>
+                  </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="3" padding="around-small">
+                  <lightning-input type="date" date-style="short" label="End Date" name="Court_End_Date__c"
+                    value={courtCaseNumber.Court_End_Date__c} onchange={handleCourtCaseNumberChange}></lightning-input>
+                </lightning-layout-item>
+              </lightning-layout>
+
+              <div class="slds-text-align_right">
+                <lightning-button label="Cancel" title="close" onclick={closeModal} class="slds-var-p-around_x-small">
+                </lightning-button>
+
+                <lightning-button label="Save" title="Save" onclick={handleSaveCaseNumber} variant="brand"
+                  class="slds-var-p-around_x-small"></lightning-button>
+              </div>
+
+            </template>
+
+            <div class="slds-p-top_medium">
+              <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                <thead>
+                  <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                      <div title="S.No">Client Name</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                      <div title="Court Petition Id">Court Case Number</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                      <div title="Start Date">Start Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                      <div title="End Date">End Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                      <div title="Action">Action</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template for:each={visibleData1} for:index="index" for:item="row">
+                    <tr key={row.Id}>
+
+                      <td class="wrapText">
+                        <div id={index} title={row.Client_Name_Case_Number__r.Name}>
+                          {row.Client_Name_Case_Number__r.Name}</div>
+                      </td>
+                      <td class="wrapText">
+                        <div id={index} title={row.Court_Case_Number__c}>{row.Court_Case_Number__c}</div>
+                      </td>
+                      <td class="wrapText">
+                        <div id={index} title={row.Court_Start_Date__c}>{row.Court_Start_Date__c}</div>
+                      </td>
+
+                      <td class="wrapText">
+                        <div id={index} title={row.Court_End_Date__c}>{row.Court_End_Date__c}</div>
+                      </td>
+
+                      <td class="wrapText">
+                        <div id={index}>
+                          <lightning-button-icon icon-name="utility:edit" title="Edit" onclick={handleCaseNumberEdit}
+                            data-name={row.Id}></lightning-button-icon>
+                          <lightning-button-icon icon-name="utility:delete" title="Delete"
+                            onclick={handleCaseNumberDelete} data-name={row.Id}></lightning-button-icon>
+
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+              <div>
+                <template if:true={showChild1}>
+                  <c-pagination-l-w-c total-list={courtCaseNumberList} onupdate={paginationHandler1}>
+                  </c-pagination-l-w-c>
+                </template>
+              </div>
+            </div>
+
+          </lightning-card>
+        </span>
+        <span slot="modalFooter">
+          <div class="slds-text-align_right">
+            <lightning-button label="Close" title="close" onclick={closeModal} class="slds-var-p-around_x-small">
+            </lightning-button>
+          </div>
+        </span>
+      </c-modal-component>
+    </div>
+  </template>
+
+  <template if:true={showHearingEditModal}>
+
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+      <span slot="modalClose">
+        <lightning-button-icon icon-name="utility:close" onclick={closeModal} alternative-text="close"
+          variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Hearing Details</h2>
+      </span>
+      <span slot="modalBody">
+        <lightning-layout>
+          <lightning-layout-item size="3" padding="around-small">
+            <h1><b>Court Petition ID:</b></h1>
+          </lightning-layout-item>
+          <lightning-layout-item size="3" padding="around-small">
+            <p><b>{getHearingEditRec.CourtPetition_Id__c}</b></p>
+          </lightning-layout-item>
+          <lightning-layout-item size="3" padding="around-small">
+            <h1><b>Petition Type:</b></h1>
+          </lightning-layout-item>
+          <lightning-layout-item size="3" padding="around-small">
+            <p><b>{petitionType}</b></p>
+          </lightning-layout-item>
+        </lightning-layout>
+
+        <div class="slds-border_top"></div>
+        <lightning-layout multiple-rows="true">
+          <lightning-layout-item size="12" padding="around-small">
+            <lightning-dual-listbox name="Scheduled_Hearing_Type__c" label="Scheduled Hearing Type"
+              source-label="Available" selected-label="Selected" value={hearintypelistvalue}
+              field-level-help="Select your hearing types" options={hearingTypeList} onchange={handleEdit}>
+            </lightning-dual-listbox>
+          </lightning-layout-item>
+          <lightning-layout-item size="12" padding="around-small">
+            <lightning-textarea label="Hearing Notes" name="Hearing_Notes__c" value={getHearingEditRec.Hearing_Notes__c}
+              onchange={handleEdit}></lightning-textarea>
+          </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small">
+            <lightning-input type="datetime" date-style="short" name="Hearing_Date_and_Time__c" label="Hearing Date"
+              value={getHearingEditRec.Hearing_Date_and_Time__c} onchange={handleEdit}></lightning-input>
+          </lightning-layout-item>
+          <lightning-layout-item size="3" padding="around-small">
+            <lightning-combobox label="State" name="State__c" value={getHearingEditRec.State__c} placeholder="-Select-"
+              options={stateList} onchange={handleEdit}></lightning-combobox>
+          </lightning-layout-item>
+          <lightning-layout-item size="3" padding="around-small">
+            <lightning-combobox label="County" name="County__c" value={getHearingEditRec.County__c}
+              placeholder="-Select-" options={countryList} onchange={handleEdit}></lightning-combobox>
+          </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small">
+            <lightning-input label="Magistrates's Name" value={getHearingEditRec.Magistrate_s_Name__c}
+              onchange={handleEdit} name="Magistrate_s_Name__c"></lightning-input>
+          </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small">
+            <lightning-combobox label="Hearing Status" name="Hearing_Status__c"
+              value={getHearingEditRec.Hearing_Status__c} placeholder="-Select-" required options={hearingStatusList}
+              onchange={handleEdit}></lightning-combobox>
+          </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small">
+            <lightning-input label="Judge's Name" value={getHearingEditRec.Judge_s_Name__c} onchange={handleEdit}
+              name="Judge_s_Name__c"></lightning-input>
+          </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small">
+
+          </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small">
+            <lightning-input type="checkbox" label="No further involvement with court" class="slds-p-top_medium"
+              name="No_Further_Involvement_With_Court__c"
+              checked={getHearingEditRec.No_Further_Involvement_With_Court__c} onchange={handleEdit}></lightning-input>
+          </lightning-layout-item>
+          <lightning-layout-item size="6" padding="around-small">
+
+            <lightning-input type="checkbox" label="Exception/Appeal Field" class="slds-p-top_medium"
+              name="Exception_Appeal_Field__c" checked={getHearingEditRec.Exception_Appeal_Field__c}
+              onchange={handleEdit}>
+            </lightning-input>
+          </lightning-layout-item>
+          <!--<template if:true={scheduleNextHear}>
+                  </template>-->
+          <lightning-layout-item size="6" padding="around-small">
+
+            <lightning-input type="checkbox" label="Is there another court hearing scheduled?" class="slds-p-top_medium"
+              name="Is_There_Another_Court_Hearing_Scheduled__c"
+              checked={getHearingEditRec.Is_There_Another_Court_Hearing_Scheduled__c} onchange={handleEdit}>
+            </lightning-input>
+          </lightning-layout-item>
+        </lightning-layout>
+
+      </span>
+      <span slot="modalFooter">
+        <lightning-button class="slds-p-right_small" label="Cancel" onclick={closeModal} title="Cancel">
+        </lightning-button>
+        <lightning-button variant="brand" disabled={enableButton} label="Save" title="Save" onclick={updateHearingRec}>
+        </lightning-button>
+      </span>
+      </div>
+      </div>
+    </c-modal-component>
+
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>

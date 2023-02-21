@@ -1,0 +1,69 @@
+<template>
+    <div class="slds-text-align_right slds-p-bottom_small">
+        <lightning-button label="Add Goal" icon-name="utility:add" variant="brand" onclick={handleAddGoal}></lightning-button>
+    </div>
+    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th scope="col">
+                    <div title="Short Term Goals">Short Term Goals</div>
+                </th>
+                <th scope="col">
+                    <div title="Plan of Action">Plan of Action</div>
+                </th>
+                <th scope="col">
+                    <div title="Responsible Parties">Responsible Parties</div>
+                </th>
+                <th scope="col">
+                    <div title="Projected Completion Date">Projected Completion Date</div>
+                </th>
+                <th  scope="col">
+                    <div title="Action">Action</div>
+                </th>
+            </tr>
+        </thead>
+        <template if:true={showTable}>
+
+            <tbody>
+                <template for:each={localList} for:item="row" for:index="index">
+                    <tr key={row.index}>
+                        <td>
+                            <lightning-input label=" " variant="label-hidden" value={row.Name} name="Name" data-index={index} onchange={handleChange}></lightning-input>
+                        </td>
+                        <td>
+                            <div class="slds-p-bottom_small">
+                                <lightning-button-icon icon-name="utility:add" size="small" onclick={handlePlanOfAction} data-index={index}></lightning-button-icon>
+                            </div>
+                            <template for:each={row.actionList} for:item="actionRow" for:index="rowIndex">
+                                <div key={actionRow.rowIndex}>
+                                    <div class="display">
+                                        <lightning-input label=" " variant="label-hidden" value={actionRow} data-index={index} data-actionindex={rowIndex} name="Plan_of_Action__c" onchange={handleChange}>
+                                        </lightning-input>
+                                    </div>
+                                    <div class="slds-p-left_x-small display"><lightning-button-icon icon-name="utility:delete" size="small" onclick={handleActionDelete}  data-index={index} data-actionindex={rowIndex}></lightning-button-icon>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </template>
+                        </td>
+                        <td>
+                            <lightning-combobox label=" " variant="label-hidden" value={row.Responsible_Parties__c} options={parties} data-index={index} name="Responsible_Parties__c" onchange={handleChange}></lightning-combobox>
+                        </td>
+                        <td>
+                            <lightning-input type="date" label=" " variant="label-hidden" value={row.Projected_completion_date__c} data-index={index} name="Projected_completion_date__c" date-style="short" onchange={handleChange}></lightning-input>
+                        </td>
+                        <td>
+                            <lightning-button-icon icon-name="utility:delete" onclick={handleDelete} data-rowid={row.Id} data-rowname={row.Name}></lightning-button-icon>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+
+        </template>
+        
+    </table>
+    <template if:false={showTable}>
+        <div class="slds-text-align_center slds-p-bottom_medium"><b>No records found</b></div>
+    </template>
+</template>

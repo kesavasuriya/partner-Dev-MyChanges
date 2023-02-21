@@ -1,0 +1,63 @@
+<template>
+
+    <lightning-card>
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+
+        <template if:false={showPersons}>
+            <lightning-button label="Back" slot="actions" onclick={handleClick}></lightning-button>
+        </template>
+
+        <template if:true={showPersons}>
+
+            <div class="slds-p-bottom_small"><b>{personsTitle}</b></div>
+            <lightning-datatable key-field="id" data={persons} columns={personColumns} show-row-number-column="true"
+                max-row-selection="1" onrowselection={handleRowSelection}>
+            </lightning-datatable>
+
+        </template>
+
+        <template if:true={showHeader}>
+
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item size="4" padding="around-small">
+                    Client Name : <b>{selectedRow.Name}</b>
+                </lightning-layout-item>
+                <lightning-layout-item size="4" padding="around-small">
+                    Casevault PID : <b>{selectedRow.Casevault_PID__c}</b>
+                </lightning-layout-item>
+            </lightning-layout>
+
+        </template>
+
+        <template if:true={showFolders}>
+
+            <lightning-layout multiple-rows="true">
+
+                <template for:each={personFolders} for:item="folder">
+
+                    <lightning-layout-item key={folder.label} size="4" padding="around-small">
+                        <lightning-button name={folder.name} icon-name="utility:open_folder" label={folder.label} onclick={handleFolder}>
+                        </lightning-button>
+                    </lightning-layout-item>
+
+                </template>
+
+
+            </lightning-layout>
+        </template>
+
+        <template if:true={showFiles}>
+
+            <div class="slds-p-bottom_small"><b>{documentsTitle}</b></div>
+            <lightning-datatable key-field="id" data={documents} columns={fileColumns} hide-checkbox-column="true"
+                show-row-number-column="true" default-sort-direction={defaultSortDirection}
+                sorted-direction={sortDirection} sorted-by={sortedBy} onsort={onHandleSort}></lightning-datatable>
+
+        </template>
+
+    </lightning-card>
+
+</template>

@@ -1,0 +1,7 @@
+<template>
+        <template if:true={isSpinner}>
+                <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+        </template>
+        <lightning-datatable key-field="id" data={petitionRecList} columns={columns} hide-checkbox-column onrowaction={handleRowAction} show-row-number-column="true">
+        </lightning-datatable>
+</template>

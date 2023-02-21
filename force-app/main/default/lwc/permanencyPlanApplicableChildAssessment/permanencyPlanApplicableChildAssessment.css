@@ -1,0 +1,15 @@
+.x-accordion-heading .x-accordion-toggle.collapsed {
+    background-color: green !important;
+}
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+.img {
+    height:150px;
+    width:300px;
+}
+.header {
+    background-color:#1798c1; 
+    padding:7px; color:white;
+}

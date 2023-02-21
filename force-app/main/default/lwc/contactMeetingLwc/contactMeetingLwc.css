@@ -1,0 +1,9 @@
+.slds-modal__container {
+    max-width: 90rem !important;
+    width: 90% !important;
+}
+
+.img {
+    height: 70px;
+    width: 180px;
+}

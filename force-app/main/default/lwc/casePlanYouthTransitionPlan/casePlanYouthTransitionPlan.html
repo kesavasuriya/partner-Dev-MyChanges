@@ -1,0 +1,25 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+       <div class="slds-p-bottom_large"><h4><b>Please select Youth Transition Plan to view data:</b></h4></div>
+
+    <div class="slds-border_left slds-border_right slds-border_top">
+        <lightning-datatable key-field="id"
+
+         data={youthTransitionPlanList} 
+         columns={columns} 
+         hide-checkbox-column 
+         show-row-number-column="true">
+
+        </lightning-datatable>
+
+    </div>
+        <template if:false={showTable}>
+            <div class="slds-text-align_center slds-p-top_large slds-text-heading_medium">
+                No Records Found.
+            </div>        
+        </template>
+</template>

@@ -1,0 +1,21 @@
+.THIS .modalBody{
+    overflow: initial;
+}
+.alignRight {
+    text-align: right;
+}
+.paddingTop {
+    padding-top: 10px;
+}
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.paddingLeft {
+    padding-left:5px;
+}
+
+.viewDateOutModal{
+    overflow: initial !important;
+}

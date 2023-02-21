@@ -1,0 +1,65 @@
+<template>
+        
+            <div class="spinner">
+                <template if:true={loading}>
+                    <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+                </template>
+</div>
+
+
+
+<template if:true={showChild}>
+                            <lightning-progress-indicator current-step={currentadoptionStage} type="path" variant="base">
+                                <template for:each={adoptionPlanningpicklist} for:item="adoptionPlan" for:index="index">
+                                    <lightning-progress-step class="slds-path__item slds-is-incomplete" label={adoptionPlan.label} value={adoptionPlan.value} key={adoptionPlan.value} onclick={stageAction}></lightning-progress-step>
+                                </template>
+
+</lightning-progress-indicator>
+<div class="slds-p-around_small"></div>
+<div class="slds-p-top_large slds-box">
+    <lightning-layout>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <div>
+                <h1><b>Client Name :</b></h1>
+            </div>
+            <div><b>{permanencyPlanRec.Contact__r.Name}</b></div>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <div>
+                <h1><b>D.O.B : </b></h1>
+            </div>
+            <div>
+                <b><lightning-formatted-date-time value={permanencyPlanRec.Contact__r.Date_of_Birth__c} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></b>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <div>
+                <h1><b>Gender : </b></h1>
+            </div>
+            <div><b>{permanencyPlanRec.Contact__r.Gender__c}</b></div>
+        </lightning-layout-item>
+    </lightning-layout>
+</div>
+</template>
+
+
+<div class="slds-p-top_medium">
+
+    <template if:true={showTPRRecommendation}>
+                    <c-permanency-plan-t-p-r-recommendation permanency-rec-id={recordId} onstage={handleStage}></c-permanency-plan-t-p-r-recommendation>
+                </template>
+    <template if:true={showTPR}>
+                    <c-permanency-plan-t-p-r permanency-rec-id={recordId} onstage={handleStage} servicecase-id={permanencyPlanRec.Service_Case__c}></c-permanency-plan-t-p-r>
+                </template>
+    <template if:true={showAdoptionPlanning}>
+                    <c-permanency-plan-adoption-planning permanency-rec-id={recordId}></c-permanency-plan-adoption-planning>
+                </template>
+    <template if:true={showAdoptionSubsidy}>
+                    <c-permanency-plan-adoption-subsidy permanency-rec-id={recordId}></c-permanency-plan-adoption-subsidy>
+                </template>
+    <template if:true={showBreaktheLink}>
+                    <c-permanency-plan-breakthe-link permanency-rec-id={recordId}></c-permanency-plan-breakthe-link>
+                </template>
+</div>
+
+</template>

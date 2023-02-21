@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <propertyType name="T" extends="SObject" label="Select a Object"/>
+            <property name="contact" type="String[]" label="contactLists"/>
+            <property name="goalList" type="{T[]}" label="recordLists"/>
+             <property name="createLists" type="{T[]}" label="createLists"/>
+             <property name="updateLists" type="{T[]}" label="updateLists"/>
+            <property name="deleteLists" type="{T[]}" label="deleteLists"/>
+             <property name="goalRec" type="{T}" label="record"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

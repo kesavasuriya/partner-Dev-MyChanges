@@ -1,0 +1,327 @@
+<template>
+        <lightning-card  variant="Narrow"  title="">
+                <div><h1>Petition (CINA)</h1></div>
+                <div><h1>Child In need of Assitance</h1></div>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-p-around_small" size="12">
+                        <lightning-combobox name="New_Review__c" label="New Review" placeholder="-Select-" options={newReviewPick} onchange={handleChange} required> </lightning-combobox>
+                    </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                       <lightning-layout-item class="slds-p-around_small" size="12">
+                           <lightning-combobox name="Emergency_Non_Emergency__c" label="Emergency/Non-Emergency" value="" placeholder="-Select-" options={emerengcyPick} onchange={handleChange} required> </lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-p-around_small" size="12">
+                            <lightning-input  type="text" name="Police_Complaint_No_if_not_foster_home__c" label="Police Complaint No(if not foster home):"></lightning-input>
+                         </lightning-layout-item>
+                    </lightning-layout>
+                    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Name of Child">Name of Child  </div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="D.O.B:">D.O.B </div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Race">Race</div>
+                                </th>
+                                <th class="" scope="col">
+                                        <div class="slds-truncate" title="Gender">Gender</div>
+                                    </th>
+                            </tr>
+                       </thead>
+                   </table>
+                   <lightning-layout>
+                        <lightning-layout-item class="slds-p-around_small" size="12">
+                            <lightning-dual-listbox name="Child_s_Current_placement_if_not_foster__c"
+                                                    label="2.Child's Current placement (If not foster home) :"
+                                                    source-label="Available"
+                                                    selected-label="Selected"
+                                                    options={childCurrentPlacementpick}
+                                                    onchange={handleChange}
+                                                    required>
+                            </lightning-dual-listbox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                            <lightning-layout-item class="slds-p-around_small" size="4">
+                                    <lightning-input  type="text" name="Kin_Placement_Name__c" label="Kin Placement Name" onchange={handleChange}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="4">
+                                    <lightning-input  type="text" name="Address_ZipCode__c" label="Address/ZipCode" onchange={handleChange}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="4">
+                                    <lightning-input  type="text" name="Plaement_Relationship__c" label="Relationship" onchange={handleChange}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="8">
+                                        <p>The person(s) with Legal Custody is:</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="4">
+                                            <lightning-combobox name="The_person_s_with_Legacy_Custody_is__c" varient="label-hidden" value="" placeholder="-Select-" options={parentNamePick} onchange={handleChange} required> </lightning-combobox>
+                                    </lightning-layout-item>
+                              </lightning-layout>
+                    </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="8">
+                                        <p>The person(s) whom has/had Physical Custody</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="4">
+                                            <lightning-combobox name="The_person_s_whom_has_had_Physical__c" varient="label-hidden" value="" placeholder="-Select-" options={parentNamePick} onchange={handleChange} required> </lightning-combobox>
+                                    </lightning-layout-item>
+                            </lightning-layout>                
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="8">
+                                        <p>The child's relationship to the Legal custodian is </p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="4">
+                                        <lightning-input  type="text" name="The_child_s_relationship_to_the_Legal__c" varient="label-hidden" onchange={handleChange}></lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="8">
+                                    <p>3.Parent 1 Name </p>
+                                </lightning-layout-item>
+                                <lightning-layout-item class="slds-p-around_small" size="4">
+                                    <lightning-combobox name="Parent_1_Name__c" variant="label-hidden" value
+                                    ="" placeholder="-Select-" options={parentNamePick} onchange={handleChange}> </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="3">
+                                        <p>Id:</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="3">
+                                        <p>Address:</Address></p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="2">
+                                        <p>D.O.B:</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="2">
+                                        <p>Race:</p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="2">
+                                        <p>SSN:</p>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="12">
+                                        <lightning-input  type="checkbox" name="The_Parent_1_has_been_notified__c" label="The Parent 1 has been notified of this action by DSS" onchange={handleChange}></lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="12">
+                                        <lightning-input  type="checkbox" name="Reason_for_not_notifying__c" label="Reason for not notifying:" onchange={handleChange}></lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="8">
+                                        <p>4.Parent 2 Name </p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="4">
+                                        <lightning-combobox name="Parent_2_Name__c" varient="label-hidden" value={} placeholder="-Select-" options={parentNamePick} onchange={handleChange}> </lightning-combobox>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                                <lightning-layout>
+                                        <lightning-layout-item class="slds-p-around_small" size="3">
+                                            <p>Id:</p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="slds-p-around_small" size="3">
+                                            <p>Address:</Address></p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="slds-p-around_small" size="2">
+                                            <p>D.O.B:</p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="slds-p-around_small" size="2">
+                                            <p>Race:</p>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="slds-p-around_small" size="2">
+                                            <p>SSN:</p>
+                                        </lightning-layout-item>
+                                </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                        <lightning-input  type="checkbox" name="The_Parent_2_has_been_notified__c" label="The Parent 2 has been notified of this action by DSS" onchange={handleChange}></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="12">
+                                        <lightning-input  type="checkbox" name="Parent2_Reason_for_not_notifying__c" label="Reason for not notifying:" onchange={handleChange}></lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="12">
+                                        <p>5.Case Worker Details:</p>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                   <lightning-input  type="text" name="Case_Worker_Name__c" label="Name" onchange={handleChange}></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                    <lightning-input  type="number" name="Case_Worker_Phone_Number__c" label="Phone Number" onchange={handleChange}></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="12">
+                                        <p>6.Supervisor Details:</p>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                   <lightning-input  type="text" name="Supervisor_Name__c" label="Name" onchange={handleChange}></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                    <lightning-input  type="number" name="Supervisor_Phone_Number__c" label="Phone Number" onchange={handleChange}></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="12">
+                                        <lightning-input  type="date" name="Date_Request_Completed__c" label="7.Date Requested Completed" onchange={handleChange}></lightning-input>    
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                   <lightning-input  type="date" name="Child_in_Shelter_Care_on__c" label="8.Child in Shelter Care on" onchange={handleChange}></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="12">
+                                       <lightning-input  type="date" name="Date_of_Emergency_Shelter_Care__c" label="9.Date of Emergency Shelter Care" onchange={handleChange}></lightning-input>
+                                    </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                    <lightning-combobox name="X10_Previous_Juvenile_Court__c" label="10.Previous Juvenile Court:" value="" placeholder="-Select-" options={previousJuvenileCourtPick} onchange={handleChange} required> </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                    <p>Summary of Problems:</p>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item class="slds-p-around_small" size="12">
+                                    <h1> PHYSICAL ABUSE RESPONEND/SIBILING</h1>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                    <lightning-layout-item class="slds-p-around_small" size="4">
+                                        <lightning-input  type="text" name="Nature_of_Physical_Abuse__c" label="Nature of Physical Abuse"></lightning-input>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="4">
+                                        <lightning-input  type="text" name="Medical_Exam_Where__c" label="Medical Exam?Where?"></lightning-input>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="slds-p-around_small" size="4">
+                                        <lightning-input  type="text" name="Documentation_of_injury__c" label="Documentation of injury"></lightning-input>
+                                    </lightning-layout-item>
+                          </lightning-layout>
+                          <lightning-layout>
+                             <lightning-layout-item class="slds-p-around_small" size="4">
+                                <lightning-input  type="text" name="Failed_to_protect_mother_father__c" label="Failed to protect:(mother/father)"></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="slds-p-around_small" size="4">
+                                <lightning-input  type="text" name="Respondent_disclosed_to_Disclosed_what__c" label="Respondent disclosed to: Disclosed what?"></lightning-input>
+                            </lightning-layout-item>
+                          </lightning-layout>
+
+        <div><b>SEXUAL ABUSE OF RESPONDENT/SIBILING</b></div>
+        <lightning-layout>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Nature of Sexual Abuse:(mother/father)did what?" name="Nature_of_Sexual_Abuse_mother_father__c" value="" placeholder="Nature of Sexual Abuse:(mother/father)did what?" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Medical Exam?Where?" name="Sexual_Medical_Exam_Where__c" value="" placeholder="Medical Exam?Where?" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Documentation of injury" name="Sexual_Documentation_of_injury__c" value="" placeholder="Documentation of injury" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Failed to protect:(mother/father)" name="Sexual_Failed_to_protect_mother_father__c" value="" placeholder="Failed to protect:(mother/father)" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Respondent disclosed to:Disclosed what?" name="Sexual_Respondent_disclosed_to__c" value="" placeholder="Respondent disclosed to:Disclosed what?" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div><b>NEGLECT OF RESPONDENT/SIBILING</b></div>
+        <lightning-layout>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Nature of Neglect:(mother/father)did what?" name="Nature_of_neglect_mother_father__c" value="" placeholder="Nature of Neglect:(mother/father)did what?" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Medical Exam?Where?" name="Neglect_Medical_Exam_Where__c" value="" placeholder="Medical Exam?Where?" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Documentation of Neglect" name="Document_of_Neglect__c" value="" placeholder="Documentation of Neglect" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Failed to protect:(mother/father)" name="Neglect_Failed_to_protect_mother_father__c" value="" placeholder="Failed to protect:(mother/father)" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" class="slds-p-around_small">
+                <lightning-input type="text" label="Respondent disclosed to:Disclosed what?" name="Neglect_Respondent_disclosed__c" value="" placeholder="Respondent disclosed to:Disclosed what?" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item>
+                <div><b>ALTERNATIVE GROUNDS for CINA PETITION:</b></div>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item class="slds-p-around_small" size="8">
+                <p>Within the first 12 month of the child's birth, was drug treatment made available to the mother and the mother refuses the recommended level of treatment for substance use disorder, or does not successfully complete the recommended level of treatment?:</p>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <lightning-combobox name="Within_the_first_12_month_of_the_child_s__c" varient="label-hidden" value="" placeholder="-Select-" options={previousJuvenileCourtPick} onchange={handleChange} > </lightning-combobox>
+            </lightning-layout-item>
+      </lightning-layout>
+      <lightning-layout>
+        <lightning-layout-item class="slds-p-around_small" size="8">
+            <p>Severe/chronic developmental disability:</p>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-combobox name="Severe_chronic_development_disability__c" varient="label-hidden" value="" placeholder="-Select-" options={previousJuvenileCourtPick} onchange={handleChange} > </lightning-combobox>
+        </lightning-layout-item>
+  </lightning-layout>
+  <lightning-layout>
+    <lightning-layout-item class="slds-p-around_small" size="8">
+        <p>Mental health disorder (behavioral or emotional illness that result from a pyschiatric or neurclogical disorder):</p>
+    </lightning-layout-item>
+    <lightning-layout-item class="slds-p-around_small" size="4">
+        <lightning-combobox name="Mental_health_disorder__c" varient="label-hidden" value="" placeholder="-Select-" options={previousJuvenileCourtPick} onchange={handleChange} > </lightning-combobox>
+    </lightning-layout-item>
+</lightning-layout>
+<div><b>CONDITION OF THE RESPONDENT</b></div>
+<lightning-layout>
+    <lightning-layout-item size="6" class="slds-p-around_small">
+        <div>A.Physical/mental issues of the Respondent</div>
+    </lightning-layout-item>
+    <lightning-layout-item size="6" class="slds-p-around_small">
+        <lightning-input type="text" label="A.Physical/mental issues of the Respondent" name="A_Physical_mental_issues_of_the_Respond__c" value="" variant="label-hidden"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item class="slds-p-around_small" size="8">
+        <p>B.Was Respondent born substance exposed?</p>
+    </lightning-layout-item>
+    <lightning-layout-item class="slds-p-around_small" size="4">
+        <lightning-combobox name="B_Was_Respondent_born_substance_exposed__c" varient="label-hidden" value="" placeholder="-Select-" options={previousJuvenileCourtPick} onchange={handleChange} > </lightning-combobox>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout>
+    <lightning-layout-item size="3" class="slds-p-around_small">
+        <div>C.Current location of the Respondent?</div>
+    </lightning-layout-item>
+    <lightning-layout-item size="6" class="slds-p-around_small">
+        <lightning-input type="text" label="C.Current location of the Respondent?" name="C_Current_location_of_the_Respondent__c" value="" variant="label-hidden"></lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+</lightning-card>
+</template>

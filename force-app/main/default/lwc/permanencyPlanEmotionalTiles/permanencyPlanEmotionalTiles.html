@@ -1,0 +1,196 @@
+<template>
+    
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+</div>
+<lightning-record-edit-form object-api-name="Permanency_Plan__c" data-name="permanencyForm" record-id={permanencyRecId} onsubmit={handlePermanencyPlanSubmit} onsuccess={handleSuccess} onerror={handleError}>
+    <lightning-card title="Cirucumstances of child">
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input-field field-name="Child_is_living_with_LDSS_holds_custody__c" variant="label-inline"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-input-field field-name="Prospective_adoptive_family_committed__c" variant="label-inline"></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small">
+                <h3><b>Notes</b></h3>
+                <lightning-input-field field-name="Notes_for_Emotional_ties__c" onclick={handlespeech} variant="label-hidden"></lightning-input-field>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+    </br>
+    <lightning-card title=" Signficant Emotional Tiles">
+        <lightning-button slot="actions" label="New" title="New" onclick={handleModal}></lightning-button>
+        <div class="slds-border_left slds-border_right slds-border_top">
+
+            <lightning-datatable key-field="id" data={emotionalTiesList} columns={emotionalTilescolumns} hide-checkbox-column onrowaction={handleRowAction} show-row-number-column="true">
+            </lightning-datatable>
+        </div>
+    </lightning-card>
+    <div class="slds-text-align_right">
+        <lightning-button label="Save and Next" title="Save and Next" onclick={handleSaveNext} type="submit" disabled={disabledButton} class="slds-m-left_small"></lightning-button>
+        <lightning-button variant="brand" label="Save" title="save" type="submit" class="slds-m-left_small"></lightning-button>
+    </div>
+</lightning-record-edit-form>
+
+
+
+<template if:true={showAddEmotionalTies}>
+    <lightning-record-edit-form object-api-name="Emotional_tie__c" data-name="emotionalForm" record-id="" onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                        onclick={closeModal}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>   
+                        <h2>Emotional Ties</h2> 
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input-field field-name="Type__c" data-field="Type__c" value={emotionalTiesRec.Type__c} variant="label-stacked" onchange={handleTypeChange}></lightning-input-field>
+                <template if:true={showProvider}>
+                        <lightning-layout>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-button  label="Search Provider" onclick={handleSearchProvider}></lightning-button>    
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <lightning-layout-item size="3" padding="around-small">
+                                <div>Provider ID :{selectedProvider.Casevault_ProID__c}</div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <lightning-layout-item size="3" padding="around-small">
+                                <lightning-input-field field-name="Relationship_to_Child__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="3" padding="around-small">
+                                <lightning-input-field field-name="Importance_to_Child__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </template>
+
+<template if:true={showOther}>
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item size="2" padding="around-small"> 
+                                <lightning-input-field field-name="Prefix__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="2" padding="around-small">
+                                <lightning-input-field field-name="First_Name__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="2" padding="around-small">
+                                <lightning-input-field field-name="Middle_Name__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="2" padding="around-small">
+                                <lightning-input-field field-name="Last_Name__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="2" padding="around-small"> 
+                                <lightning-input-field field-name="Suffix__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="3" padding="around-small">
+                                <lightning-input-field field-name="Relationship_to_Child__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="3" padding="around-small">
+                                <lightning-input-field field-name="Importance_to_Child__c" variant="label-stacked"></lightning-input-field>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </template>
+</div>
+<div class="slds-modal__footer">
+    <lightning-button label="Save" variant="brand" type="submit"></lightning-button>
+</div>
+</div>
+</div>
+</lightning-record-edit-form>
+</template>
+
+<template if:true={showSearchProvider}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                        onclick={closeSearchProviderModal}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>   
+                        <h2>Provider Search</h2> 
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-p-around_x-small" size="4">
+                           <lightning-input type="text" name="firstName" label="First Name" onchange={searchHandle} value={searchInput.firstName}></lightning-input>
+                       </lightning-layout-item>
+                       <lightning-layout-item class="slds-p-around_x-small" size="4">
+                           <lightning-input type="text" name="middleName" label="Middle Name" onchange={searchHandle} value={searchInput.middleName}></lightning-input>
+                       </lightning-layout-item>
+                       <lightning-layout-item class="slds-p-around_x-small" size="4">
+                           <lightning-input type="text" name="lastName" label="Last Name" onchange={searchHandle} value={searchInput.lastName}></lightning-input>
+                       </lightning-layout-item>
+                   </lightning-layout>
+                   <lightning-layout>
+                        <lightning-layout-item class="slds-p-around_small" size="8">
+                            <lightning-dual-listbox name="childCharacter"
+                                                    label="Child Characteristics"
+                                                    source-label="Available"
+                                                    selected-label="Selected"
+                                                    field-level-help="Select One of the following Child Characteristics"
+                                                    options={childCharPick}
+                                                    onchange={searchHandle}
+                                                    >
+                            </lightning-dual-listbox> 
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-around_small" size="4">
+                            <lightning-combobox label="Placement Structure" name="placementStructure" placeholder="-Select-" options={placementStructurePick} onchange={searchHandle} value={searchInput.placementStructure}></lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-p-around_small" size="6">
+                            <lightning-combobox label="Local Department" name="localDept" placeholder="-Select-" options={localDeptPick} onchange={searchHandle} value={searchInput.localDept} ></lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-around_small" size="6">
+                            <lightning-combobox label="Bundled Placement Services" name="" placeholder="-Select-" options="" value={} ></lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-p-around_small" size="6">
+                            <lightning-input type="text" label="Provider Id" name="providerId" onchange={searchHandle} value={searchInput.providerId}></lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+                <div class="slds-modal__footer"> 
+                    <lightning-button label="Clear"  onclick={handleClear} class="slds-p-right_small"></lightning-button>
+                    <lightning-button  label="Search" variant="brand-outline" onclick={handleSearch}></lightning-button>  
+                </div>  
+            </div>
+        </div>
+
+    </template>
+<template if:true={showProviderList}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close"
+                        onclick={closeshowProviderList}
+                        alternative-text="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>   
+                    <h2>Provider Search</h2> 
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-datatable key-field="Id"
+                        data={providerList}
+                        columns={columns} 
+                        max-row-selection="1"
+                        onrowselection={handleRowSelection}>
+                    </lightning-datatable>
+                </div>
+                <div class="slds-modal__footer"> 
+                    <lightning-button label="Back to Search"  onclick={handleBacktoSearch} class="slds-p-right_small"></lightning-button>
+                    <lightning-button  label="Select Provider" variant="brand" onclick={handleSelectProvider}></lightning-button>  
+                </div> 
+            </div>
+        </div>
+    </template>
+</template>

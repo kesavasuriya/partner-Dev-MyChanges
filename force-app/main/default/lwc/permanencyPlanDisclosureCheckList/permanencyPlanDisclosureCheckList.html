@@ -1,0 +1,221 @@
+<template>
+        <div class="spinner">
+                <template if:true={loading}>
+                    <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+                </template>
+</div>
+<lightning-record-edit-form object-api-name="Permanency_Plan__c" record-id={permanencyRecId} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+    <lightning-card title="Disclosure Checklist"></lightning-card>
+    <h5><b>Disclosure Details</b></h5>
+    <lightning-layout>
+        <lightning-layout-item size="4" class="slds-p-around_small">
+            <lightning-input type="date" label="Disclosure Creation Date" name="Disclosure_Creation_Date__c" onchange={handleChange} value={disclosureDate} required class="required-fields" date-style="short"></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-input-field field-name="Person_s_information_Disclosed_To__c" variant="label-stacked" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+    </lightning-layout>
+    <h5><b>Disclosure Completed By</b></h5>
+    <lightning-layout>
+        <lightning-layout-item size="4" class="slds-p-around_small">
+            <lightning-input-field field-name="Worker__c" variant="label-stacked" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="4" class="slds-p-around_small">
+            <lightning-input-field field-name="Local_department__c" variant="label-stacked"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="4" class="slds-p-around_small">
+            <lightning-input-field field-name="Non_staff_member__c" variant="label-stacked"></lightning-input-field>
+        </lightning-layout-item>
+    </lightning-layout>
+    <h5><b>Disclosed Checklist Items</b></h5>
+    <lightning-layout multiple-rows="true">
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Explain to the family that the child being placed may have undiagnosed mental,physical, or emotional problem
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="child_placed_undiagnosed_mental_physical__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to know medication history of the child
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="medication_history_of_the_child__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provide written information to the family regarding any know physical abuse experiences in which the child was the victim
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="physical_abuse_experiences_child_victim__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to other children born to the child's biological parents
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="children_born_to_child_biological_parent__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to all known out-of-home placements
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="known_out_of_home_placements__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to why the child was unable to return to his/her family of origin
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="unable_to_return_his_her_family_origin__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family regarding any known sexual abuse experiences in which the child was the victim
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="sexual_abuse_experience_child_was_victim__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to child's relationship with his/her birth family
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="child_s_relationship_with_his_her_birth__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family regarding any known neglect experiences in which child was the victim
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="neglect_experiences_child_was_victim__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Discussed post adoptive search and reunion service with the faimly
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="adoptive_search_and_reunion_service__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family regarding any known physical abuse perpetrated by the child on others
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="physical_abuse_perpetrated_by_the_child__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provide available Lifebook information
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="Provide_available_Lifebook_information__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to any known alcohol, drug addiction the child's birth parent may have had
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="alcohol_drug_addiction_child_s_parent__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family regarding any sexual abuse perpetrated by the child on others
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="sexual_abuse_perpetrated_by_child__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to the child's schooling
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="family_pertaining_to_child_s_schooling__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Completed the application child assessment request form and upload the form in the file cabinet
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="Complete_child_assessment_request_form__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided the family with all available non identifying information on the birth of the child (in writing)
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="non_identifying_information_on_child__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided reasons and the date the child came into DDS custody
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="reasons_and_date_child_came_DDS_custody__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to physical health, mental health, and hospitalization history of the child's biological family
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="physical_mental_health_hospitalization__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="10">
+            <span class="slds-text-color_error slds-p-right_xxx-small">*</span>Provided written information to the family pertaining to physical health, mental health, and hospitalization history of the child
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-input-field field-name="physical_mental_hospitalization_child__c" variant="label-hidden" required class="required-fields"></lightning-input-field>
+        </lightning-layout-item>
+    </lightning-layout>
+
+
+
+    <lightning-layout>
+        <lightning-layout-item size="3" class="slds-p-around_small">
+            <lightning-input-field field-name="Number_of_siblings__c" variant="label-stacked"></lightning-input-field>
+        </lightning-layout-item>
+        <lightning-layout-item size="9" class="slds-p-around_small">
+            <lightning-input-field field-name="Information_Name_Age__c" variant="label-stacked"></lightning-input-field>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <div class="slds-p-left_small">
+        <p><b>Please provide the list of documents pertaining to the Child and Biological Family uploaded to the File Cabinet</b></p>
+        <lightning-input-field field-name="Write_the_file_names__c" variant="label-stacked"></lightning-input-field>
+    </div>
+
+    <div class="slds-text-align_right">
+        <lightning-button label="Save" variant="brand" type="submit" onclick={onFormValidate}></lightning-button>
+        <lightning-button label="Submit for Approval" class="slds-p-left_small" type="submit" onclick={submitforApproval} disabled={enableApprovalButton}></lightning-button>
+    </div>
+    <lightning-layout>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <h2><b>Approval Status : <lightning-output-field field-name="Disclosure_Approval_Status__c" variant="label-hidden"></lightning-output-field></b></h2>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <h2><b>Submitted by : <lightning-output-field field-name="Disclosure_Submitted_by__c" variant="label-hidden"></lightning-output-field></b></h2>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <h2><b>Submitted on : <lightning-output-field field-name="Disclosure_Submitted_Date__c" variant="label-hidden"></lightning-output-field></b></h2>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <h2><b>Approved by : <lightning-output-field field-name="Disclosure_Approved_by__c" variant="label-hidden"></lightning-output-field></b></h2>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-p-around_small">
+            <h2><b>Approved on : <lightning-output-field field-name="Disclosure_Approved_Date__c" variant="label-hidden"></lightning-output-field></b></h2>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <template if:true={showApprovalScreen}>
+                <div class="slds-modal slds-fade-in-open slds-backdrop">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <lightning-button-icon icon-name="utility:close"
+                                            onclick={hideApprovalScreen}
+                                            alternative-text="close"
+                                            variant="bare-inverse"
+                                            class="slds-modal__close"></lightning-button-icon>  
+                            <h2>Submit for Approval</h2>  
+                        </div>
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                            </c-custom-lookup-component>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <lightning-button label="Cancel"  title="Cancel" onclick={hideApprovalScreen} class= "slds-var-p-around_x-small" ></lightning-button>
+                            <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand-outline" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                        </div>
+        
+                    </div> 
+                </div>
+        
+        </template>
+</lightning-record-edit-form>
+</template>

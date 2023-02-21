@@ -1,0 +1,106 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+            <lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+        </template>
+</div>
+<lightning-card title="Adoption Subsidy Rates">
+    <lightning-button label="New" title="New" slot="actions" onclick={handleRateModal} class="slds-p-around_x-small"></lightning-button>
+</lightning-card>
+<div class="slds-border_left slds-border_right slds-border_top">
+
+    <lightning-datatable key-field="Id" data={rateRecordList} columns={columns} hide-checkbox-column onrowaction={handleRowAction}>
+    </lightning-datatable>
+</div>
+<div class="eventModal" if:true={showRateModal}>
+    <lightning-record-edit-form object-api-name="Subsidy_Rate__c" record-id={rateId} onsuccess={handleSuccess} onsubmit={handleSubmit} onerror={handleError}>
+
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  onclick={closeRateModal}
+                                                  alternative-text="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">View Subsidy Review/Rates</h2>
+                    </span>
+
+            <span slot="modalBody" class="slds-modal__content">
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input type="date" label="Transaction Date" name="Transaction_Date__c" onchange={handleChange} value={rateRecord.Transaction_Date__c} date-style="short"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Monthly_Payment_Amount__c" variant="label-stackeds"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input type="date" label="Rate Begin Date" name="Rate_Begin_Date__c" onchange={handleChange} value={rateRecord.Rate_Begin_Date__c} date-style="short"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input type="date" label="Rate End Date" name="Rate_End_Date__c" onchange={handleChange} value={rateRecord.Rate_End_Date__c} date-style="short"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="SSA_Approval__c" variant="label-stackeds"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input type="date" label="SSA Approval Date" name="SSA_Approval_Date__c" onchange={handleChange} value={rateRecord.SSA_Approval_Date__c} date-style="short"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Does_the_child_have_special_needs__c" variant="label-stackeds"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Primary_Basics_for_Special_Needs__c" variant="label-stackeds"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input-field field-name="Adoptive_Family_s_Relationship_to_Child__c" variant="label-stackeds"></lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <div>Provider ID :    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <div>Adoptive Parent1 : {adoptiveParent1}</div>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <div>Adoptive Parent2 : {adoptiveParent2}</div>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" class="slds-p-around_small">
+                    <lightning-input-field field-name="Note__c" variant="label-stackeds"></lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+
+                </span>
+            <span slot="modalFooter">
+                <lightning-button label="Save"  variant="brand" type="submit" disabled={readOnly} ></lightning-button>
+                <template if:false={showApprovalBtn}>
+                    <lightning-button label="Send For Approval" variant="brand-outline" class="slds-p-left_small"  onclick={handleSubmitForApproval} disabled={enableSendforApproval}></lightning-button>
+                </template>
+                <lightning-button label="Cancel" class="slds-p-left_small"  onclick={closeRateModal}></lightning-button>
+            </span>
+        </c-modal-component>
+    </lightning-record-edit-form>
+</div>
+
+
+<div class="eventModal" if:true={showSubmitforApprovalModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  alternative-text="close"
+                                                  onclick={closeSubmiteModal}
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Submit For Approval</h2>
+                    </span>
+        <span slot="modalBody">
+                <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                </c-custom-lookup-component>
+            </span>
+        <span slot="modalFooter">
+                <div class="slds-text-align-right">
+                    <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand-outline" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                    <lightning-button label="Cancel"  title="Cancel" icon-name="utility:close" onclick={closeSubmiteModal} class= "slds-var-p-around_x-small"></lightning-button>
+                </div>
+              </span>
+    </c-modal-component>
+</div>
+</template>

@@ -1,0 +1,11 @@
+.wrapText {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+.cursorclass {
+    cursor:pointer;
+}
+
+.selectedRowClass {
+    background-color:#1798c1 !important;
+}

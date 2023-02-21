@@ -1,0 +1,50 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item size="4" padding="around-small">
+            <div><b>Youth Signature</b></div>
+            <lightning-button label="Capture/Update Signature" name="Youth_Signature__c" title="Capture/Update Signature" onclick={handleSignModal} variant="brand"></lightning-button>
+            <div class="slds-p-around_small" if:true={showParent1}>
+                <img src={sourceUrlParent1}  class="img"></img>
+            </div>  
+        </lightning-layout-item>
+        <lightning-layout-item size="4" padding="around-small">
+            <div><b>LDSS Representative Signature</b></div>
+            <lightning-button label="Capture/Update Signature" name="LDSS_Representative_Signature__c" title="Capture/Update Signature" onclick={handleSignModal} variant="brand"></lightning-button>
+            <div class="slds-p-around_small" if:true={showParent2}>
+                <img src={sourceUrlParent2}  class="img"></img>
+            </div>  
+        </lightning-layout-item>
+        <lightning-layout-item size="4" padding="around-small">
+            
+            <div><b>Family Member Signature</b></div>
+            <lightning-button label="Capture/Update Signature" name="Family_Member_Signature__c" title="Capture/Update Signature" onclick={handleSignModal} variant="brand"></lightning-button>
+            <div class="slds-p-around_small" if:true={showParent3}>
+                <img src={sourceUrlParent3}  class="img"></img>
+            </div>  
+        </lightning-layout-item>
+    </lightning-layout>
+    <div class="eventModal" if:true={showSignModal}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  alternative-text="close"
+                                                  onclick={closeSignModal}
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-06" class="slds-text-heading_medium slds-hyphenate">Signature</h2>
+                    </span>
+            <span slot="modalBody">
+                <lightning-layout>
+                    <lightning-layout-item size="6" class="slds-p-around_small">
+                        <c-signature-lwc onhandlesign ={handleSignature}></c-signature-lwc>
+                    </lightning-layout-item>
+                    </lightning-layout>
+            </span>
+            <span slot="modalFooter">
+                <div class="slds-p-left_x-small">
+                    <lightning-button label="SAVE" title="Save"  icon-name="utility:save" variant="brand" class= "slds-var-p-around_x-small"  onclick={closeSignModal}></lightning-button>
+                </div>
+            </span>
+        </c-modal-component> 
+    </div>
+</template>

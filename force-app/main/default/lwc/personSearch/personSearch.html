@@ -1,0 +1,162 @@
+<template>
+    <lightning-progress-indicator current-step={currentStep}>
+        <lightning-progress-step label="Profile Information" value="step1">
+        </lightning-progress-step>
+        <lightning-progress-step label="Search" value="step2">
+        </lightning-progress-step>
+    </lightning-progress-indicator>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <template if:true={isStep1}>
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-input type="text" name="firstName" label="First Name" onchange={handleChange}
+                    value={searchInput.firstName}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-input type="text" name="lastName" label="Last Name" onchange={handleChange}
+                    value={searchInput.lastName}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-input type="date" name="dob" label="DOB" onchange={handleChange}
+                    value={searchInput.dob} date-style="short"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <!--<lightning-input type="number" name="ssn" label="SSN" onchange={handleChange} value={searchInput.ssn}></lightning-input>-->
+                <span>SSN </span>
+                <lightning-input type="text" label="SSN" placeholder="XXX-XX-XXXX" name="ssn"
+                    variant="label-hidden" message-when-pattern-mismatch="Not a valid SSN number (xxx-xx-xxxx)"
+                    pattern="[0-9]{3}-[0-9]{2}-[0-9]{4}" onchange={handleChange} value={searchInput.ssn}>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <span>Casevault PID </span>
+                <div class="wrapper">
+                    <span>PE-</span>
+                    <div class="input-wrapper">
+                        <lightning-input type="text" label="PE-" variant="label-hidden" name="casevaultPId"
+                            onchange={handleChange} value={searchInput.casevaultPId}>
+                        </lightning-input>
+                    </div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-input type="text" name="stateId" label="State ID/Drivers License"
+                    onchange={handleChange} value={searchInput.stateId}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-input type="text" name="addLine1" label="Address Line 1" onchange={handleChange}
+                    value={searchInput.addLine1}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-input type="text" name="addLine2" label="Address Line 2" onchange={handleChange}
+                    value={searchInput.addLine2}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-input type="text" name="city" label="City" onchange={handleChange}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small" onchange={handleChange}>
+                <lightning-combobox type="text" name="state" label="State" onchange={handleChange}
+                    options={statePickOpt} value={searchInput.state}></lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small">
+                <lightning-combobox name="country" label="County" onchange={handleChange}
+                    options={countryPickOpt}></lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" class="slds-p-around_small" onchange={handleChange}>
+                <lightning-input type="text" name="zipCode" label="Zip Code" value={searchInput.zipCode}>
+                </lightning-input>
+            </lightning-layout-item>
+
+        </lightning-layout>
+
+        <div class="slds-p-top_large slds-text-align_right">
+            <lightning-button class="slds-p-left_small" label="Close" onclick={handleCloseSearch}>
+            </lightning-button>
+            <lightning-button class="slds-p-left_small" variant="brand-outline" label="Clear"
+                onclick={handleClearSearch}></lightning-button>
+            <lightning-button class="slds-p-left_small" variant="brand" label="Search" onclick={searchPerson}>
+            </lightning-button>
+        </div>
+    </template>
+    <template if:true={isStep2}>
+
+        <template if:true={showTable}>
+
+            <lightning-card title={numberOfPersonRecord}>
+                <lightning-datatable key-field="Id" data={visibleDataContact} columns={columns}
+                    max-row-selection="1" selected-rows={setSelectedRows} onrowselection={handleRowAction1}>
+                </lightning-datatable>
+                <div>
+                    <c-pagination-l-w-c total-list={personList} onupdate={paginationHandlerSearchContact}>
+                    </c-pagination-l-w-c>
+                </div>
+
+            </lightning-card>
+
+            <lightning-accordion allow-multiple-sections-open>
+
+                <template if:true={showIntake}>
+                    <lightning-accordion-section label="Intake">
+                        <lightning-card>
+                            <lightning-datatable key-field="Id" data={intakeList} columns={intakeColumn}
+                                hide-checkbox-column  onrowaction={handleRowAction}></lightning-datatable>
+                        </lightning-card>
+                    </lightning-accordion-section>
+
+                </template>
+
+                <template if:true={showCPSIntake}>
+                    <lightning-accordion-section label="Investigation">
+                        <lightning-card>
+                            <lightning-datatable key-field="Id" data={cpsIntakeList} columns={cpsIntakecolumn}
+                                hide-checkbox-column onrowaction={handleRowAction}></lightning-datatable>
+                        </lightning-card>
+                    </lightning-accordion-section>
+                </template>
+
+                <template if:true={showServiceCase}>
+                    <lightning-accordion-section label="Service Case">
+                        <lightning-card>
+                            <lightning-datatable key-field="Id" data={servicecaseList}
+                                columns={serviceCasecolumn} hide-checkbox-column onrowaction={handleRowAction}>
+                            </lightning-datatable>
+                        </lightning-card>
+                    </lightning-accordion-section>
+                </template>
+            </lightning-accordion>
+        </template>
+    </template>
+
+
+
+    <template if:false={showTable}>
+
+        <h1 class="slds-text-align_center slds-p-top_large slds-text-heading_medium">NO RECORDS FOUND</h1>
+
+    </template>
+    <div class="slds-p-top_large slds-text-align_right">
+        <lightning-button class="slds-p-left_small" icon-name="utility:chevronleft" variant="brand"
+            label="Back to Person Search" onclick={backToSearch}></lightning-button>
+    </div>
+
+    <div class="slds-border-bottom_small"></div>
+    <lightning-layout>
+        <lightning-layout-item size="6" padding="around-small">
+            <div class="slds-text-align_left">
+                <lightning-button class="slds-p-left_small" label="Add New" variant="brand-outline"
+                    data-action="addNew" disabled={allowAdd} onclick={handleAdd}></lightning-button>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" padding="around-small">
+            <div class="slds-text-align_right">
+                <lightning-button class="slds-p-left_small" variant="brand" label="Select"
+                    data-action="addPerson" onclick={handleAdd} disabled={disableButton}></lightning-button>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+
+
+    
+</template>

@@ -1,0 +1,412 @@
+<template>
+
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small"></lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small"><b>Neglect Score</b></lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small"><b>Abuse Score</b></lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group 
+                          label="1.Current Report is for"
+                          value={neglectedAbuseIndexRec.FIRA_Current_Report_is_for__c}
+                          type="radio"
+                          name="FIRA_Current_Report_is_for__c"
+                          options={option1} onchange={handleChange} disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Current_Report_Neglect_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Current_Report_Neglect_Score__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Current_Report_Abuse_Score__c" value={neglectedAbuseIndexRec.FIRA_Current_Report_Abuse_Score__c} variant="label-hidden" disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group 
+                          label="2.Prior CPS Response(IR/AR)"
+                          value={neglectedAbuseIndexRec.FIRA_Prior_CPS_Response__c}
+                          type="radio"
+                          name="FIRA_Prior_CPS_Response__c"
+                          options={option2} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Prior_CPS_Neglect_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Prior_CPS_Neglect_Score__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Prior_CPS_Abuse_Score__c" value={neglectedAbuseIndexRec.FIRA_Prior_CPS_Abuse_Score__c} variant="label-hidden" disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <template if:true={show2ab}>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <lightning-radio-group name="FIRA_Prior_Neglect__c"
+                            label="I2a.Prior Neglect"
+                            value={neglectedAbuseIndexRec.FIRA_Prior_Neglect__c}
+                            type="radio" options={options2a} onchange={handleChange}  disabled={readOnly}
+                            required={show2ab}></lightning-radio-group>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" class="slds-p-around_small">
+                <lightning-input type="text" name="FIRA_Prior_Neglect_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Prior_Neglect_Score__c} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" class="slds-p-around_small">
+                <lightning-input type="text" name="Prior Abuse Score" value={defaultScore} variant="label-hidden" disabled></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <lightning-radio-group name="FIRA_Prior_Abuse__c"
+                            label="I2b.Prior Abuse"
+                            value={neglectedAbuseIndexRec.FIRA_Prior_Abuse__c}
+                            type="radio" options={options2b} onchange={handleChange}  disabled={readOnly}
+                            required={show2ab}></lightning-radio-group>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" class="slds-p-around_small">
+                <lightning-input type="text" name="Neglect Score" value={defaultScore} variant="label-hidden" disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" class="slds-p-around_small">
+                <lightning-input type="text" name="FIRA_Prior_Abuse_Score__c" value={neglectedAbuseIndexRec.FIRA_Prior_Abuse_Score__c} variant="label-hidden" disabled></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Household_previously_had_open_IHFS__c"
+                          label="3.Household previously had an open IHFS/OHP case due to Child Abuse/Neglect(voluntary or court-ordered)"
+                          value={neglectedAbuseIndexRec.FIRA_Household_previously_had_open_IHFS__c}
+                          type="radio" options={options3} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Household_previously_Neglect_Score__c" value={neglectedAbuseIndexRec.FIRA_Household_previously_Neglect_Score__c} variant="label-hidden" disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Household_previously_Abuse_Score__c" value={neglectedAbuseIndexRec.FIRA_Household_previously_Abuse_Score__c} variant="label-hidden" disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Number_of_children_identified__c"
+                          label="4.Number of children identified as being directly involved in the current CPS response/ROH(including AR and ROH;does not include ROA)"
+                          value={neglectedAbuseIndexRec.FIRA_Number_of_children_identified__c}
+                          type="radio" options={options4} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Number_of_children_neglect_score__c" value={neglectedAbuseIndexRec.FIRA_Number_of_children_neglect_score__c} variant="label-hidden" disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Number_of_children_Abuse_Score__c" value={neglectedAbuseIndexRec.FIRA_Number_of_children_Abuse_Score__c} variant="label-hidden" disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Prior_non_accidential_injury__c"
+                          label="5. Prior non-accidental injury to any child in the household"
+                          value={neglectedAbuseIndexRec.FIRA_Prior_non_accidential_injury__c}
+                          type="radio" options={options5} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Prior_non_accidential_neglect_score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Prior_non_accidential_neglect_score__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Prior_non_accidential_Abuse_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Prior_non_accidential_Abuse_Score__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Age_of_youngest_child__c"
+                          label="6.Age of youngest child in the home."
+                          value={neglectedAbuseIndexRec.FIRA_Age_of_youngest_child__c}
+                          type="radio" options={options6} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Age_of_youngest_child_neglect_score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Age_of_youngest_child_neglect_score__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Age_of_youngest_child_Abuse_score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Age_of_youngest_child_Abuse_score__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-dual-listbox name="FIRA_racterisitics_of_children__c"
+                            label="7.Characteristics of children in the household (Select all that apply)"
+                            source-label="Available"
+                            selected-label="Selected" options={options7} onchange={handleChange}
+                            value={selectedValue7options}  disabled={readOnly}
+                            required>
+            </lightning-dual-listbox>   
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Characteristic_child_neglect_score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Characteristic_child_neglect_score__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Characteristic_child_Abuse_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Characteristic_child_Abuse_Score__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-dual-listbox name="FIRA_Primary_caregiver_assessment__c"
+                            label="8.Primary caregiver's assessment of incident (Select all that apply)"
+                            source-label="Available"
+                            selected-label="Selected" options={options8} onchange={handleChange}
+                            value={selectedValue8options}  disabled={readOnly}
+                            required>
+            </lightning-dual-listbox>   
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_neglect_score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_neglect_score__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_abuse_score__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_abuse_score__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Primary_caregiver_provides_physical__c"
+                          label="9.Primary caregiver provides physical care consistent with each child's needs"
+                          value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_provides_physical__c}
+                          type="radio" options={options9} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_provides_neglect__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_provides_neglect__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_provides_abuse__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_provides_abuse__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-dual-listbox name="FIRA_Primary_caregiver_characteristics__c"
+                            label="10.Primary caregiver characteristics (Select all that apply)"
+                            source-label="Available"
+                            selected-label="Selected" options={options10} onchange={handleChange}
+                            value={selectedValue10options}  disabled={readOnly}
+                            required>
+            </lightning-dual-listbox>   
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_charac_neglect__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_charac_neglect__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_charac_Abuse__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_charac_Abuse__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Primary_caregiver_has_past_mental__c"
+                          label="11.Primary caregiver has a past or current mental health problem (If yes, please select one)"
+                          value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_has_past_mental__c}
+                          type="radio" options={options11} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+            <template if:true={show11yes}>
+                <div class="slds-p-left_small">
+                    <lightning-radio-group name="Primary_caregiver_has_past_Yes__c"
+                            label=" " variant="label-hidden"
+                            value={neglectedAbuseIndexRec.Primary_caregiver_has_past_Yes__c}
+                            type="radio" options={options11y} onchange={handleChange}  disabled={readOnly}
+                            ></lightning-radio-group>
+                </div>
+                
+            </template>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregive_has_mental_neglect__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregive_has_mental_neglect__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregive_has_mental_abuse__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregive_has_mental_abuse__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Primary_caregiver_past_alcohol__c"
+                          label="12.Primary caregiver has past or current alcohol or substance abuse problem"
+                          value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_past_alcohol__c}
+                          type="radio" options={options12} onchange={handleChange}  disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_alcohol_neglect__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_alcohol_neglect__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_alcohol_abuse__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_alcohol_abuse__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <template if:true={show12Yes}>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <lightning-input type="checkbox" name="FIRA_Alcohol_Select_one__c" label="Alcohol(Select One)" checked={neglectedAbuseIndexRec.FIRA_Alcohol_Select_one__c} onchange={handleChange}  disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <div class="slds-p-left_small">
+                    <lightning-radio-group name="FIRA_Alcohol_values__c"
+                            label=" " variant="label-hidden"
+                            value={neglectedAbuseIndexRec.FIRA_Alcohol_values__c}
+                            type="radio" options={optionsAlcohol} onchange={handleChange} disabled={readOnly}
+                    ></lightning-radio-group>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <lightning-input type="checkbox" name="FIRA_Drugs_Select_One__c" label="Drugs(Select One)" checked={neglectedAbuseIndexRec.FIRA_Drugs_Select_One__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <div class="slds-p-left_small">
+                    <lightning-radio-group name="Drugs_value__c"
+                                label=" " variant="label-hidden"
+                                value={neglectedAbuseIndexRec.Drugs_value__c}
+                                type="radio" options={optionsDrugs} onchange={handleChange} disabled={readOnly}
+                    ></lightning-radio-group>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Secondary_Caregiver_has_alcohol__c"
+                          label="13.Secondary caregiver has past or current alcohol or substance abuse problem"
+                          value={neglectedAbuseIndexRec.FIRA_Secondary_Caregiver_has_alcohol__c}
+                          type="radio" options={options13} onchange={handleChange} disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Secondary_care_has_alcohol_neglect__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Secondary_care_has_alcohol_neglect__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Secondary_care_has_alcohol_abuse__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Secondary_care_has_alcohol_abuse__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <template if:true={show13Yes}>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <lightning-input type="checkbox" name="Alcohol_Select_one__c" label="Alcohol(Select One)" checked={neglectedAbuseIndexRec.Alcohol_Select_one__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <div class="slds-p-left_small">
+                    <lightning-radio-group name="FIRA_Secondary_Alcohol_values__c"
+                            label=" " variant="label-hidden"
+                            value={neglectedAbuseIndexRec.FIRA_Secondary_Alcohol_values__c}
+                            type="radio" options={optionsAlcohol} onchange={handleChange} disabled={readOnly}
+                    ></lightning-radio-group>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <lightning-input type="checkbox" name="FIRA_Secondary_Drugs_Select_One__c" label="Drugs(Select One)" checked={neglectedAbuseIndexRec.FIRA_Secondary_Drugs_Select_One__c} onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="8" class="slds-p-around_small">
+                <div class="slds-p-left_small">
+                    <lightning-radio-group name="FIRA_Secondary_Drugs_value__c"
+                                label=" " variant="label-hidden"
+                                value={neglectedAbuseIndexRec.FIRA_Secondary_Drugs_value__c}
+                                type="radio" options={optionsDrugs} onchange={handleChange} disabled={readOnly}
+                    ></lightning-radio-group>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Primary_caregiver_has_history__c"
+                          label="14.Primary caregiver has a history of abuse or neglect as a child"
+                          value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_has_history__c}
+                          type="radio" options={options14} onchange={handleChange} disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiv_has_history_neglect__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiv_has_history_neglect__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Primary_caregiver_has_history_abuse__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Primary_caregiver_has_history_abuse__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-radio-group name="FIRA_Two_or_more_incidents__c"
+                          label="15.Two or more incidents of domestic violence in the household in the past year"
+                          value={neglectedAbuseIndexRec.FIRA_Two_or_more_incidents__c}
+                          type="radio" options={options15} onchange={handleChange} disabled={readOnly}
+                          required></lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Two_or_more_incidents_neglect__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Two_or_more_incidents_neglect__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Two_or_more_incidents_Abuse__c" variant="label-hidden" value={neglectedAbuseIndexRec.FIRA_Two_or_more_incidents_Abuse__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <lightning-dual-listbox name="FIRA_Housing__c"
+                            label="16.Housing (Select all that apply)"
+                            source-label="Available"
+                            selected-label="Selected" options={options16} onchange={handleChange} disabled={readOnly}
+                            value={selectedValue16options}
+                            required>
+            </lightning-dual-listbox>   
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="FIRA_Housing_Neglect_Score__c" variant="label-hidden" disabled value={neglectedAbuseIndexRec.FIRA_Housing_Neglect_Score__c}></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="Housing_Abuse_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.Housing_Abuse_Score__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+        <lightning-layout-item size="8" class="slds-p-around_small">
+            <h4><b>Total Score</b></h4> 
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="Total_Neglect_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.Total_Neglect_Score__c} disabled></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" class="slds-p-around_small">
+            <lightning-input type="text" name="Total_Abuse_Score__c" variant="label-hidden" value={neglectedAbuseIndexRec.Total_Abuse_Score__c} disabled></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <div class="slds-text-align_right">
+        <lightning-button label="Save" icon-name="utility:save" variant="brand" onclick={handleSave} disabled={readOnly}></lightning-button>
+    </div>
+</template>

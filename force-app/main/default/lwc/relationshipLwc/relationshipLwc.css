@@ -1,0 +1,17 @@
+.backgroundcolor {
+    background-color:#5E9DD0;
+    color:white;
+    font-family: Oswald, sans-serif;
+    font-weight: 200;
+    font-size: 16px;
+}
+.viewPicklistValueOutModal{
+    overflow: initial !important;
+}
+
+:host{
+    --lwc-colorBackgroundRowSelected: #89CFF0;
+}
+.slds-modal__content{
+    overflow: initial;
+}

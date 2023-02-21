@@ -1,0 +1,699 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+
+
+
+    <div class="slds-card_boundary">
+        <lightning-card title="Hearing Details">
+            <lightning-button slot="actions" label="Scheduled Hearing" title="Scheduled Hearing" variant="brand-outline"
+                onclick={showHearingDetail} class="slds-var-p-around_x-small"></lightning-button>
+            <lightning-button slot="actions" label="Court Case Number" title="Court Case Number" variant="brand"
+                onclick={showCourtCaseNumber} class="slds-var-p-around_x-small"></lightning-button>
+
+            <div class="slds-p-top_medium">
+                <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                           
+                            <th class="wrapText" scope="col">
+                                <div title="Court Petition Id">Court Case Id</div>
+                            </th>
+                            <th class="wrapText" scope="col">
+                                <div title="Hearing Clients">Hearing Clients</div>
+                            </th>
+                            <th class="wrapText" scope="col">
+                                <div title="Scheduled Hearing Type">Scheduled Hearing Type</div>
+                            </th>
+                            <th class="wrapText" scope="col">
+                                <div title="Hearing Date/Time">Hearing Date/Time</div>
+                            </th>
+                            <th class="wrapText" scope="col">
+                                <div title="Hearing Status">Hearing Status</div>
+                            </th>
+                            <th class="wrapText" scope="col">
+                                <div title="Hearing Notes">Hearing Notes</div>
+                            </th>
+                            <th class="wrapText" scope="col">
+                                <div title="Action">Action</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={scheduledRecords} for:index="index" for:item="row">
+                            <tr key={row.Id}>
+                                
+                                <td class="wrapText">
+                                    <div id={index} title={row.CourtPetition_Id__c}>{row.CourtPetition_Id__c}</div>
+                                </td>
+                                <td class="wrapText">
+                                    <template if:true={row.Court__r.Other_Client_named_on_Petition__r}>
+                                        <div id={index} title={row.Court__r.Petition_for_Child__r.Name}>
+                                            <p>{row.Court__r.Petition_for_Child__r.Name}</p>
+                                            <div class="slds-p-top_small"></div>
+                                            <h1><b>Other Client Name</b></h1>
+                                            <div class="slds-p-top_small"></div>
+                                            <p>{row.Court__r.Other_Client_named_on_Petition__r.Name}</p>
+                                        </div>
+                                    </template>
+                                    <template if:false={row.Court__r.Other_Client_named_on_Petition__r}>
+                                        <div id={index} title={row.Court__r.Petition_for_Child__r.Name}>
+                                            {row.Court__r.Petition_for_Child__r.Name}</div>
+                                    </template>
+                                </td>
+                                <td class="wrapText">
+                                    <div id={index} title={row.Scheduled_Hearing_Type__c}>
+                                        {row.Scheduled_Hearing_Type__c}</div>
+                                </td>
+                                <td class="wrapText">
+                                    <lightning-input type="datetime" name="input6" label=""
+                                        value={row.Hearing_Date_and_Time__c} variant="label-hidden" date-style="short"
+                                        disabled></lightning-input>
+                                </td>
+                                <td class="wrapText">
+                                    <div id={index} title={row.Hearing_Status__c}>{row.Hearing_Status__c}</div>
+                                </td>
+                                <td class="wrapText">
+                                    <div id={index} title={row.Hearing_Notes__c}>{row.Hearing_Notes__c}</div>
+                                </td>
+                                <td class="wrapText">
+                                    <div id={index}>
+                                        <lightning-button-icon icon-name="utility:edit" title="Edit"
+                                            onclick={showEditModal} data-name={row.Id}></lightning-button-icon>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+
+            </div>
+        </lightning-card>
+    </div>
+
+    <div class="slds-p-top_large"></div>
+    <div class="slds-card_boundary">
+        <lightning-card title="Court Order">
+          
+            <lightning-datatable key-field="Id" data={concludedRecords} columns={columns} hide-checkbox-column
+                    onrowaction={handleRowAction} show-row-number-column="true"  min-column-width="250" max-column-width="300">
+            </lightning-datatable>
+        </lightning-card>
+    </div>
+
+    <template if:true={showHearingModal}>
+        <div class="eventModal">
+            <lightning-record-edit-form object-api-name="Court_Petition_Hearing__c"
+                    record-id="" onsuccess={handleAddHearingSuccess} onsubmit={handleAddHearingSubmit}>
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open'>
+                
+
+                    <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close" onclick={closeHearingModal} alternative-text="close"
+                            variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Upcoming Hearing</h2>
+                    </span>
+
+                    <span slot="modalBody">
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item size="12" padding="around-small">
+                                <lightning-combobox name="Court__c" value={court} label="Court Petition ID"
+                                    placeholder="-Select-" options={petitionIdList} onchange={handleHearingChange} required> </lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-small">
+                                <lightning-input-field field-name="Scheduled_Hearing_Type__c" required variant="label-stacked">
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-small">
+                                <lightning-input-field field-name="Hearing_Date_and_Time__c" required variant="label-stacked">
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                            
+                        </lightning-layout>
+
+                    </span>
+
+                    <span slot="modalFooter">
+                        <div class="slds-text-align_right">
+                            <lightning-button label="Cancel" title="Cancel" onclick={closeHearingModal}
+                                class="slds-var-p-around_x-small">
+                            </lightning-button>
+                            <lightning-button label="Add Hearing" title="Add Hearing" type="submit" variant="brand"
+                                class="slds-var-p-around_x-small"></lightning-button>
+
+                        </div>
+                    </span>
+            </c-modal-component>
+        </lightning-record-edit-form>
+
+        </div>
+    </template>
+
+    <template if:true={showCourtCaseNumberModal}>
+
+        <div class="eventModal" if:true={showCourtCaseNumberModal}>
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_large'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeCourtModal} alternative-text="close"
+                        variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">Court Case Numbers</h2>
+                </span>
+
+                <span slot="modalBody">
+                    <lightning-card title="">
+                        <lightning-button label="Court Case Number" slot="actions" onclick={addCourtCaseNumber}>
+                        </lightning-button>
+                        <template if:true={addCaseNumber}>
+                            <lightning-layout>
+                                <lightning-layout-item size="3" padding="around-small">
+                                    <lightning-combobox name="Client_Name_Case_Number__c" options={clientPickList}
+                                        value={courtCaseNumber.Client_Name_Case_Number__c} label="Client"
+                                        onchange={handleCourtCaseNumberChange}></lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="3" padding="around-small">
+                                    <lightning-input type="text" label="Case Number" name="Court_Case_Number__c"
+                                        value={courtCaseNumber.Court_Case_Number__c}
+                                        onchange={handleCourtCaseNumberChange}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="3" padding="around-small">
+                                    <lightning-input type="date" date-style="short" label="Start Date"
+                                        name="Court_Start_Date__c" value={courtCaseNumber.Court_Start_Date__c}
+                                        onchange={handleCourtCaseNumberChange}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="3" padding="around-small">
+                                    <lightning-input type="date" date-style="short" label="End Date"
+                                        name="Court_End_Date__c" value={courtCaseNumber.Court_End_Date__c}
+                                        onchange={handleCourtCaseNumberChange}></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                            <div class="slds-text-align_right">
+                                <lightning-button label="Cancel" title="close" onclick={closeCourtModal}
+                                    class="slds-var-p-around_x-small">
+                                </lightning-button>
+
+                                <lightning-button label="Save" title="Save" onclick={handleSaveCaseNumber}
+                                    variant="brand" class="slds-var-p-around_x-small"></lightning-button>
+                            </div>
+
+                        </template>
+
+                        <div class="slds-p-top_medium">
+                            <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="wrapText" scope="col">
+                                            <div title="S.No">Client Name</div>
+                                        </th>
+                                        <th class="wrapText" scope="col">
+                                            <div title="Court Petition Id">Court Case Number</div>
+                                        </th>
+                                        <th class="wrapText" scope="col">
+                                            <div title="Start Date">Start Date</div>
+                                        </th>
+                                        <th class="wrapText" scope="col">
+                                            <div title="End Date">End Date</div>
+                                        </th>
+                                        <th class="wrapText" scope="col">
+                                            <div title="Action">Action</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={courtCaseNumberList} for:index="index" for:item="row">
+                                        <tr key={row.Id}>
+
+                                            <td class="wrapText">
+                                                <div id={index} title={row.Client_Name_Case_Number__r.Name}>
+                                                    {row.Client_Name_Case_Number__r.Name}</div>
+                                            </td>
+                                            <td class="wrapText">
+                                                <div id={index} title={row.Court_Case_Number__c}>
+                                                    {row.Court_Case_Number__c}</div>
+                                            </td>
+                                            <td class="wrapText">
+                                                <div id={index} title={row.Court_Start_Date__c}>
+                                                    <lightning-formatted-date-time value={row.Court_Start_Date__c} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+                                                    </div>
+                                            </td>
+
+                                            <td class="wrapText">
+                                                <div id={index} title={row.Court_End_Date__c}>
+                                                    <lightning-formatted-date-time value={row.Court_End_Date__c} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+                                                </div>
+                                            </td>
+
+                                            <td class="wrapText">
+                                                <div id={index}>
+                                                    <lightning-button-icon icon-name="utility:edit" title="Edit"
+                                                        onclick={handleCaseNumberEdit} data-position={index}>
+                                                    </lightning-button-icon>
+                                                    <lightning-button-icon class="slds-p-left_xxx-small" icon-name="utility:delete" title="Delete"
+                                                        onclick={handleCaseNumberDelete} data-name={row.Id}>
+                                                    </lightning-button-icon>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                           
+                        </div>
+
+                    </lightning-card>
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button label="Close" title="close" onclick={closeCourtModal}
+                            class="slds-var-p-around_x-small">
+                        </lightning-button>
+                    </div>
+                </span>
+            </c-modal-component>
+        </div>
+    </template>
+
+    <template if:true={showHearingEditModal}>
+        <lightning-record-edit-form object-api-name="Court_Petition_Hearing__c"
+        record-id={hearingId} onsuccess={handleEditHearingSuccess} onload={handleOnLoad}>
+        <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+            <span slot="modalClose">
+                <lightning-button-icon icon-name="utility:close" onclick={closeEditModal} alternative-text="close"
+                    variant="bare-inverse" class="slds-modal__close"></lightning-button-icon>
+                <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Hearing Details</h2>
+            </span>
+            <span slot="modalBody">
+
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input-field field-name="Scheduled_Hearing_Type__c" required variant="label-stacked"></lightning-input-field>
+                                 
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input-field field-name="Hearing_Notes__c" variant="label-stacked"></lightning-input-field>
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Hearing_Date_and_Time__c" required variant="label-stacked"></lightning-input-field>
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="3" padding="around-small">
+                        <lightning-input-field field-name="State__c" variant="label-stacked"></lightning-input-field>
+                        
+                    </lightning-layout-item>
+                    <lightning-layout-item size="3" padding="around-small">
+                        <lightning-input-field field-name="County__c" variant="label-stacked"></lightning-input-field>
+                        
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Magistrate_s_Name__c" variant="label-stacked"></lightning-input-field>
+                       
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Hearing_Status__c" data-field="Hearing_Status__c" onchange={handleChange}  required variant="label-stacked"></lightning-input-field>
+                        
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input-field field-name="Judge_s_Name__c" variant="label-stacked"></lightning-input-field>
+                        
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input-field field-name="No_Further_Involvement_With_Court__c" variant="label-inline"></lightning-input-field>
+                        
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input-field field-name="Exception_Appeal_Field__c" variant="label-inline"></lightning-input-field>
+                        
+                    </lightning-layout-item>
+                    
+                    <template if:true={showNextScheduleHearing}>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input-field data-field="Is_There_Another_Court_Hearing_Scheduled__c" onchange={handleChange} value={nextScheduleHearingRecord.Is_There_Another_Court_Hearing_Scheduled__c} field-name="Is_There_Another_Court_Hearing_Scheduled__c" variant="label-inline"></lightning-input-field>
+                    </lightning-layout-item>
+                    </template>
+                    <template if:true={showDateTime}>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input type="datetime" name="Next_Hearing_Date_and_Time__c" data-field="Hearing_Date_and_Time__c" label="Next Hearing Date/Time" value={nextScheduleHearingRecord.Next_Hearing_Date_and_Time__c} onchange={handleChange} required date-style="short" ></lightning-input>
+                    </lightning-layout-item>
+                </template>
+                </lightning-layout>
+
+            </span>
+            <span slot="modalFooter">
+                <lightning-button class="slds-p-right_small" label="Cancel" onclick={closeEditModal} title="Cancel">
+                </lightning-button>
+                <lightning-button variant="brand"  label="Save" onclick={handleSave} title="Save" type="submit">
+                </lightning-button>
+            </span>
+            </div>
+            </div>
+        </c-modal-component>
+</lightning-record-edit-form>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+
+    <template if:true={showCourtOrder}>
+        <div class="courtOrderModal" >
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_large'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeCourtOrderModal}
+                        alternative-text="close" variant="bare-inverse" class="slds-modal__close">
+                    </lightning-button-icon>
+                    <h2 id="modal-heading-07" class="slds-text-heading_medium slds-hyphenate">Court Order Details</h2>
+                </span>
+                <span slot="modalBody">                    
+
+                        <div class="slds-p-bottom_medium"><b>Court Ordered Language Details</b></div>
+                       <div>
+                            <lightning-input type="checkbox"
+                                label="Continuation of the child in child's home is not contrary to the childs welfare"
+                                disabled={readOnly} name="Child_s_Home__c" checked={CourtOrderRecord.Child_s_Home__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Child_s_Home__c}>
+                                <lightning-textarea label="comments" name="Child_s_Home_Comments__c"
+                                    value={CourtOrderRecord.Child_s_Home_Comments__c} disabled={readOnly}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox"
+                                label="Continuation of the child in child's home is contrary to the childs welfare"
+                                disabled={readOnly} class="slds-p-top_large" name="Child_s_Home_Is_Contrary__c"
+                                checked={CourtOrderRecord.Child_s_Home_Is_Contrary__c} onchange={handleService}>
+                            </lightning-input>
+                            <template if:true={courtOrderComments.Child_s_Home_Is_Contrary__c}>
+                                <lightning-textarea label="comments" name="Child_s_Home_Is_Contrary_Comments__c"
+                                    disabled={readOnly} value={CourtOrderRecord.Child_s_Home_Is_Contrary_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox"
+                                label="Due to emergency nature of the situtation,reasonable efforts could not be made "
+                                disabled={readOnly} class="slds-p-top_large"
+                                name="Reasonable_Efforts_Could_Not_Be_Made__c"
+                                checked={CourtOrderRecord.Reasonable_Efforts_Could_Not_Be_Made__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Reasonable_Efforts_Could_Not_Be_Made__c}>
+                                <lightning-textarea label="comments" name="Reasonable_Efforts_Could_Not_Be_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Reasonable_Efforts_Could_Not_Be_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox" label="Reasonable efforts were made to prevent removal"
+                                disabled={readOnly} class="slds-p-top_large"
+                                name="Efforts_Were_Made_To_Prevent_Removal__c"
+                                checked={CourtOrderRecord.Efforts_Were_Made_To_Prevent_Removal__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Efforts_Were_Made_To_Prevent_Removal__c}>
+                                <lightning-textarea label="comments" name="Efforts_Were_Made_To_Prevent_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Efforts_Were_Made_To_Prevent_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox" label="Court has waived reunification efforts"
+                                disabled={readOnly} class="slds-p-top_large" name="Waived_Reunification_Efforts__c"
+                                checked={CourtOrderRecord.Waived_Reunification_Efforts__c} onchange={handleService}>
+                            </lightning-input>
+                            <template if:true={courtOrderComments.Waived_Reunification_Efforts__c}>
+                                <lightning-textarea label="comments" name="Waived_Reunification_Efforts_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Waived_Reunification_Efforts_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox" label="Reasonable efforts were not made to prevent removal"
+                                disabled={readOnly} class="slds-p-top_large"
+                                name="Efforts_Were_Not_Made_To_Prevent_Removal__c"
+                                checked={CourtOrderRecord.Efforts_Were_Not_Made_To_Prevent_Removal__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Efforts_Were_Not_Made_To_Prevent_Removal__c}>
+                                <lightning-textarea label="comments" name="Efforts_Were_Not_Made_Prevent_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Efforts_Were_Not_Made_Prevent_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <div class="slds-p-top_small"></div>
+                            <lightning-layout>
+                                <lightning-layout-item size="3" padding="around-small">
+                                    <div>Child's permanency plan continues to be :</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="5" padding="around-small">
+                                    <lightning-combobox type="string" name="Child_s_permanency_plan_continues_to_be__c"
+                                        disabled={readOnly} variant="label-hidden"
+                                        value={CourtOrderRecord.Child_s_permanency_plan_continues_to_be__c}
+                                        placeholder="-Select-" options={Childspermanencyplancontinues}
+                                        onchange={handleService}> </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-input type="checkbox"
+                                label="Reasonable efforts were made to finalize the child's permanency plan"
+                                disabled={readOnly} class="slds-p-top_large"
+                                name="Reasonable_efforts_were_made_to_finalize__c"
+                                checked={CourtOrderRecord.Reasonable_efforts_were_made_to_finalize__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Reasonable_efforts_were_made_to_finalize__c}>
+                                <lightning-textarea label="comments" name="Reasonable_efforts_were_made_to_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Reasonable_efforts_were_made_to_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox"
+                                label="Reasonable efforts were not made to finalize the child's permanency plan"
+                                disabled={readOnly} class="slds-p-top_large" name="Reasonable_efforts_were_not_made__c"
+                                checked={CourtOrderRecord.Reasonable_efforts_were_not_made__c} onchange={handleService}>
+                            </lightning-input>
+                            <template if:true={courtOrderComments.Reasonable_efforts_were_not_made__c}>
+                                <lightning-textarea label="comments" name="Reasonable_efforts_were_not_made_Comment__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Reasonable_efforts_were_not_made_Comment__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox"
+                                label="Permanency plan reunification may be changed to another permanency plan"
+                                disabled={readOnly} class="slds-p-top_large"
+                                name="Permanency_plan_of_reunification_may_be__c"
+                                checked={CourtOrderRecord.Permanency_plan_of_reunification_may_be__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Permanency_plan_of_reunification_may_be__c}>
+                                <lightning-textarea label="comments" name="Permanency_plan_of_reunification_Comment__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Permanency_plan_of_reunification_Comment__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox"
+                                label="Voluntary placement is in the best interest of the child" disabled={readOnly}
+                                class="slds-p-top_large" name="Voluntary_placement_is_in_the_bet__c"
+                                checked={CourtOrderRecord.Voluntary_placement_is_in_the_bet__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Voluntary_placement_is_in_the_bet__c}>
+                                <lightning-textarea label="comments" name="Voluntary_placement_the_bet_Comments__c"
+                                    disabled={readOnly} value={CourtOrderRecord.Voluntary_placement_the_bet_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox"
+                                label="Voluntary placement is not in the best interest of the child" disabled={readOnly}
+                                class="slds-p-top_large" name="Voluntary_placement_is_not_in_the_besti__c"
+                                checked={CourtOrderRecord.Voluntary_placement_is_not_in_the_besti__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Voluntary_placement_is_not_in_the_besti__c}>
+                                <lightning-textarea label="comments" name="Voluntary_placement_is_not_best_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Voluntary_placement_is_not_best_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox" label="Reasonable efforts were unable to be determined"
+                                disabled={readOnly} class="slds-p-top_large"
+                                name="Reasonable_efforts_were_unable_to_be__c"
+                                checked={CourtOrderRecord.Reasonable_efforts_were_unable_to_be__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Reasonable_efforts_were_unable_to_be__c}>
+                                <lightning-textarea label="comments" name="Reasonable_efforts_were_unable_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Reasonable_efforts_were_unable_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox"
+                                label="Court order specifices who the child was physically and/or legally removed from and the date the child last resided with the legal custodian"
+                                disabled={readOnly} class="slds-p-top_large"
+                                name="Court_order_specifies_who_the_child__c"
+                                checked={CourtOrderRecord.Court_order_specifies_who_the_child__c}
+                                onchange={handleService}></lightning-input>
+                            <template if:true={courtOrderComments.Court_order_specifies_who_the_child__c}>
+                                <lightning-textarea label="comments" name="Court_order_specifies_who_child_Comments__c"
+                                    disabled={readOnly}
+                                    value={CourtOrderRecord.Court_order_specifies_who_child_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <lightning-input type="checkbox" label="Court order delay removal" class="slds-p-top_large"
+                                disabled={readOnly} name="Court_order_delay_removal__c"
+                                checked={CourtOrderRecord.Court_order_delay_removal__c} onchange={handleService}>
+                            </lightning-input>
+                            <template if:true={courtOrderComments.Court_order_delay_removal__c}>
+                                <lightning-textarea label="comments" name="Court_order_delay_removal_Comments__c"
+                                    disabled={readOnly} value={CourtOrderRecord.Court_order_delay_removal_Comments__c}
+                                    onchange={handleService}></lightning-textarea>
+                            </template>
+
+                            <div class="slds-p-top_small"></div>
+                            <lightning-layout>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-dual-listbox name="Hearing_Outcome__c" label="Hearing Outcome"
+                                        source-label="Available" selected-label="Selected"
+                                        field-level-help="Select your hearing outcome" options={HearingOutcome}
+                                        value={hearingOutcomelistvalue} onchange={handleService} disabled={readOnly}
+                                        required>
+                                    </lightning-dual-listbox>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="4" padding="around-small">
+                                    <lightning-input type="datetime" label="Court Order Date" name="Court_Order_Date__c"
+                                        disabled={readOnly} value={CourtOrderRecord.Court_Order_Date__c}
+                                        onchange={handleService} date-style="short"></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="2" padding="around-small">
+                                    <lightning-combobox type="string" label="Removal Episode" name="Removal_Episode__c"
+                                        disabled={readOnly} value={CourtOrderRecord.Removal_Episode__c}
+                                        placeholder="-Select-" options={RemovalEpisode} onchange={handleService}>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <div class="slds-p-top_small"></div>
+                            <h1 class="inline"><b>Selected Hearing Outcome</b></h1>
+                            <div class="slds-p-top_small"></div>
+                            <lightning-layout>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="checkbox" label="Court Orders are not signed by the judge"
+                                        disabled={readOnly} name="Court_Orders_are_not_signed_by_the_judge__c"
+                                        checked={CourtOrderRecord.Court_Orders_are_not_signed_by_the_judge__c}
+                                        onchange={handleService}></lightning-input>
+                                    <template if:true={courtOrderComments.Court_Orders_are_not_signed_by_the_judge__c}>
+                                        <lightning-textarea label="comments"
+                                            name="Court_Orders_are_not_signed_by_Comments__c" disabled={readOnly}
+                                            value={CourtOrderRecord.Court_Orders_are_not_signed_by_Comments__c}
+                                            onchange={handleService}></lightning-textarea>
+                                    </template>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="checkbox" label="Court Orders Received By LDSS"
+                                        disabled={readOnly} name="Court_Order_Received_By_LDSS__c"
+                                        checked={CourtOrderRecord.Court_Order_Received_By_LDSS__c}
+                                        onchange={handleService}></lightning-input>
+                                    <template if:true={courtOrderComments.Court_Order_Received_By_LDSS__c}>
+                                        <lightning-textarea label="comments"
+                                            name="Court_Order_Received_By_LDSS_Comments__c" disabled={readOnly}
+                                            value={CourtOrderRecord.Court_Order_Received_By_LDSS_Comments__c}
+                                            onchange={handleService}></lightning-textarea>
+                                    </template>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="checkbox"
+                                        label="The Court Order Specifices action(s) other than what was recommended"
+                                        disabled={readOnly} name="The_Court_Order_Specifies_action_s__c"
+                                        checked={CourtOrderRecord.The_Court_Order_Specifies_action_s__c}
+                                        onchange={handleService}></lightning-input>
+                                    <template if:true={courtOrderComments.The_Court_Order_Specifies_action_s__c}>
+                                        <lightning-textarea label="comments"
+                                            name="The_Court_Order_Specifies_action_Comment__c" disabled={readOnly}
+                                            value={CourtOrderRecord.The_Court_Order_Specifies_action_Comment__c}
+                                            onchange={handleService}></lightning-textarea>
+                                    </template>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="checkbox" label="Visitations Court Ordered"
+                                        name="Visitations_Court_Ordered__c" disabled={readOnly}
+                                        checked={CourtOrderRecord.Visitations_Court_Ordered__c}
+                                        onchange={handleService}></lightning-input>
+                                    <template if:true={courtOrderComments.Visitations_Court_Ordered__c}>
+                                        <lightning-textarea label="comments"
+                                            name="Visitations_Court_Ordered_Comments__c" disabled={readOnly}
+                                            value={CourtOrderRecord.Visitations_Court_Ordered_Comments__c}
+                                            onchange={handleService}></lightning-textarea>
+                                    </template>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="checkbox"
+                                        label="The Court Order Specifices placement other than what was recommended"
+                                        disabled={readOnly} name="The_Court_Order_Specifies_a_Placement__c"
+                                        checked={CourtOrderRecord.The_Court_Order_Specifies_a_Placement__c}
+                                        onchange={handleService}></lightning-input>
+                                    <template if:true={courtOrderComments.The_Court_Order_Specifies_a_Placement__c}>
+                                        <lightning-textarea label="comments"
+                                            name="The_Court_Order_Placement_Comments__c" disabled={readOnly}
+                                            value={CourtOrderRecord.The_Court_Order_Placement_Comments__c}
+                                            onchange={handleService}></lightning-textarea>
+                                    </template>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-small">
+                                    <lightning-input type="checkbox" label="Services Court Ordered"
+                                        name="Services_Court_Ordered__c" disabled={readOnly}
+                                        checked={CourtOrderRecord.Services_Court_Ordered__c} onchange={handleService}>
+                                    </lightning-input>
+                                    <template if:true={courtOrderComments.Services_Court_Ordered__c}>
+                                        <lightning-textarea label="comments" name="Services_Court_Ordered_Comments__c"
+                                            disabled={readOnly}
+                                            value={CourtOrderRecord.Services_Court_Ordered_Comments__c}
+                                            onchange={handleService}></lightning-textarea>
+                                    </template>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <div class="slds-p-top_small"></div>
+                            <h1 class="inline"><b>Court Order Details</b></h1>
+                            <lightning-textarea type="text" name="Court_Order_Details__c" class="slds-p-top_small"
+                                disabled={readOnly} value={CourtOrderRecord.Court_Order_Details__c}
+                                onchange={handleService}></lightning-textarea>
+                            <div class="slds-p-top_large"></div>
+                            <lightning-layout>
+                                <lightning-layout-item size="12" padding="around-small">
+                                    <div class="slds-p-top_small">
+                                        <table
+                                            class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th class="wrapText" scope="col">
+                                                        <div title="DOCUMENT NAME">S.NO</div>
+                                                    </th>
+                                                    <th class="wrapText" scope="col">
+                                                        <div title="ACTION">CLIENT NAME</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            
+                    </div>
+                </span>
+
+                <span slot="modalFooter">
+                    <lightning-button label="Cancel" class="slds-var-p-around_x-small" onclick={closeCourtOrderModal}>
+                    </lightning-button>
+                    <template if:false={readOnly}>
+                        <lightning-button variant="brand" label="Save" class="slds-m-left_x-small" onclick={saveRecord}>
+                        </lightning-button>
+                    </template>
+                </span>
+            </c-modal-component>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Adoption Planning">
+        <lightning-progress-indicator current-step={currentadoptionStage} type="path" variant="base">
+            <template for:each={adoptionPlanningPicklist} for:item="adoptionPlan" for:index="index">
+                <lightning-progress-step class="slds-path__item slds-is-incomplete" label={adoptionPlan.label} value={adoptionPlan.value} key={adoptionPlan.value} onclick={stageAction}></lightning-progress-step>
+            </template>
+</lightning-progress-indicator>
+</lightning-card>
+<template if:true={showAdoptionEfforts}> 
+        <c-permanency-plan-adoption-efforts permanency-rec-id={permanencyRecId} onadoptionstage={handleadoptionstage}></c-permanency-plan-adoption-efforts>
+    </template>
+<template if:true={showEmotionalTiles}> 
+        <c-permanency-plan-emotional-tiles permanency-rec-id={permanencyRecId} onadoptionstage={handleadoptionstage}></c-permanency-plan-emotional-tiles>
+    </template>
+<template if:true={showNarrtive}> 
+        <c-permanency-plan-narrative permanency-rec-id={permanencyRecId} onadoptionstage={handleadoptionstage}></c-permanency-plan-narrative>
+    </template>
+<template if:true={showApplicableChildAssessment}> 
+        <c-permanency-plan-applicable-child-assessment permanency-plan-rec-id={permanencyRecId}></c-permanency-plan-applicable-child-assessment>
+    </template>
+<template if:true={showDisclosureChecklist}> 
+        <c-permanency-plan-disclosure-check-list permanency-rec-id={permanencyRecId}></c-permanency-plan-disclosure-check-list>
+    </template>
+</template>

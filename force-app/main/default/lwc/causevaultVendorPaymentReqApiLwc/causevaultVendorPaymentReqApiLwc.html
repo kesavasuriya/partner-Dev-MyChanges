@@ -1,0 +1,125 @@
+<template>
+    <lightning-card variant="Narrow" title="File Upload"> 
+        <h1>Please upload the CSV files.</h1>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+                <lightning-file-upload
+                name="Choose"
+                accept={acceptedFormats}
+                record-id={myRecordfile}
+                onuploadfinished={handleUploadFinished}
+                multiple=true>
+        </lightning-file-upload>
+        <div class="slds-p-top_medium"></div>
+        <p>{fileNames}</p>
+       
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-p-around_small" size="4"></lightning-layout-item>
+            <lightning-button variant="brand" label="Save" title="Save" onclick={handleFile} class="slds-m-left_x-small" icon-name="utility:save"></lightning-button>
+            <lightning-layout-item class="slds-p-around_small" size="4">
+            <lightning-button variant="destructive" label="Cancel" title="Cancel" onclick={handleCancel} class="slds-m-left_x-small" icon-name="utility:close"></lightning-button>
+            </lightning-layout-item>
+            </lightning-card>
+    <lightning-card variant="Narrow" title="Payment Inputs">                        
+        <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                        <div title="Config Id">client ID</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Config Definition">Vendor Number</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Config Description">Vendor Type</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Config Value">Placement ID</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Active SW">Service Type ID</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Actions">Service Start Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Config Id">Service End Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Config Definition">Rate Amount</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Config Description">Rate Type</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Config Value">Rate Start Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Active SW">Rate End Date</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="Actions">Changed Date</div>
+                    </th>
+                </tr>
+            </thead>
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" variant='brand' size="large"></lightning-spinner>
+            </template>
+            <template if:false={isLoading}>
+                <tbody>
+                    <template for:each={visibleData} for:index="index" for:item="row">
+                        <tr key={row.Id}>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.clientID} > {row.clientID}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.vendorNo} > {row.vendorNo}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.vendorType} > {row.vendorType}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.placementID} > {row.placementID}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.serviceTypeID} > {row.serviceTypeID}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.serviceStartDate}>{row.serviceStartDate}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.serviceEndDate} > {row.serviceEndDate}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.rateAmount} > {row.rateAmount}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.rateType} > {row.rateType}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.rateStartDate} > {row.rateStartDate}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.rateEndDate} > {row.rateEndDate}</div>
+                            </td>
+                            <td class="wrapText" data-label="">
+                                <div id={index} accesskey={index} title={row.changedDate}>{row.changedDate}</div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </template>
+        </table>-->
+        <lightning-datatable
+                key-field="id"
+                data={visibleData}
+                columns={columns}
+                min-column-width="180" max-column-width="200"
+                hide-checkbox-column>
+        </lightning-datatable>
+        <div>
+            <template if:true={showChild}>
+                <c-pagination-l-w-c total-list={paymentInputData} onupdate={paginationHandler}></c-pagination-l-w-c>
+            </template>
+        </div> 
+    </lightning-card>   
+</template>

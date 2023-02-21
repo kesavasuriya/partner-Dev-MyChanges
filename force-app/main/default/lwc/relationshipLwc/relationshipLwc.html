@@ -1,0 +1,51 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+             <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+    <div class="slds-p-bottom_large slds-box backgroundcolor">
+        <h2>Showing Relationship for : {selectedRow.Name}</h2></div>
+    <div class="slsd-p-top_large"></div>
+    <lightning-datatable
+        key-field="Id"
+        data={personRecordList}
+        columns={personTable}
+        max-row-selection="1" selected-rows={defaultSelectedRow}
+        onrowaction={handleRowAction}
+        onrowselection={handleRowSelection}>
+    </lightning-datatable>
+    <template if:true={showModal}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header"> 
+                    <lightning-button-icon icon-name="utility:close"
+                                        onclick={hideModal}
+                                        alternative-text="close"
+                                        variant="bare-inverse"
+                                        class="slds-modal__close"></lightning-button-icon> 
+                    <h2>Relationship Value</h2>  
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <div class="viewPicklistValueOutModal">
+                        <lightning-layout>
+                            <lightning-layout-item size="12" padding="around-small" >
+                                <lightning-combobox label="Relationship Value" name="Relationship_Values__c" value={relationshipRecord.Relationship_Values__c} onchange={handleChange} options={relationshipValues}></lightning-combobox>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                    <lightning-layout>
+                        <lightning-layout-item size="12" padding="around-small" >
+                            <lightning-input type="checkbox" label="Is Caregiver ?" name="Is_Caregiver__c" checked={relationshipRecord.Is_Caregiver__c} onchange={handleChange} ></lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button icon-name="utility:close" label="Discard" variant="destructive"  class="slds-p-right_small" onclick={hideModal}></lightning-button> 
+                    <lightning-button icon-name="utility:save" label="Save" variant="brand" onclick={handleSave}></lightning-button>  
+                </div>
+            </div>
+        </div>
+    </template>
+    
+</template>

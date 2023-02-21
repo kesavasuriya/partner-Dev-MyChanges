@@ -1,0 +1,421 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner  variant="brand"  size="large"></lightning-spinner>
+    </template>
+<lightning-card variant="Narrow">
+    <div class="heading">
+        <h1 slot="title" class="colorwhite"><b>Eligibility Period</b></h1>
+    </div>
+    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="wrapText" scope="col">
+                    <div title="PERIOD">Period</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Period Start Date">Period Start Date</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Period End Date">Period End Date</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Status">Status</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Approval Status">Approval Status</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Date">Approved Date & Time</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Date">Generated Date & Time</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Send For Approval">Send For Approval</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Comments">Comments</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Narrative">Narrative</div>
+                </th>
+
+                <th class="wrapText" scope="col">
+                    <div title="Signature">Signature</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={titleIVERec} for:index="index" for:item="row">  
+                <tr key={row.Id}>
+
+                    <td class={row.selectedRow}>
+                        <lightning-layout>
+                            <lightning-layout-item size="2" class="slds-p-around_small">
+                                <template if:true={row.selected}><lightning-button-icon size="x-small" name="UpIcon" icon-name="utility:chevronup" data-name={row.Title_Iv_E__c} data-id={row.Id} data-period={row.Period__c} onclick={handleToggleClick}></lightning-button-icon></template>
+                                <template if:false={row.selected}><lightning-button-icon size="x-small" name="DownIcon" icon-name="utility:chevrondown" data-name={row.Title_Iv_E__c} data-id={row.Id} data-period={row.Period__c} onclick={handleToggleClick}></lightning-button-icon></template>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="8" class="slds-p-around_small">
+                                {row.Period__c}
+                            </lightning-layout-item>
+
+                       </lightning-layout>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <div><lightning-formatted-date-time value={row.Review_Period_Start_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <div><lightning-formatted-date-time value={row.Review_Period_End_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <a data-name={row.Id} onclick={openEligibleTable} data-index={index} data-label="parentRecord"><lightning-badge label={row.FinalStatus__c}></lightning-badge></a>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <div class="slds-p-left_small">{row.Status__c}</div>
+                    </td>
+                    <td class="wrapText">
+                        <div>{row.Approved_Date_Time__c} </div>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <div>{row.CreatedDate}</div>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <template if:true={row.ApprovalButton__c}>
+                                    <div class="slds-p-left_large" ><lightning-button-icon icon-name="utility:send" title="Send to Approval"  data-name ={row.Id} onclick={handleNarrativeModal}></lightning-button-icon></div>
+                                </template>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <div></div>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <div class="slds-p-left_small">
+                            <lightning-button-icon icon-name="utility:identity" title="View" data-narrative={row.Narrative__c} onclick={handleNarrativeModal}></lightning-button-icon>
+                        </div>
+                    </td>
+                    <td class={row.selectedRow}>
+                        <div>
+                            <lightning-button-icon icon-name="utility:preview" title="View" onclick={handleSignImage} data-sign={row.IV_E_Specialist_Signature__c}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:edit" data-name={row.Id} data-titleparent={row.Title_Iv_E__c} title="Edit" class="slds-p-left_small" onclick={handleEditSign}> </lightning-button-icon>
+                        </div>
+                    </td>
+                </tr>
+                <template if:true={row.selected}>
+                    <template for:each={row.childTitleRecs} for:index="index" for:item="row1"> 
+                        <tr key={row1.Id} class={row1.selectedRow}>
+
+                            <td >
+                                <lightning-layout>
+                                    <lightning-layout-item size="2" class="slds-p-around_small">
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="10" class="slds-p-around_small">
+                                        {row1.Period__c}
+                                    </lightning-layout-item>
+                               </lightning-layout>
+                            </td>
+                            <td class="wrapText">
+                                <div><lightning-formatted-date-time value={row1.Review_Period_Start_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+                            </td>
+                            <td class="wrapText">
+                                <div><lightning-formatted-date-time value={row1.Review_Period_End_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+                            </td>
+                            <td >
+                                <a data-name={row1.Id} onclick={openEligibleTable} data-parentid={row.Id} data-index={index} data-label="childRecord"><lightning-badge label={row1.FinalStatus__c}></lightning-badge></a>
+                            </td>
+                            <td class="wrapText">
+                                <div class="slds-p-left_small">{row1.Status__c}</div>
+                            </td>
+                            <td class="wrapText">
+                                <div>{row1.Approved_Date_Time__c}</div>
+                            </td>
+                            <td class="wrapText">
+                                
+                                <div>{row1.CreatedDate}</div>
+                            </td>
+                            <td class="wrapText">
+                                <template if:true={row1.ApprovalButton__c}>
+                                            <div class="slds-p-left_large" ><lightning-button-icon icon-name="utility:send" title="Send to Approval"  data-name ={row1.Id} onclick={handleNarrativeModal}></lightning-button-icon></div>
+                                        </template>
+                            </td>
+                            <td class="wrapText">
+                                <div></div>
+                            </td>
+                            <td class="wrapText">
+                                <div class="slds-p-left_small">
+                                    <lightning-button-icon icon-name="utility:identity" title="View" data-narrative={row1.Narrative__c} onclick={handleNarrativeModal}></lightning-button-icon>
+                                </div>
+                            </td>
+                            <td class="wrapText">
+                                <div>
+                                    <lightning-button-icon icon-name="utility:preview" title="View" onclick={handleSignImage} data-sign={row1.IV_E_Specialist_Signature__c}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:edit" data-name={row1.Id} data-titleparent={row1.Title_Iv_E__c} title="Edit" class="slds-p-left_small" onclick={handleEditSign}> </lightning-button-icon>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </template>
+            </template>
+        </tbody>
+    </table>
+</lightning-card>
+
+<template if:true={showEligibilityTable}>
+    <lightning-card variant="Narrow">
+        <div class="heading"><h1 slot="title" class="colorwhite"><b>Component Status</b></h1></div>
+        <div class="slds-box slds-box_small">
+        <lightning-layout>
+        <lightning-layout-item size="6" padding="around-small">
+         <div><b>Period : </b>{apiObject.Period__c}</div>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" padding="around-small">
+            <div><b>Status : </b>{apiObject.FinalStatus__c}</div>
+        </lightning-layout-item>
+    </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="6" padding="around-small">
+                <div><b>Start Date : </b><lightning-formatted-date-time value={apiObject.Review_Period_Start_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <div><b>Approval Status : </b>{apiObject.Status__c}</div>
+            </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item size="6" padding="around-small">
+            <div><b>End Date : </b><lightning-formatted-date-time value={apiObject.Review_Period_End_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" padding="around-small">
+            <div><b>Date & Time : </b>{apiObject.CreatedDate}</div>
+        </lightning-layout-item>
+        </lightning-layout>
+        <div class="textstyle"> 
+            <h1><li><a onclick={handleDeemedIncome}>Deemed Income Worksheet</a></li></h1>
+            <h1><li><a onclick={handleIncomeAsset}>Income Asset Worksheet</a></li></h1>
+            <h1><li><a onclick={handleRedeterminationEligibility}>Redetermination Eligibility Worksheet</a></li></h1>
+        </div>
+        <div class="slds-p-top_medium"></div>
+    
+        <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="wrapText" scope="col">
+                    <div title="PLACEMENT">Placement</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="DEMORAPHICS">Demoraphics</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="COURT ORDER">Court Order</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="REMOVAL TYPE">Removal Type</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="REMOVAL HOME">Removal Home</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="INCOME SUMMARY">Income Summary</div>
+                    </th>
+                    <th class="wrapText" scope="col">
+                        <div title="ASSETS">Assets</div>
+                    </th>
+                    
+                    <th class="wrapText" scope="col">
+                        <div title="DEPRIVATION">Deprivation</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                    <td class="wrapText">
+                        <div ><a data-message={apiResponse.Placement_Message__c} onclick={showMessageTemplate}>{apiObject.placement}</a></div>
+                    </td>
+                    <td class="wrapText">
+                        <div><a data-message={apiResponse.Demographics_Message__c} onclick={showMessageTemplate}>{apiObject.demographics}</a></div>
+                    </td>
+                    <td class="wrapText">
+                        <div ><a data-message={apiResponse.CourtStatus_Message__c} onclick={showMessageTemplate}>{apiObject.courtStatus}</a></div>
+                    </td>
+                    <td class="wrapText">
+                        <div ><a data-message={apiResponse.RemovalType_Message__c} onclick={showMessageTemplate}>{apiObject.removalType}</a></div>
+                    </td>
+                    <td class="wrapText">
+                        <div ><a data-message={apiResponse.HomeRemoval_Message__c} onclick={showMessageTemplate}>{apiObject.homeRemoval}</a></div>
+                    </td>
+                    <td class="wrapText">
+                        <div ><a data-message={apiResponse.Income_Message__c} onclick={showMessageTemplate}>{apiObject.income}</a></div>
+                    </td>
+                    <td class="wrapText">
+                        <div ><a data-message={apiResponse.Asset_Message__c} onclick={showMessageTemplate}>{apiObject.asset}</a></div>
+                    </td>
+                    <td class="wrapText">
+                        <div ><a data-message={apiResponse.Deprivation_Message__c} onclick={showMessageTemplate}>{apiObject.deprivation}</a></div>
+                    </td>
+                    </tr>
+            </tbody>
+        </table>
+        <div class="slds-p-top_medium"></div>
+        <template if:true={showMessage}>
+            <lightning-card title="Message"></lightning-card>        
+            <div class="slds-p-left_small"><li>{Message}</li></div>
+        </template>
+
+</div>
+</lightning-card>
+<lightning-card variant="Narrow">
+    <div class="heading">
+        <h1 slot="title" class="colorwhite"><b>Eligibility Status</b></h1>
+    </div>
+    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="wrapText" scope="col">
+                    <div title="Eligibility Status">Eligibility Status </div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Eligibility">Eligibility Date</div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Review Period Start Date">Review Period Start Date </div>
+                </th>
+                <th class="wrapText" scope="col">
+                    <div title="Review Period End Date">Review Period End Date</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="wrapText">
+                    <div><lightning-badge label={apiObject.FinalStatus__c}></lightning-badge></div>
+                </td>
+                <td class="wrapText">
+                    <div>{apiObject.CreatedDate}</div>
+                </td>
+                <td class="wrapText">
+                    <div><lightning-formatted-date-time value={apiObject.Review_Period_Start_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+                </td>
+                <td class="wrapText">
+                    <div><lightning-formatted-date-time value={apiObject.Review_Period_End_Date__c} year="numeric" month="numeric" day="numeric" time-zone="UTC"></lightning-formatted-date-time></div>
+                </td>
+                <td class="wrapText">
+                    <div></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</lightning-card>
+</template>
+<div  if:true={showNarrativeModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              alternative-text="close"
+                                              variant="bare-inverse"
+                                              onclick={closeNarrativeModal}
+                                              class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Narrative</h2>
+                </span>
+
+        <span slot="modalBody">
+            <lightning-input-rich-text name="Narrative__c" onchange={handleNarrativeChange} value={narrative} ></lightning-input-rich-text>
+        </span>
+        <span slot="modalFooter">
+                    <div class="slds-p-left_x-small">
+                        <lightning-button label="Save" title="Save"  variant="brand" class= "slds-var-p-around_x-small" icon-name="utility:save" onclick={handleNarrativeSave}></lightning-button>
+                    </div>
+                </span>
+    </c-modal-component>
+</div>
+
+<div class="eventModal" if:true={showSignatureModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              alternative-text="close"
+                                              onclick={closeSignatureModal}
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">IV-E Specialist Signature</h2>
+                </span>
+        <span slot="modalBody">
+            <lightning-layout>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <c-signature-lwc onhandlesign ={handleSignature}></c-signature-lwc>
+                      <p class="slds-p-left_medium">IV-E Specialist Signature</p>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <lightning-input type="date"  label="Date" value={specialistSignatureDate.IV_E_Specialist_Signature_Date__c} onchange={handleDate}></lightning-input>
+                    <p>IV-E Specialist Name: <b> {name}</b></p>
+                </lightning-layout-item>
+                </lightning-layout>
+        </span>
+        <span slot="modalFooter">
+                    <div class="slds-p-left_x-small">
+                        <lightning-button label="Submit" title="Submit"  variant="brand" class= "slds-var-p-around_x-small"  onclick={handleSubmit}></lightning-button>
+                    </div>
+                </span>
+    </c-modal-component>
+</div>
+<div class="eventModal" if:true={showSignImageModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                        <lightning-button-icon icon-name="utility:close"
+                                                  alternative-text="close"
+                                                  onclick={closeSignatureModal}
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"></lightning-button-icon>
+                        <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Specialist Signature</h2>
+                    </span>
+        <span slot="modalBody">
+                        <div class="slds-text-align_center">
+                            <lightning-input-rich-text value={specialistSignature} disabled></lightning-input-rich-text>
+                        </div>
+            </span>
+    </c-modal-component>
+</div>
+<div class="eventModal" if:true={showSigneditModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              alternative-text="close"
+                                              onclick={closeSignatureModal}
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-04" class="slds-text-heading_medium slds-hyphenate">Specialist Signature</h2>
+                </span>
+        <span slot="modalBody">
+            <lightning-layout>
+                <lightning-layout-item size="6" class="slds-p-around_small">
+                    <c-signature-lwc onhandlesign ={handleSignature}></c-signature-lwc>
+                      <p class="slds-p-left_medium">IV-E Specialist Signature</p>
+                </lightning-layout-item>
+                </lightning-layout>
+        </span>
+        <span slot="modalFooter">
+            <div class="slds-p-left_x-small">
+                <lightning-button label="Update" title="Update"  variant="brand" class= "slds-var-p-around_x-small"  onclick={handleSubmit}></lightning-button>
+            </div>
+        </span>
+    </c-modal-component>
+</div>
+<div class="eventModal" if:true={showSubmitforApprovalModal}>
+    <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+        <span slot="modalClose">
+                            <lightning-button-icon icon-name="utility:close"
+                                                      alternative-text="close"
+                                                      onclick={closeSignatureModal}
+                                                      variant="bare-inverse"
+                                                      class="slds-modal__close"></lightning-button-icon>
+                            <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Submit For Approval</h2>
+                        </span>
+        <span slot="modalBody">
+                    <c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+                    </c-custom-lookup-component>
+                </span>
+        <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                            <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+                        <lightning-button label="Cancel" variant="destructive" title="Cancel" icon-name="utility:close" onclick={closeSignatureModal} class= "slds-var-p-around_x-small"></lightning-button>
+                    </div>
+                  </span>
+    </c-modal-component>
+</div>
+</template>

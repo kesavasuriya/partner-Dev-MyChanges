@@ -1,0 +1,25 @@
+<template>
+    <lightning-card>
+        <div class="slds-text-align_right slds-p-bottom_medium slds-p-top_large">
+            <lightning-button label="Assign" title="Assign" onclick={handleAssignModal} 
+                class="slds-var-p-around_x-small slds-text-align_right"></lightning-button>
+        </div>
+    </lightning-card>
+
+    <template if:true={showValidateModal}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeValidateModal}
+                        alternative-text="close" variant="bare-inverse" class="slds-modal__close">
+                    </lightning-button-icon>
+                    <h2><b>Assignment</b></h2>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <div  class="slds-text-align--center">Only supervisor and admin can assign records</div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</template>

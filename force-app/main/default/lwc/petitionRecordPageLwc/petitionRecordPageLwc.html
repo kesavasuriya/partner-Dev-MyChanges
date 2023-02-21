@@ -1,0 +1,595 @@
+<template>
+
+	<lightning-record-edit-form object-api-name="Court__c" record-id={recordId} 
+		onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+		<lightning-layout multiple-rows=true>
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-combobox label="Petition for Child" name="Petition_for_Child__c" onchange={handleChange} options={petitionforChild} value={petitionRecord.Petition_for_Child__c} required class="required-fields"></lightning-combobox>
+			</lightning-layout-item>
+
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-input-field field-name="Type_of_Petition__c" required class="required-fields" data-field="Type_of_Petition__c"
+					variant="label-stacked" onchange={handleChange}></lightning-input-field>
+			</lightning-layout-item>
+
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-input type="Date" label="Petition Date" name="Petition_Date__c" onchange={handleChange} value={petitionRecord.Petition_Date__c} date-style="short"></lightning-input>
+			</lightning-layout-item>
+
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-combobox label="Other Client's named on Petition" name="Other_Client_named_on_Petition__c" onchange={handleChange} options={otherclientName} value={petitionRecord.Other_Client_named_on_Petition__c} ></lightning-combobox>
+			</lightning-layout-item>
+
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-combobox label="Child's Attorney" name="Child_s_Attorney__c" onchange={handleChange} options={childAttorneyPicklist} value={petitionRecord.Child_s_Attorney__c} ></lightning-combobox>
+			</lightning-layout-item>
+
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-input-field field-name="Name_of_LDSS_Attorney__c" variant="label-stacked">
+				</lightning-input-field>
+			</lightning-layout-item>
+
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-input-field field-name="Witness_Name__c" variant="label-stacked"></lightning-input-field>
+			</lightning-layout-item>
+
+			<lightning-layout-item padding="around-small" size="6">
+				<lightning-input-field field-name="Court_Petition_ID__c" variant="label-stacked">
+				</lightning-input-field>
+			</lightning-layout-item>
+		</lightning-layout>
+
+		<template if:true={showCINACMP}>
+			<div class="slds-box">
+				<lightning-card variant="Narrow" title="">
+					<lightning-layout multiple-rows=true>
+						<lightning-layout-item padding="around-small" size="12">
+							<div><b>Petition (CINA)</b></div>
+							<div>
+								<h1><b>Child In need of Assitance</b></h1>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="New_Review__c" required class="required-fields" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="Emergency_Non_Emergency__c" required class="required-fields"
+								variant="label-stacked"></lightning-input-field>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="Police_Complaint_No_if_not_foster_home__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="Child_s_Current_placement_if_not_foster__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<lightning-input-field field-name="Kin_Placement_Name__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="3">
+							<lightning-input-field field-name="Address_ZipCode__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<lightning-input-field field-name="Plaement_Relationship__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<p>The person(s) with Legal Custody is:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="3">
+							<lightning-combobox variant="label-hidden" name="The_person_s_with_Legacy_Custody_is__c" onchange={handleChange} options={parentNamePicklist} value={petitionRecord.The_person_s_with_Legacy_Custody_is__c} ></lightning-combobox>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="8">
+							<p>The person(s) whom has/had Physical Custody</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-combobox variant="label-hidden" name="The_person_s_whom_has_had_Physical__c" onchange={handleChange} options={parentNamePicklist} value={petitionRecord.The_person_s_whom_has_had_Physical__c} ></lightning-combobox>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="8">
+							<p>The child's relationship to the Legal custodian is </p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="The_child_s_relationship_to_the_Legal__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="8">
+							<p>3.Parent 1 Name </p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-combobox variant="label-hidden" name="Parent_1_Name__c" onchange={handleChange} options={parentNamePicklist} value={petitionRecord.Parent_1_Name__c} ></lightning-combobox>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="3">
+							<p>Id:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="3">
+							<p>Address:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<p>D.O.B:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<p>Race:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<p>SSN:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="The_Parent_1_has_been_notified__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="Reason_for_not_notifying__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="8">
+							<p>4.Parent 2 Name </p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-combobox variant="label-hidden" name="Parent_2_Name__c" onchange={handleChange} options={parentNamePicklist} value={petitionRecord.Parent_2_Name__c} ></lightning-combobox>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="3">
+							<p>Id:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="3">
+							<p>Address:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<p>D.O.B:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<p>Race:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="2">
+							<p>SSN:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="The_Parent_2_has_been_notified__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="Parent2_Reason_for_not_notifying__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<p>5.Case Worker Details:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="6">
+							<lightning-input-field field-name="Case_Worker_Name__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="6">
+							<lightning-input-field field-name="Case_Worker_Phone_Number__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<p>6.Supervisor Details:</p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="6">
+							<lightning-input-field field-name="Supervisor_Name__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="6">
+							<lightning-input-field field-name="Supervisor_Phone_Number__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input type="Date" label="7.Date Request Completed" name="Date_Request_Completed__c" onchange={handleChange} value={petitionRecord.Date_Request_Completed__c} date-style="short"></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input type="Date" label="8.Child in Shelter Care on" name="Child_in_Shelter_Care_on__c" onchange={handleChange} value={petitionRecord.Child_in_Shelter_Care_on__c} date-style="short"></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input type="Date" label="9.Date of Emergency Shelter Care" name="Date_of_Emergency_Shelter_Care__c" onchange={handleChange} value={petitionRecord.Date_of_Emergency_Shelter_Care__c} date-style="short"></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="X10_Previous_Juvenile_Court__c" variant="label-stacked">
+							</lightning-input-field>
+
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<p><b>Summary of Problems:</b></p>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<div class="slds-border_top"><b> PHYSICAL ABUSE RESPONEND/SIBILING</b></div>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Nature_of_Physical_Abuse__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Medical_Exam_Where__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Documentation_of_injury__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Failed_to_protect_mother_father__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Respondent_disclosed_to_Disclosed_what__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12" padding="around-small">
+							<div class="slds-border_top"><b>SEXUAL ABUSE OF RESPONDENT/SIBILING</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Nature_of_Sexual_Abuse_mother_father__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Sexual_Medical_Exam_Where__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Sexual_Documentation_of_injury__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Sexual_Failed_to_protect_mother_father__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Sexual_Respondent_disclosed_to__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12" padding="around-small">
+							<div class="slds-border_top"><b>NEGLECT OF RESPONDENT/SIBILING</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Nature_of_neglect_mother_father__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Neglect_Medical_Exam_Where__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Document_of_Neglect__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Neglect_Failed_to_protect_mother_father__c"
+								variant="label-stacked"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item size="4" padding="around-small">
+							<lightning-input-field field-name="Neglect_Respondent_disclosed__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12" padding="around-small">
+							<div class="slds-border_top"><b>ALTERNATIVE GROUNDS for CINA PETITION:</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<p>Within the first 12 month of the child's birth, was drug treatment made available to the
+								mother and the mother refuses the recommended level of treatment for substance use
+								disorder, or does not successfully complete the recommended level of treatment?:</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Within_the_first_12_month_of_the_child_s__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<p>Severe/chronic developmental disability:</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Severe_chronic_development_disability__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<p>Mental health disorder (behavioral or emotional illness that result from a pyschiatric or
+								neurclogical disorder):</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Mental_health_disorder__c" variant="label-hidden">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12" padding="around-small">
+							<div class="slds-border_top"><b>CONDITION OF THE RESPONDENT</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<div>A.Physical/mental issues of the Respondent</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<lightning-input-field field-name="A_Physical_mental_issues_of_the_Respond__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="6">
+							<p>B.Was Respondent born substance exposed?</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="6">
+							<lightning-input-field field-name="B_Was_Respondent_born_substance_exposed__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<div>C.Current location of the Respondent?</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<lightning-input-field field-name="C_Current_location_of_the_Respondent__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="D_Special_needs_of_Respondent__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<div>E.Status of child's relationship with parents</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="6" padding="around-small">
+							<lightning-input-field field-name="E_Status_of_child_s_relationship_with_p__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<div>F.Legal status of Respondent</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<lightning-input-field field-name="F_Legal_status_of_Respondent__c" variant="label-stacked">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12" padding="around-small">
+							<div class="slds-border_top"><b>CONDITION OF THE RESPONDENT'S HOME</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<div>A.Detailed Description of Home Conditions (if relevant)</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" padding="around-small">
+							<lightning-input-field field-name="A_Detailed_Description_of_Home__c"
+								variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="6">
+							<p>B.Inadequate Housing</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="6">
+							<lightning-input-field field-name="B_Inadequate_Housing__c" variant="label-hidden">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12" padding="around-small">
+							<div class="slds-border_top"><b>PARENT'S CIRCUMSTANCES(answer for mother and father)</b>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="PARENT_S_CIRCUMSTANCE__c" variant="label-hidden">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<div class="slds-border_top"><b>RESPONDENT's PARENT HISTORY</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<div>CPS:</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<lightning-input-field field-name="CPS__c" variant="label-hidden"></lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<div>Child Welfare Services:</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<lightning-input-field field-name="Child_Welfare_Services__c" variant="label-hidden">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<div>Criminal:</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<lightning-input-field field-name="Criminal__c" variant="label-hidden">
+							</lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<div>CINA/TPR- respondent/siblings:</div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<lightning-input-field field-name="CINA_TPR_respondent_siblings__c" variant="label-hidden">
+							</lightning-input-field>
+
+						</lightning-layout-item>
+
+
+
+						<lightning-layout-item padding="around-small" size="12">
+							<div class="slds-border_top">
+								<b>REASONABLE EFFORTS TO PREVENT PLACEMENT(Check all that apply)</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<p>A. Was there an active Child Welfare case at the time of removal:
+							</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="A_Was_there_an_active_Child_Welfare__c"
+								variant="label-hidden"></lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<p>B. What services were offered efforts made to prevent removal/assure child safety(active
+								or prior case)?</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="B_What_services_were_offered_efforts__c"
+								variant="label-hidden"></lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="C_What_Services_were_offered_prior__c"
+								variant="label-stacked"></lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<p>D. Were reasonable efforts not made because emergency circumstance existed requiring
+								removal to protect the safety of the child? </p>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="D_Were_reasonable_efforts_not_made__c"
+								variant="label-hidden" ></lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="D_Narrative__c" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="8">
+							<P>E. A Family Involvement Meeting:</P>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small" size="4">
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="D_Were_reasonable_efforts_not_made__c"
+								variant="label-stacked"></lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input type="Date" label="Date" name="Resonable_Date__c" onchange={handleChange} value={petitionRecord.Resonable_Date__c} date-style="short"></lightning-input>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Participants__c" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Outcome__c" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<div class="slds-border_top"><b>REMOVAL INFORMATION</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input type="Date" label="Removal Date" name="Removal_Date__c" onchange={handleChange} value={petitionRecord.Removal_Date__c} date-style="short"></lightning-input>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Removal_Time__c" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="4">
+							<lightning-input-field field-name="Type_of_Placement__c" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<div class="slds-border_top"><b>OTHER INFORMATION</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="notes__c" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<div class="slds-border_top"><b>PHOTOGRAPHS/VIDEO/AUDIOS</b></div>
+						</lightning-layout-item>
+
+						<lightning-layout-item padding="around-small" size="12">
+							<lightning-input-field field-name="Does_this_information_exist__c" variant="label-stacked">
+							</lightning-input-field>
+						</lightning-layout-item>
+					</lightning-layout>
+
+				</lightning-card>
+			</div>
+		</template>
+
+<div class="slds-docked-form-footer stickyFooter ">
+    <lightning-button label="Save" type="submit" onclick={onFormValidate}></lightning-button>
+</div>
+
+</lightning-record-edit-form>
+</template>

@@ -1,0 +1,91 @@
+<template>
+	<div>
+	<c-title-iv-e-highlight-panel title-iv-e-rec={currentTitleIvERec}></c-title-iv-e-highlight-panel>
+	</div>
+
+		<div class="spinner">
+				<template if:true={loading}>
+						<lightning-spinner variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+				</template>
+		</div>
+		<!--API Loading-->
+		<template if:true={apiLoading}>
+			<lightning-spinner class="spins" variant="brand" alternative-text="loading" size="large"></lightning-spinner>
+	    </template>		
+		
+				<div class="slds-p-top_small">
+				<div class="slds-box slds-box_small">
+
+						<lightning-layout>
+								<lightning-layout-item class="slds-p-around_small" size="10"></lightning-layout-item>
+								<lightning-layout-item class="slds-p-around_small slds-text-align_right" size="2">
+										<lightning-button variant="brand" label="Back" title="Back" onclick={handleBackBtnClick} class="slds-m-right_x-small"></lightning-button>
+								</lightning-layout-item>
+						</lightning-layout>
+						<lightning-tabset active-tab-value={activeTab}>
+								<lightning-tab label="Eligibility Details" value="detail" onactive={handleTabClick}>
+										<c-eligibility-detail-lwc titleiverecordidlist={titleIVeIdList}></c-eligibility-detail-lwc>
+								</lightning-tab>
+								<lightning-tab label="Eligibility Worksheet" title="2nd tab extended title" value="default" onactive={handleTabClick}>
+										<h4><b>Review Period</b></h4>
+												<!--<template if:true={titleIVEIns}>-->
+												<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+														<thead>
+																<tr class="slds-line-height_reset">
+																		<th class="wrapText" scope="col">
+																				<div title="Period">Period</div>
+																		</th>
+																		<th class="wrapText" scope="col">
+																				<div title="Period Start Date"> Period Start Date</div>
+																		</th>
+																		<th class="wrapText" scope="col">
+																				<div title="Period End Date">Period End Date</div>
+																		</th>
+																		<th class="wrapText" scope="col">
+																			<div title="Eligibility"><lightning-input label="Eligibility" type="checkbox" name="selectAll" checked={selectAllValue} onchange={handleDetermaine} disabled={disableCheckbox}></lightning-input></div>
+																		</th>
+																</tr>
+														</thead>
+														<tbody>
+																<template for:each={titleIVEList} for:index="index" for:item="row">  
+																		<tr key={row.Id} data-label={index} class={row.selectedRow} onclick={handleRowClick}>
+																				<td>
+																						<!--<lightning-badge label={row.Period__c} class="slds-badge_brand" >></lightning-badge>-->
+																						<div class="slds-badge"><a data-id={row.Id} onclick={handleStageCmp}>{row.Period__c}</a></div>
+																				</td>
+																				<td>
+																						<div id={index} accesskey={index} class="slds-truncate" title={row.Review_Period_Start_Date__c}> {row.Review_Period_Start_Date__c}</div>
+																				</td>
+																				<td>
+																						<div id={index} accesskey={index} class="slds-truncate" title={row.Review_Period_End_Date__c}> {row.Review_Period_End_Date__c}</div>
+																				</td>
+																				<td>
+																						<div><lightning-input type="checkbox" data-id={row.Id} label="Eligibility" name={row.Id} onchange={handleDetermaine} checked={firstDetermination} disabled={disableCheckbox}></lightning-input></div>
+																						<!--<div><lightning-input type="radio" data-id={row.Id} label=" Eligibility" name="determineCheckbox" onchange={handleDetermaineChange} ></lightning-input></div>-->
+
+																				</td>
+																		</tr>
+																</template>
+														</tbody>
+												</table>
+												<!--</template>-->
+
+												<div class="slds-text-align_right slds-p-top_small">
+														<lightning-button label="Determine" title="Determine" onclick={handleEligibilityDetermine} variant="brand" disabled={isEiligible}></lightning-button>
+												</div>
+
+												<template if:true={showStageCmp}>
+														<div class="slds-p-top_medium"><c-title-iv-e-stage-l-w-c current-title-iv-e-rec={titleIVERec} steps={pathSteps} current-stage='Legal'></c-title-iv-e-stage-l-w-c></div>
+												</template>
+								</lightning-tab>
+								<lightning-tab label="Attachments" onclick={handleTabClick}>
+								</lightning-tab>
+								<lightning-tab label="Reports" onclick={handleTabClick}>
+								</lightning-tab>
+								<lightning-tab label="Disposition" onclick={handleTabClick}>
+								</lightning-tab>
+						</lightning-tabset>
+				</div>
+		</div>
+
+</template>

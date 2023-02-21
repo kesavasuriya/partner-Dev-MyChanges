@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title={numberofRefferal} icon-name="standard:account"></lightning-card>
+    <div class="slds-p-top_small"></div>
+    <lightning-datatable
+                    key-field="Id"
+                    data={referralList}
+                    columns={columns}
+                    hide-checkbox-column>
+        </lightning-datatable>
+</template>

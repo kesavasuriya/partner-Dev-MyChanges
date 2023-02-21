@@ -1,0 +1,41 @@
+<template>
+
+    <lightning-card>
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+    
+        <template if:false={showFolders}>
+            <lightning-button label="Back" slot="actions" onclick={handleClick}></lightning-button>
+        </template>
+    
+        <template if:true={showFolders}>
+    
+            <lightning-layout multiple-rows="true">
+    
+                <template for:each={caseFolders} for:item="folder">
+    
+                    <lightning-layout-item key={folder.name} size="4" padding="around-small">
+                        <lightning-button icon-name="utility:open_folder" name={folder.name} label={folder.label} onclick={handleFolder}>
+                        </lightning-button>
+                    </lightning-layout-item>
+    
+                </template>
+    
+            </lightning-layout>
+    
+        </template>
+    
+        <template if:true={showFiles}>
+    
+            <div class="slds-p-bottom_small"><b>{documentsTitle}</b></div>
+            <lightning-datatable key-field="id" data={documents} columns={fileColumns} hide-checkbox-column="true"
+                show-row-number-column="true" default-sort-direction={defaultSortDirection}
+                sorted-direction={sortDirection} sorted-by={sortedBy} onsort={onHandleSort}></lightning-datatable>
+    
+        </template>
+
+    </lightning-card>
+
+</template>

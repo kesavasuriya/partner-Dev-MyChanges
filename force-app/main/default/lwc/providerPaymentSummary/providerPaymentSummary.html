@@ -1,0 +1,23 @@
+<template>
+	<div class="backgroundcolor">
+		<lightning-layout>
+			<lightning-layout-item size="4" class="slds-p-around_small">
+				<p class="slds-p-around_xx-small"> Provider ID : {provider.Casevault_ProID__c}</p>
+                <p class="slds-p-around_xx-small"> Number of Beds : {provider.Number_of_Beds__c}</p>
+
+			</lightning-layout-item>
+			<lightning-layout-item size="4" class="slds-p-around_small">
+				<p class="slds-p-around_xx-small"> Provider Name : {provider.Name} </p>
+                <p class="slds-p-around_xx-small"> Local Department : {provider.Local_Department__c}</p>
+
+			</lightning-layout-item>
+			<lightning-layout-item size="4" class="slds-p-around_small">
+                <p class="slds-p-around_xx-small"> Provider Status : {provider.Provider_Status__c} </p>
+                <p class="slds-p-around_xx-small"> Date of Birth : <lightning-formatted-date-time value={provider.Date_of_Birth__c} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></p>
+
+
+			</lightning-layout-item>
+		</lightning-layout>
+	</div>
+	
+</template>

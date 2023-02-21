@@ -1,0 +1,57 @@
+<template>
+    <lightning-card>
+        <div slot="actions"><lightning-button label="New" onclick={handleNew}></lightning-button></div>
+    </lightning-card>
+    <lightning-datatable key-field="id" data={legalCustodyList} columns={column} hide-checkbox-column="true"
+                    show-row-number-column="true" onrowaction={handleRowAction}>
+    </lightning-datatable>
+
+    <div class="eventModal" if:true={showModal}>
+        <lightning-record-edit-form object-api-name="Legal_Custody__c" record-id={legalCustodyId} onsubmit={handleSubmit} onsuccess={handleSuccess}
+            onerror={handleEditFormError}>
+
+            <c-modal-component header={header} modal-class='slds-modal slds-fade-in-open slds-modal_small'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeModal}
+                        alternative-text="close" variant="bare-inverse"
+                        class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Legal Custody</h2>
+                </span>
+
+                <span slot="modalBody">
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Begin_Date__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="End_Date__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Relationship__c" variant="label-stacked"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Legal_Custody__c" variant="label-stacked" data-field="Legal_Custody__c" onchange={handleChange}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" class="slds-p-around_small">
+                            <lightning-input-field field-name="Legal_Custodian_Jn__c" variant="label-stacked" required={showCustodianRequired}></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-p-around_small">
+                            <lightning-dual-listbox label="Child" options={childPickList} onchange={handleChildChange} required></lightning-dual-listbox>
+                        </lightning-layout-item>
+                        
+                    
+                    </lightning-layout>
+                </span>
+                <span slot="modalFooter">
+                    <div class="slds-text-align_right">
+                        <lightning-button class="slds-p-around_small" label="Save" variant="brand"
+                            type="submit"></lightning-button>
+                        <lightning-button class="slds-p-around_small" label="Cancel" 
+                            onclick={closeModal}></lightning-button>
+                    </div>
+                </span>
+
+            </c-modal-component>
+        </lightning-record-edit-form>
+    </div>
+</template>

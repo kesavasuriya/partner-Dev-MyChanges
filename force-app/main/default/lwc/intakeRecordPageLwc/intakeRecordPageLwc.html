@@ -1,0 +1,317 @@
+<template>
+	<lightning-record-edit-form object-api-name="Case" record-id={recordId}>
+		<template if:true={isLoading}>
+			<lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
+		</template>
+		<lightning-card title="">
+			<lightning-layout multiple-rows="true">
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					Intake Number
+					<lightning-output-field field-name="CaseNumber" variant="label-hidden"></lightning-output-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-output-field field-name="CreatedDate" variant="label-stacked"></lightning-output-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-output-field field-name="CreatedById" variant="label-stacked"></lightning-output-field>
+				</lightning-layout-item>
+                <lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="Received_Date__c" variant="label-stacked" required="true"
+						data-field="Received_Date__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+				
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<template if:true={hasAccess}>
+						<lightning-input-field field-name="Restrict_UnRestrict__c" variant="label-stacked"
+							data-field="Restrict_UnRestrict__c" onchange={handleChange}></lightning-input-field>
+					</template>
+					<template if:false={hasAccess}>
+						<lightning-output-field field-name="Restrict_UnRestrict__c" variant="label-stacked">
+						</lightning-output-field>
+					</template>
+				</lightning-layout-item>
+
+				<!--<lightning-layout-item size="4" class="slds-p-around_small">
+                    Restrict/Unrestrict: <lightning-button label={buttonLabel}
+						onmouseover={handleMouseOver} onmouseout={handleMouseOut} onclick={handleRestrictClick}
+						></lightning-button>
+                    <lightning-output-field field-name="Restrict_UnRestrict__c" variant="label-stacked"></lightning-output-field>
+                </lightning-layout-item>-->
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="Communication__c" variant="label-stacked"
+						data-field="Communication__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="Origin" variant="label-stacked" data-field="Origin"
+						onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="Jurisdiction__c" variant="label-stacked"
+						data-field="Jurisdiction__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+                <lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-output-field field-name="contact__c" variant="label-stacked"></lightning-output-field>
+				</lightning-layout-item>
+				
+			</lightning-layout>
+		</lightning-card>
+		<!-- < "{!v.isHomeService}"> -->
+		<lightning-card if:true={isHomeService} title="">
+
+			<lightning-layout multiple-rows="true">
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="In_Home_Services__c" variant="label-stacked"
+						data-field="In_Home_Services__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="Private_Adoption_Subsidy__c" variant="label-stacked"
+						data-field="Private_Adoption_Subsidy__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="ICPC__c" variant="label-stacked" data-field="ICPC__c"
+						onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="CPS_History_Clearance__c" variant="label-stacked"
+						data-field="CPS_History_Clearance__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="ASCRS_Adpotion_Search_Contact__c" variant="label-stacked"
+						data-field="ASCRS_Adpotion_Search_Contact__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="ICAMA__c" variant="label-stacked" data-field="ICAMA__c"
+						onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+			</lightning-layout>
+		</lightning-card>
+		<template if:true={inHomeService}>
+			<lightning-card title="In Home Services">
+				<lightning-layout multiple-rows="true">
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Request_of_Other_Agency__c" variant="label-stacked"
+							data-field="Request_of_Other_Agency__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Services_to_Family_and_Children__c" variant="label-stacked"
+							data-field="Services_to_Family_and_Children__c" onchange={handleChange}>
+						</lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Kinship_Information__c" variant="label-stacked"
+							data-field="Kinship_Information__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Interagency_Family_Preservation_Services__c"
+							variant="label-stacked" data-field="Interagency_Family_Preservation_Services__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Voluntary_Placement__c" variant="label-stacked"
+							data-field="Voluntary_Placement__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Independent_Living_After_Services__c" variant="label-stacked"
+							data-field="Independent_Living_After_Services__c" onchange={handleChange}>
+						</lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Consolidated_Services__c" variant="label-stacked"
+							data-field="Consolidated_Services__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Request_to_file_a_CINA_Petition__c" variant="label-stacked"
+							data-field="Request_to_file_a_CINA_Petition__c" onchange={handleChange}>
+						</lightning-input-field>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-card>
+		</template>
+
+		<template if:true={isInformation}>
+			<lightning-card title="">
+				<lightning-layout multiple-rows="true">
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Job_Search__c" variant="label-stacked"
+							data-field="Job_Search__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Environmental_Emergency_Ass__c" variant="label-stacked"
+							data-field="Environmental_Emergency_Ass__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Environmental_Emergency_Assistance_Aged__c"
+							variant="label-stacked" data-field="Environmental_Emergency_Assistance_Aged__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Parental_Stress__c" variant="label-stacked"
+							data-field="Parental_Stress__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Foster_Care_Provider_Interest__c" variant="label-stacked"
+							data-field="Foster_Care_Provider_Interest__c" onchange={handleChange}>
+						</lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Other__c" variant="label-stacked" data-field="Other__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="I_R_Non_Aged__c" variant="label-stacked"
+							data-field="I_R_Non_Aged__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Worker_Assigned__c" variant="label-stacked"
+							data-field="Worker_Assigned__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Clothing__c" variant="label-stacked" data-field="Clothing__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Rental_Assistance__c" variant="label-stacked"
+							data-field="Rental_Assistance__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Shelter__c" variant="label-stacked" data-field="Shelter__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Custody_Issuses__c" variant="label-stacked"
+							data-field="Custody_Issuses__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="I_R_Aged__c" variant="label-stacked" data-field="I_R_Aged__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Legal_Issues__c" variant="label-stacked"
+							data-field="Legal_Issues__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Environmental_Emergency_Ass__c" variant="label-stacked"
+							data-field="Environmental_Emergency_Ass__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Food__c" variant="label-stacked" data-field="Food__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="FIP_Family_Investment_Center__c" variant="label-stacked"
+							data-field="FIP_Family_Investment_Center__c" onchange={handleChange}>
+						</lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="To_Be_A_Volunteer__c" variant="label-stacked"
+							data-field="To_Be_A_Volunteer__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Uncontrollable_Child__c" variant="label-stacked"
+							data-field="Uncontrollable_Child__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Kinship_Information__c" variant="label-stacked"
+							data-field="Kinship_Information__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="WIC__c" variant="label-stacked" data-field="WIC__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Crisis_Intervention__c" variant="label-stacked"
+							data-field="Crisis_Intervention__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Child_Support__c" variant="label-stacked"
+							data-field="Child_Support__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Housing__c" variant="label-stacked" data-field="Housing__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-card>
+
+			<lightning-card title="">
+				<lightning-layout multiple-rows="true">
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Health_Need__c" variant="label-stacked"
+							data-field="Health_Need__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Substance_Abuse__c" variant="label-stacked"
+							data-field="Substance_Abuse__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Adaption_Interst__c" variant="label-stacked"
+							data-field="Adaption_Interst__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Day_Care__c" variant="label-stacked" data-field="Day_Care__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="I_R_Family__c" variant="label-stacked"
+							data-field="I_R_Family__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="MEAP__c" variant="label-stacked" data-field="MEAP__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Domestic_Volence__c" variant="label-stacked"
+							data-field="Domestic_Volence__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Telephone_Number__c" variant="label-stacked"
+							data-field="Telephone_Number__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Enivronmental_Emergency_Assistance__c"
+							variant="label-stacked" data-field="Enivronmental_Emergency_Assistance__c"
+							onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Adult_Protective_Service__c" variant="label-stacked"
+							data-field="Adult_Protective_Service__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<lightning-input-field field-name="Mental_Health_Need__c" variant="label-stacked"
+							data-field="Mental_Health_Need__c" onchange={handleChange}></lightning-input-field>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-card>
+		</template>
+
+		<lightning-card if:true={isPlacementType} title="">
+			<lightning-layout>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<lightning-input-field field-name="Voluntary_Placement_Type__c" variant="label-stacked"
+						data-field="Voluntary_Placement_Type__c" onchange={handleChange}></lightning-input-field>
+				</lightning-layout-item>
+			</lightning-layout>
+		</lightning-card>
+
+	</lightning-record-edit-form>
+	<!-- <template if:true={showValidateModal}>
+		<div class="slds-modal slds-fade-in-open slds-backdrop">
+			<div class="slds-modal__container">
+				<div class="slds-modal__header">
+					<lightning-button-icon icon-name="utility:close" onclick={closeValidateModal}
+						alternative-text="close" variant="bare-inverse" class="slds-modal__close">
+					</lightning-button-icon>
+					<h2><b>Assignment</b></h2>
+				</div>
+				<div class="slds-modal__content slds-p-around_medium">
+					<div class="slds-text-align--center">{modalMsg}</div>
+				</div>
+			</div>
+		</div>
+	</template>-->
+</template>

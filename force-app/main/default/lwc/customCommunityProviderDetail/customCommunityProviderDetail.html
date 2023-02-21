@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title={numberofProvider} icon-name="standard:account"></lightning-card>
+        <div class="slds-p-top_small"></div>
+            <lightning-datatable
+                  key-field="Id"
+                  data={providerList}
+                  columns={columns}
+                  hide-checkbox-column>
+            </lightning-datatable>
+</template>

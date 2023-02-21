@@ -1,0 +1,438 @@
+<template>
+    <div class="spinner">
+        <template if:true={loading}>
+                <lightning-spinner variant='brand' alternative-text="Loading" size='large'></lightning-spinner>
+        </template>
+    </div>
+    <lightning-card title={safecohptitle}>
+        <template if:true={hideNewBtn}>
+            <!--<div class="slds-text-align_right slds-p-bottom_medium">-->
+                <lightning-button label="New" title="new" slot="actions" onclick={showNew} variant="brand"  icon-name="utility:add"></lightning-button>
+            <!--</div>-->
+        </template>
+
+        <!--<template if:true={showOHPTable}>-->                  
+            <!--<table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+            <thead>
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="Assessment Name">Assessment Name</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="Safety Assessment Completion Date Time
+                    ">Signature Obtained Date
+                </div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="Approval Status">Approval Status</div>
+                  </th>
+                </tr>
+              </thead>
+             <tbody>
+                <template for:each={visibleData} for:index="index" for:item="row">  
+                    <tr key={row.Id}>
+                    <td data-label=Name>
+                        
+                        <a  id={index} name={row.Id} accesskey={index} class="slds-truncate" title={row.Name} onclick={getAssessmetOHPRecord}> {row.Name}</a>
+                      </td>
+                      <td data-label="OHP_Signature_Obtained_Date__c">
+                        <div id={index} accesskey={index} class="slds-truncate" title={row.OHP_Signature_Obtained_Date__c}> {row.OHP_Signature_Obtained_Date__c}</div>
+                      </td>
+                      <td data-label="Approval_Status__c">
+                        <div id={index} class="slds-truncate" title={row.Approval_Status__c}>{row.Approval_Status__c}</div>
+                      </td>
+                    </tr>
+                </template>
+                </tbody>
+                </table>-->
+
+                <lightning-datatable key-field="id" 
+                                        data={visibleData} 
+                                        columns={columns} 
+                                        hide-checkbox-column show-row-number-column="true"
+                                        onrowaction={handleRowAction} >
+                </lightning-datatable>
+                <template if:false={showOHPTable}>
+                    <div class=" slds-p-top_large slds-text-align_center textFont"> There is no existing SAFE-C-OHP record(s) found</div>
+                </template>
+                 <br/>
+                <div>
+                    <template if:true={showChild}>
+                        <c-pagination-l-w-c total-list={assessmentOHPList} onupdate={paginationHandler}></c-pagination-l-w-c>
+                    </template>
+                </div>
+        <!--</template>-->
+    </lightning-card>
+<template if:true={showSubmitModal}> 
+        <div class="eventModal" if:true={showSubmitModal} >
+            <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              onclick={cancelSubmitModal}
+                                              alternative-text="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Submit for Approval</h2>
+                </span> 
+          			<span slot="modalBody">
+										<template if:true={showingErrorModal}> 
+												<p><b>{showErrorMsg}</b></p>
+										</template>
+
+										<template if:false={showingErrorModal}> 
+												<c-custom-lookup-component iconname="standard:user" object-name="User" searchfield="Name" onselectedrec={handleSelectRec}>
+												</c-custom-lookup-component>
+										</template>
+							</span>
+
+							<span slot="modalFooter">
+								<div class="slds-text-align_right">
+                                        <lightning-button label="Cancel" variant="destructive" title="Cancel" onclick={cancelSubmitModal}  class= "slds-var-p-around_x-small" icon-name="utility:close"></lightning-button>
+                                        <lightning-button label="Submit for Approval" title="Submit for Approval" onclick={submitApproval} variant="brand" class= "slds-var-p-around_x-small" disabled={enableSubmit}></lightning-button>
+								</div>
+  						</span>
+						</c-modal-component>
+					</div>
+</template>
+
+<template if:true={showCmp}> 
+        <div class="eventModal" if:true={showCmp} >
+            <c-modal-component header ={header} modal-class ='slds-modal slds-fade-in-open slds-modal_large'>
+                <span slot="modalClose">
+                    <lightning-button-icon icon-name="utility:close"
+                                              onclick={closeEventModal}
+                                              alternative-text="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"></lightning-button-icon>
+                    
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">SAFE-C OHP</h2>
+                </span> 
+          <span slot="modalBody">
+            <template if:true={chlidList}>
+                    
+                <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                            <div class="slds-truncate" title="Child Name">Child Name</div>
+                            </th>
+                            <th class="" scope="col">
+                            <div class="slds-truncate" title="Age">Age</div>
+                            </th>
+                            <!--<th class="" scope="col">
+                                <div class="slds-truncate" title="ID">ID</div>
+                                </th>-->
+                            <th class="" scope="col">
+                            <div class="slds-truncate" title="Client ID">Client ID</div>
+                            </th>
+                            <th class="" scope="col">
+                            <div class="slds-truncate" title="close">Cancel</div>
+                            </th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        <template for:each={chlidList} for:index="index" for:item="row">  
+                            <tr key={row.Id}>
+                            <td data-label=chidName>
+                                <div id={index} accesskey={index} class="slds-truncate" title={row.chidName}> {row.chidName}</div>
+                                </td>
+                                <td data-label="age">
+                                <div id={index} accesskey={index} class="slds-truncate" title={row.age}> {row.age}</div>
+                                </td>
+                                <!--<td data-label="contactId">
+                                <div id={index} class="slds-truncate" title={row.childId}>{row.childId}</div>
+                                </td>-->
+                                <td data-label="childId">
+                                    <div id={index} accesskey={index} class="slds-truncate" title={row.clientId}> {row.clientId}</div>
+                                </td>
+                                <td>
+                                <div id={index} class="slds-truncate">
+                                    <lightning-button-icon icon-name="utility:close"  name={index} alternative-text="close" title="close" onclick={handleSelection} disabled={readOnly}></lightning-button-icon>
+                                </div>
+                                </td>
+                            </tr>
+                        </template>
+</tbody>
+</table>
+</template><br/>
+
+<lightning-card title="SECTION 1 : PLACEMENT/LIVING ARRANGEMENT">
+    <lightning-card title="SAFE-C CONTEXT">
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="checkbox" name="Current_Placement__c" label="Current Placement" onchange={handleChange} checked={safecOHPRec.Current_Placement__c} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="checkbox" name="Potential_Resource__c" label="Potential Resource" onchange={handleChange} checked={safecOHPRec.Potential_Resource__c} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="text" name="Name_of_Placement_Resource__c" label="Name of Placement Resource" onchange={handleChange} value={safecOHPRec.Name_of_Placement_Resource__c} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+    <lightning-card title="Address">
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="text" name="OHP_Address_Line_1__c" value={safecOHPRec.OHP_Address_Line_1__c} label="Address Line 1" onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="text" name="Address_Line_2__c" value={safecOHPRec.Address_Line_2__c} label="Address Line 2" onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="text" name="OHP_Zipcode__c" value={safecOHPRec.OHP_Zipcode__c} label="Zipcode" onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+    <lightning-card title="Contact">
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="text" name="OHP_Work__c" value={safecOHPRec.OHP_Work__c} label="Work" onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="text" name="OHP_Ext__c" value={safecOHPRec.OHP_Ext__c} label="Ext" onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <lightning-input class="slds-p-left_x-small" type="text" value={safecOHPRec.OHP_Fax__c} name="OHP_Fax__c" label="FAX" onchange={handleChange} disabled={readOnly}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="12">
+                <lightning-textarea name="Staff_Member_Interviewed_Comments__c" label="Staff Member Interviewed/Comments" value={safecOHPRec.Staff_Member_Interviewed_Comments__c} onchange={handleChange} disabled={readOnly}></lightning-textarea>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</lightning-card>
+<lightning-card title="SECTION 2 : TIME FRAME FOR COMPLETION">
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-input class="slds-p-left_x-small" type="checkbox" name="When_Circumstances_Suggest_That_the_Chil__c" checked={safecOHPRec.When_Circumstances_Suggest_That_the_Chil__c} value={whencircumstance} label="When Circumstances Suggest That the Child's/Youth's Safety May be Jeopardized."
+                onchange={handleChange} disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-input class="slds-p-left_x-small" type="checkbox" name="Initial_Replacement_Placements__c" checked={safecOHPRec.Initial_Replacement_Placements__c} label="Initial/Replacement Placements." onchange={handleChange} disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-input class="slds-p-left_x-small" type="checkbox" name="SAFEC_Before_Completing_a_case__c" checked={safecOHPRec.SAFEC_Before_Completing_a_case__c} label="Before Completing a case reconsideration" onchange={handleChange} disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+</lightning-card>
+<lightning-card title="SECTION 3 : SAFETY INFLUENCES">
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>1. The child's Immediate health needs are being or will be met in a manner that will prevent immediate danger to self or others <span class="slds-text-color_error">*</span> </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="The_child_s_Immediate_health_needs__c" data-index=1 variant="label-hidden" value={safecOHPRec.The_child_s_Immediate_health_needs__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>2. If the child was on medication, the medication is or will be secured and managed in a manner that prevents immediate danger to self or others<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="If_the_child_was_on_medication__c" data-index=2 variant="label-hidden" value={safecOHPRec.If_the_child_was_on_medication__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly} required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>3. If the child had a history of suicidal or self-behavior, their emotional or psychological needs are being or will be addressed ad managed to prevent immediate danger to self or others<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="If_the_child_had_a_history_of_suicidal__c" data-index=3 variant="label-hidden" value={safecOHPRec.If_the_child_had_a_history_of_suicidal__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>4. If the child had a history of aggressive or violent behavior, their needs are being or will be addressed and managed to prevent immediate danger to self or others.<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="If_the_child_had_a_history_of_aggressive__c" data-index=4 variant="label-hidden" value={safecOHPRec.If_the_child_had_a_history_of_aggressive__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>5. If the child had a history of sexual behaviors, their needs are being or will be addressed and managed to prevent immediate danger to self or others<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="If_the_child_had_a_history_of_sexual__c" data-index=5 variant="label-hidden" value={safecOHPRec.If_the_child_had_a_history_of_sexual__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>6. If the child had a history of drug or alcohol abuse, their needs are being or will be addressed danger to self or others<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="If_the_child_had_a_history_of_drug__c" data-index=6 variant="label-hidden" value={safecOHPRec.If_the_child_had_a_history_of_drug__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p> 7. This child's sleeping arrangements have been observed by caseworker and are appropriate<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="This_child_s_sleeping_arrangements__c" data-index=7 variant="label-hidden" value={safecOHPRec.This_child_s_sleeping_arrangements__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>8. This child's is or will be protected from visits/visitation placing the child in immediate danger<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="This_child_s_is_or_will_be_protected__c" data-index=8 variant="label-hidden" value={safecOHPRec.This_child_s_is_or_will_be_protected__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>9. This child does not express specific fears of other children, providers, or the environment that suggest that the child is in immediate danger<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="This_child_does_not_express_specific__c" data-index=9 variant="label-hidden" value={safecOHPRec.This_child_does_not_express_specific__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>10. Provider appears competent, coherent, and currently able to carry out his/her responsibilities and poses no immediate danger to the child<span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="Provider_appears_competent_coherent__c" data-index=10 variant="label-hidden" value={safecOHPRec.Provider_appears_competent_coherent__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>11. Any injuries to the child in this placement/living arrangement have been appropriately explained and documented and suggest no immediate danger to the child <span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="Any_injuries_to_the_child__c" data-index=11 variant="label-hidden" value={safecOHPRec.Any_injuries_to_the_child__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly} required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="10">
+            <p>12. This child's whereabouts are known <span class="slds-text-color_error"> *</span>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="2">
+            <lightning-combobox name="This_child_s_whereabouts_are_known__c" data-index=12 variant="label-hidden" value={safecOHPRec.This_child_s_whereabouts_are_known__c} options={immediatehealthneedsPicklist} onchange={influenceHandleChange} disabled={readOnly}
+                required>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+</lightning-card>
+<lightning-card title="SECTION 4 : SAFETY DECESION">
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="6">
+            <lightning-textarea name="OHP_Unsafe_Influences__c" value={safecOHPRec.OHP_Unsafe_Influences__c} onchange={handleChange} label="Unsafe Influences Identified" disabled={readOnly}></lightning-textarea>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="6">
+            <lightning-input class="slds-p-left_x-small" type="datetime" name="OHP_Safety_Decision__c" value={safecOHPRec.OHP_Safety_Decision__c} label="Safety Decision" onchange={handleChange} disabled={readOnly} date-style="short"></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-input type="radio" label="Child is Safe (Influences 1-12 Marked 'YES')" name="safetyDecison" checked={safeCheck} onchange={handleChange} disabled={readOnly}></lightning-input>
+            <!-- <lightning-input  class="slds-p-left_x-small" type="checkbox" name="safetyDecison" label="Child is Safe (Influences 1-12 Marked 'YES')" checked={safeCheck} onchange={handleChange} disabled={readOnly}></lightning-input> -->
+            <!-- OHP_Child_is_Safe_Influences_1_12_Marked__c -->
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-input type="radio" label="Child is Unsafe (Any Influence 1-12 Was checked 'NO')" name="safetyDecison" checked={unSafeCheck} onchange={handleChange} disabled={readOnly}></lightning-input>
+            <!--<lightning-input  class="slds-p-left_x-small" type="checkbox" name="safetyDecison" label="Child is Unsafe (Any Influence 1-12 Was checked 'NO')" checked={unSafeCheck} onchange={handleChange} disabled={readOnly}></lightning-input> -->
+            <!-- OHP_Child_is_Unsafe_Any_Influence_1_12__c -->
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="2"></lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="8">
+            <lightning-input class="slds-p-left_x-small" type="checkbox" name="OHP_Whereabouts_of_Child_Youth__c" checked={safecOHPRec.OHP_Whereabouts_of_Child_Youth__c} label="Whereabouts of Child/Youth is Unknown" onchange={handleChange} disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="2"></lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="8">
+            <lightning-input class="slds-p-left_x-small" type="checkbox" name="OHP_If_Placed_with_Potential_Resource__c" checked={safecOHPRec.OHP_If_Placed_with_Potential_Resource__c} label="If Placed with the Potential Resource Provider" onchange={handleChange}
+                disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="2"></lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="8">
+            <lightning-input class="slds-p-left_x-small" type="checkbox" name="OHP_if_they_remain_with_the_current__c" checked={safecOHPRec.OHP_if_they_remain_with_the_current__c} label="if they remain with the current placement / Living arrangement" onchange={handleChange}
+                disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-textarea name="OHP_Comments__c" value={safecOHPRec.OHP_Comments__c} onchange={handleChange} label="Comments" disabled={readOnly} required></lightning-textarea>
+        </lightning-layout-item>
+    </lightning-layout>
+</lightning-card>
+<lightning-card title="SECTION 5 : COMMENTS">
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-combobox name="OHP_Signature_Obtained__c" label="Signature Obtained" value={safecOHPRec.OHP_Signature_Obtained__c} options={immediatehealthneedsPicklist} onchange={handleChange} disabled={readOnly}>
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="12">
+            <lightning-input class="slds-p-left_x-small" type="datetime" name="OHP_Signature_Obtained_Date__c" value={safecOHPRec.OHP_Signature_Obtained_Date__c} label="Signature Obtained Date" onchange={handleChange} disabled={readOnly} required date-style="short"></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size="6">
+            <lightning-input class="slds-p-left_x-small" type="text" name="OHP_Representative_Title__c" value={safecOHPRec.OHP_Representative_Title__c} label="Representative / Title" onchange={handleChange} disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="6">
+            <lightning-input class="slds-p-left_x-small" type="text" name="OHP_Local_Department__c" value={safecOHPRec.OHP_Local_Department__c} label="Local Department" onchange={handleChange} disabled={readOnly}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+</lightning-card>
+</span>
+<span slot="modalFooter">
+    <div class="slds-text-align_right">
+                <lightning-button label="Cancel" variant="destructive" title="Cancel" onclick={closeEventModal} class= "slds-var-p-around_x-small" icon-name="utility:close"></lightning-button>
+        <template if:false={showApprovalBtn}>
+            <lightning-button label="Submit for Approval" title="Submit for Approval" variant="brand-outline" onclick={onSumbitforApproval} class= "slds-var-p-around_x-small" disabled={readOnly}></lightning-button>
+        </template>
+                <lightning-button label="Save" title="save" variant="brand" onclick={handleSave} class= "slds-var-p-around_x-small" disabled={readOnly} icon-name="utility:save"></lightning-button>
+    </div>
+</span>
+</c-modal-component>
+</div>
+</template>
+
+</template>

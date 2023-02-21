@@ -1,0 +1,41 @@
+<template>
+    <lightning-card title="Goal Progress">
+        <lightning-layout>
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                Total:
+            </lightning-layout-item>            
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                <lightning-progress-ring value={achieved} variant="base" size="large"> </lightning-progress-ring>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                <lightning-progress-ring value={notAchieved} variant="expired" size="large"
+                > </lightning-progress-ring>
+            </lightning-layout-item>
+                
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                <lightning-progress-ring value={inProgress} variant="active-step" size="large"
+                > </lightning-progress-ring>
+                
+            </lightning-layout-item>
+                
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                {totGoal}
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                {achieved} %
+                Achieved {totAchieved}
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                {notAchieved} %
+                NotAchieved {totNotAchieved}
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-p-left_small">
+                {inProgress} %
+                InProgress {totInProgress}
+            </lightning-layout-item>
+        </lightning-layout>
+</lightning-card>
+</template>
