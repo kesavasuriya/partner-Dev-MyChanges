@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <assignments>
+        <name>Add_Namespace_or_Remove_Namespace</name>
+        <label>Add Namespace or Remove Namespace</label>
+        <locationX>326</locationX>
+        <locationY>218</locationY>
+        <assignmentItems>
+            <assignToReference>CheckHasNamespaceStr</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ObjectNameFormula</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <formulas>
+        <description>Set namespace in that object-based namespace available in this organization</description>
+        <name>ObjectNameFormula</name>
+        <dataType>String</dataType>
+        <expression>IF ( {!$Label.HasNamespace} == &apos;True&apos;, IF ( AND( NOT(BEGINS( {!CheckHasNamespaceStr} , {!$Label.Org_NamePrefix} )), RIGHT({!CheckHasNamespaceStr}, 3) == &apos;__c&apos;), {!$Label.Org_NamePrefix} + {!CheckHasNamespaceStr}, {!CheckHasNamespaceStr} ), {!CheckHasNamespaceStr})</expression>
+    </formulas>
+    <interviewLabel>Check Namespace Variable Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Check Namespace Variable Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Add_Namespace_or_Remove_Namespace</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>CheckHasNamespaceStr</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+</Flow>

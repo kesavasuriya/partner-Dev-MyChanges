@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <decisions>
+        <name>Check_Allegation_Delete_List</name>
+        <label>Check Allegation Delete List</label>
+        <locationX>292</locationX>
+        <locationY>1550</locationY>
+        <defaultConnector>
+            <targetReference>Check_Role_Alleged_Maltreator_Create_Delete</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_not_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Maltreatment_Allegation_Victim_Records</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Delete_Allegation_Victim_Record</targetReference>
+            </connector>
+            <label>If not null</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Allegation_Delete_List_1</name>
+        <label>Check Allegation Delete List</label>
+        <locationX>182</locationX>
+        <locationY>3230</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_not_null_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Maltreatment_Allegation_Maltreator_Records</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Delete_Allegation_Maltreatment_Record</targetReference>
+            </connector>
+            <label>If not null</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Role_Alleged_Maltreator_Create</name>
+        <label>Check Role - Alleged Maltreator Create</label>
+        <locationX>380</locationX>
+        <locationY>2318</locationY>
+        <defaultConnector>
+            <targetReference>Check_Role_Alleged_Maltreator_Delete</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Alleged_Maltreator_Create</name>
+            <conditionLogic>1 AND (NOT(2)) AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Maltreatment_Allegation_Maltreator_Records</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Maltreator_Maltreatment_Allegation</targetReference>
+            </connector>
+            <label>Alleged Maltreator - Create</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Role_Alleged_Maltreator_Create_Delete</name>
+        <label>Check Role - Alleged Maltreator - Create/Delete</label>
+        <locationX>611</locationX>
+        <locationY>2078</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Alleged_Maltreator_Create_Delete</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Maltreatment_Allegation_Maltreator_Records</targetReference>
+            </connector>
+            <label>Alleged Maltreator - Create/Delete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Role_Alleged_Maltreator_Delete</name>
+        <label>Check Role - Alleged Maltreator - Delete</label>
+        <locationX>380</locationX>
+        <locationY>2654</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Alleged_Maltreator_Delete</name>
+            <conditionLogic>2 AND (NOT(1))</conditionLogic>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_SDM_Alleged_maltreators</targetReference>
+            </connector>
+            <label>Alleged Maltreator - Delete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Role_Alleged_Victim_Create</name>
+        <label>Check Role - Alleged Victim - Create</label>
+        <locationX>446</locationX>
+        <locationY>638</locationY>
+        <defaultConnector>
+            <targetReference>Check_Role_Alleged_Victim_Delete</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Alleged_Victim_Create</name>
+            <conditionLogic>1 AND (NOT(2)) AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Maltreatment_Allegation_Victim_Records</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Victim_Maltreatment_Allegation</targetReference>
+            </connector>
+            <label>Alleged Victim - Create</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Role_Alleged_Victim_Create_Delete</name>
+        <label>Check Role - Alleged Victim - Create/Delete</label>
+        <locationX>611</locationX>
+        <locationY>398</locationY>
+        <defaultConnector>
+            <targetReference>Check_Role_Alleged_Maltreator_Create_Delete</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Alleged_Victim_Create_Delete</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Maltreatment_Allegation_Victim_Records</targetReference>
+            </connector>
+            <label>Alleged Victim - Create/Delete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Role_Alleged_Victim_Delete</name>
+        <label>Check Role - Alleged Victim - Delete</label>
+        <locationX>446</locationX>
+        <locationY>974</locationY>
+        <defaultConnector>
+            <targetReference>Check_Role_Alleged_Maltreator_Create_Delete</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Alleged_Victim_Delete</name>
+            <conditionLogic>2 AND (NOT(1))</conditionLogic>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_SDM_Alleged_victims</targetReference>
+            </connector>
+            <label>Alleged Victim - Delete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_SDM_Alleged_maltreator_list</name>
+        <label>Check SDM Alleged maltreator list</label>
+        <locationX>182</locationX>
+        <locationY>2894</locationY>
+        <defaultConnector>
+            <targetReference>Check_Allegation_Delete_List_1</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Copy_1_of_If_exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_SDM_Alleged_maltreators</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Delete_SDM_Alleged_maltreator</targetReference>
+            </connector>
+            <label>If exists</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_SDM_Alleged_Victim_list</name>
+        <label>Check SDM Alleged Victim list</label>
+        <locationX>292</locationX>
+        <locationY>1214</locationY>
+        <defaultConnector>
+            <targetReference>Check_Allegation_Delete_List</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_SDM_Alleged_victims</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Delete_SDM_Alleged_victim</targetReference>
+            </connector>
+            <label>If exists</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_SDM_Records</name>
+        <label>Check SDM Records</label>
+        <locationX>858</locationX>
+        <locationY>278</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_record_exists</name>
+            <conditionLogic>1 AND 2 AND (3 OR 4 OR 5 OR 6) AND 7</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_SDM_Records</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>Current_Person_Role</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Current_Person_Role</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Victim</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Role_Prior</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Alleged Maltreator</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Person_Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Role_Alleged_Victim_Create_Delete</targetReference>
+            </connector>
+            <label>If record exists</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Person Role Changes - Maltreatment Allegation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Person Role Changes AF - Maltreatment Allegation</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordDeletes>
+        <name>Delete_Allegation_Maltreatment_Record</name>
+        <label>Delete Allegation - Maltreatment Record</label>
+        <locationX>50</locationX>
+        <locationY>3350</locationY>
+        <inputReference>Get_Maltreatment_Allegation_Maltreator_Records</inputReference>
+    </recordDeletes>
+    <recordDeletes>
+        <name>Delete_Allegation_Victim_Record</name>
+        <label>Delete Allegation - Victim Record</label>
+        <locationX>160</locationX>
+        <locationY>1670</locationY>
+        <connector>
+            <targetReference>Check_Role_Alleged_Maltreator_Create_Delete</targetReference>
+        </connector>
+        <inputReference>Get_Maltreatment_Allegation_Victim_Records</inputReference>
+    </recordDeletes>
+    <recordDeletes>
+        <name>Delete_SDM_Alleged_maltreator</name>
+        <label>Delete SDM Alleged maltreator</label>
+        <locationX>50</locationX>
+        <locationY>3014</locationY>
+        <connector>
+            <targetReference>Check_Allegation_Delete_List_1</targetReference>
+        </connector>
+        <inputReference>Get_SDM_Alleged_maltreators</inputReference>
+    </recordDeletes>
+    <recordDeletes>
+        <name>Delete_SDM_Alleged_victim</name>
+        <label>Delete SDM Alleged victim</label>
+        <locationX>160</locationX>
+        <locationY>1334</locationY>
+        <connector>
+            <targetReference>Check_Allegation_Delete_List</targetReference>
+        </connector>
+        <inputReference>Get_SDM_Alleged_victims</inputReference>
+    </recordDeletes>
+    <recordLookups>
+        <name>Get_Maltreatment_Allegation_Maltreator_Records</name>
+        <label>Get Maltreatment Allegation - Maltreator Records</label>
+        <locationX>380</locationX>
+        <locationY>2198</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Role_Alleged_Maltreator_Create</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Alleged_Maltreator__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Person_Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Investigation__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Investigation_Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Maltreatment_Allegation__c</object>
+        <queriedFields>Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Maltreatment_Allegation_Victim_Records</name>
+        <label>Get Maltreatment Allegation - Victim Records</label>
+        <locationX>446</locationX>
+        <locationY>518</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Role_Alleged_Victim_Create</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Child__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Person_Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Investigation__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Investigation_Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Maltreatment_Allegation__c</object>
+        <queriedFields>Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_SDM_Alleged_maltreators</name>
+        <label>Get SDM Alleged maltreators</label>
+        <locationX>182</locationX>
+        <locationY>2774</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_SDM_Alleged_maltreator_list</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SDM__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_SDM_Records.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Alleged_Maltreator_s__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Person_Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>SDM_Alleged_Victim_and_Maltreator__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_SDM_Alleged_victims</name>
+        <label>Get SDM Alleged victims</label>
+        <locationX>292</locationX>
+        <locationY>1094</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_SDM_Alleged_Victim_list</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SDM__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_SDM_Records.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Alleged_Victim_s__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Person_Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>SDM_Alleged_Victim_and_Maltreator__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_SDM_Records</name>
+        <label>Get SDM Records</label>
+        <locationX>858</locationX>
+        <locationY>158</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_SDM_Records</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Investigation__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Investigation_Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>SDM__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>732</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_SDM_Records</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <subflows>
+        <name>Maltreator_Maltreatment_Allegation</name>
+        <label>Maltreator - Maltreatment Allegation</label>
+        <locationX>248</locationX>
+        <locationY>2438</locationY>
+        <connector>
+            <targetReference>Check_Role_Alleged_Maltreator_Delete</targetReference>
+        </connector>
+        <flowName>INV_Creation_Maltreatment_Allegation</flowName>
+        <inputAssignments>
+            <name>New_Maltreator_ID</name>
+            <value>
+                <elementReference>Person_Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>sdmRecord</name>
+            <value>
+                <elementReference>Get_SDM_Records</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>Victim_Maltreatment_Allegation</name>
+        <label>Victim - Maltreatment Allegation</label>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
+        <connector>
+            <targetReference>Check_Role_Alleged_Victim_Delete</targetReference>
+        </connector>
+        <flowName>INV_Creation_Maltreatment_Allegation</flowName>
+        <inputAssignments>
+            <name>New_Victim_ID</name>
+            <value>
+                <elementReference>Person_Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>sdmRecord</name>
+            <value>
+                <elementReference>Get_SDM_Records</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
+    <variables>
+        <name>Current_Person_Role</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Investigation_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Person_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Person_Role_Prior</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

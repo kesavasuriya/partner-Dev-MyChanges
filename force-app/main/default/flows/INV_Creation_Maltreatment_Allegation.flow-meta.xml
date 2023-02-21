@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <assignments>
+        <name>Assign_Abuse_Type</name>
+        <label>Assign Abuse Type</label>
+        <locationX>50</locationX>
+        <locationY>638</locationY>
+        <assignmentItems>
+            <assignToReference>Current_Abuse_Type</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Start_Abuse_Type</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Iterate_through_victims</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Maltreatment_allegation_values</name>
+        <label>Assign Maltreatment allegation values</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>Maltreatment_Allegation_Record.Investigation__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>sdmRecord.Investigation__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Maltreatment_Allegation_Record.Abuse_Types__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Current_Abuse_Type</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Maltreatment_Allegation_Record.Child__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Iterate_through_victims.Person__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Maltreatment_Allegation_Record.Alleged_Maltreator__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Iterate_through_maltreators.Person__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Maltreatment_Allegation_Record.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Maltreatment_Allegation_Name</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Maltreatment_Allegation_List</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Maltreatment_Allegation_Record</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Iterate_through_maltreators</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_next_abuse_type</name>
+        <label>Assign next abuse type</label>
+        <locationX>50</locationX>
+        <locationY>1310</locationY>
+        <assignmentItems>
+            <assignToReference>Current_Abuse_Type</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Current_Abuse_Formula</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_Abuse_Type</targetReference>
+        </connector>
+    </assignments>
+    <collectionProcessors>
+        <name>Alleged_Maltreator_Persons</name>
+        <elementSubtype>FilterCollectionProcessor</elementSubtype>
+        <label>Alleged Maltreator Persons</label>
+        <locationX>347</locationX>
+        <locationY>398</locationY>
+        <assignNextValueToReference>currentItem_Alleged_Maltreator_Persons</assignNextValueToReference>
+        <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
+        <collectionReference>Get_Junction_Object_under_Investigation</collectionReference>
+        <conditionLogic>formula_evaluates_to_true</conditionLogic>
+        <connector>
+            <targetReference>Check_any_abuses_selected</targetReference>
+        </connector>
+        <formula>IF(NOT(ISBLANK({!New_Maltreator_ID})), AND({!currentItem_Alleged_Maltreator_Persons.Person__r.RecordType.DeveloperName} &lt;&gt; &apos;Unverified_Person&apos; ,{!currentItem_Alleged_Maltreator_Persons.Person__c} = {!New_Maltreator_ID}), AND(CONTAINS({!currentItem_Alleged_Maltreator_Persons.Person_Role_Formula__c},&quot;7&quot;), {!currentItem_Alleged_Maltreator_Persons.Person__r.RecordType.DeveloperName} &lt;&gt; &apos;Unverified_Person&apos;))</formula>
+    </collectionProcessors>
+    <collectionProcessors>
+        <name>Alleged_Victim_Persons</name>
+        <elementSubtype>FilterCollectionProcessor</elementSubtype>
+        <label>Alleged Victim Persons</label>
+        <locationX>347</locationX>
+        <locationY>278</locationY>
+        <assignNextValueToReference>currentItem_Alleged_Victim_Persons_0</assignNextValueToReference>
+        <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
+        <collectionReference>Get_Junction_Object_under_Investigation</collectionReference>
+        <conditionLogic>formula_evaluates_to_true</conditionLogic>
+        <connector>
+            <targetReference>Alleged_Maltreator_Persons</targetReference>
+        </connector>
+        <formula>IF(NOT(ISBLANK({!New_Victim_ID})),AND({!currentItem_Alleged_Victim_Persons_0.Person__r.RecordType.DeveloperName}  &lt;&gt; &apos;Unverified_Person&apos;,{!currentItem_Alleged_Victim_Persons_0.Person__c} = {!New_Victim_ID}), AND( {!currentItem_Alleged_Victim_Persons_0.Person__r.RecordType.DeveloperName}  &lt;&gt; &apos;Unverified_Person&apos;,CONTAINS({!currentItem_Alleged_Victim_Persons_0.Person_Role_Formula__c},&quot;6&quot;)))</formula>
+    </collectionProcessors>
+    <decisions>
+        <name>Check_Abuse_Type</name>
+        <label>Check Abuse Type</label>
+        <locationX>50</locationX>
+        <locationY>1430</locationY>
+        <defaultConnector>
+            <targetReference>Check_Maltreatment_Allegation_List</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_not_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Current_Abuse_Type</leftValueReference>
+                <operator>NotEqualTo</operator>
+            </conditions>
+            <conditions>
+                <leftValueReference>Current_Abuse_Type</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <isGoTo>true</isGoTo>
+                <targetReference>Iterate_through_victims</targetReference>
+            </connector>
+            <label>Is not null</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_any_abuses_selected</name>
+        <label>Check any abuses selected</label>
+        <locationX>347</locationX>
+        <locationY>518</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_selected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Start_Abuse_Type</leftValueReference>
+                <operator>NotEqualTo</operator>
+            </conditions>
+            <conditions>
+                <leftValueReference>Start_Abuse_Type</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Abuse_Type</targetReference>
+            </connector>
+            <label>If selected</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Maltreatment_Allegation_List</name>
+        <label>Check Maltreatment Allegation List</label>
+        <locationX>248</locationX>
+        <locationY>1550</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_list_not_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Maltreatment_Allegation_List</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Maltreatment_Allegation</targetReference>
+            </connector>
+            <label>Is list not null</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>Abandonment_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF({!sdmRecord.A_child_of_any_age_has_been_abandoned__c} ,{!Abandonment_Name},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Abandonment_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;ABANDONMENT&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Current_Abuse_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(
+AND({!Current_Abuse_Type}={!Physical_Abuse_Name},NOT(ISBLANK({!Sexual_Abuse_Formula}))),
+{!Sexual_Abuse_Formula},
+IF( AND( OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}), NOT(ISBLANK({!Neglect_Formula})) ),
+{!Neglect_Formula},
+IF( AND( OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}, {!Current_Abuse_Type}={!Neglect_Name}), NOT(ISBLANK({!Failure_to_Protect_Formula}))  ) , 
+{!Failure_to_Protect_Formula}, 
+IF(AND(OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}, {!Current_Abuse_Type}={!Neglect_Name}, {!Current_Abuse_Type}={!Failure_to_protect_name}),NOT(ISBLANK({!Abandonment_Formula}))), 
+{!Abandonment_Formula},
+IF(AND(OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}, {!Current_Abuse_Type}={!Neglect_Name}, {!Current_Abuse_Type}={!Failure_to_protect_name},{!Current_Abuse_Type}={!Abandonment_Name}), NOT(ISBLANK({!Unattended_Child_Formula}))),
+{!Unattended_Child_Formula},
+IF(AND(OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}, {!Current_Abuse_Type}={!Neglect_Name}, {!Current_Abuse_Type}={!Failure_to_protect_name},{!Current_Abuse_Type}={!Abandonment_Name},{!Current_Abuse_Type}={!Unattended_Child_Name} ),NOT(ISBLANK({!Medical_Neglect_Formula})) )  ,
+{!Medical_Neglect_Formula},
+IF(AND( OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}, {!Current_Abuse_Type}={!Neglect_Name}, {!Current_Abuse_Type}={!Failure_to_protect_name},{!Current_Abuse_Type}={!Abandonment_Name},{!Current_Abuse_Type}={!Unattended_Child_Name}, {!Current_Abuse_Type}={!Medical_Neglect_Name} ), NOT(ISBLANK({!Mental_Injury_Formula}))    ),
+{!Mental_Injury_Formula},
+IF( AND( OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}, {!Current_Abuse_Type}={!Neglect_Name}, {!Current_Abuse_Type}={!Failure_to_protect_name},{!Current_Abuse_Type}={!Abandonment_Name},{!Current_Abuse_Type}={!Unattended_Child_Name}, {!Current_Abuse_Type}={!Medical_Neglect_Name},{!Current_Abuse_Type}={!Menta_Injury_Abuse_Name}),NOT(ISBLANK({!Mental_Injury_Neglect}))   )  ,
+{!Mental_Injury_Neglect}, 
+IF(AND(OR({!Current_Abuse_Type}={!Physical_Abuse_Name}, {!Current_Abuse_Type}={!Sexual_Abuse_Name}, {!Current_Abuse_Type}={!Neglect_Name}, {!Current_Abuse_Type}={!Failure_to_protect_name},{!Current_Abuse_Type}={!Abandonment_Name},{!Current_Abuse_Type}={!Unattended_Child_Name}, {!Current_Abuse_Type}={!Medical_Neglect_Name},{!Current_Abuse_Type}={!Menta_Injury_Abuse_Name},{!Current_Abuse_Type}= {!Mental_Injury_Neglect_Name}),NOT(ISBLANK({!Risk_Harm_Formula}))    ),{!Risk_Harm_Formula},&apos;&apos;)    
+)
+)
+)
+)
+)     
+ )  
+)
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Failure_to_Protect_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF({!sdmRecord.The_caregiver_does_not_intervene_despite__c},{!Failure_to_protect_name},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Failure_to_protect_name</name>
+        <dataType>String</dataType>
+        <expression>&quot;FAILURE TO PROTECT&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Maltreatment_Allegation_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;Maltreatment Allegation - &quot;+{!Current_Abuse_Type}</expression>
+    </formulas>
+    <formulas>
+        <name>Medical_Neglect_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF({!sdmRecord.The_unreasonable_delay__c},{!Medical_Neglect_Name},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Medical_Neglect_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;MEDICAL NEGLECT&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Menta_Injury_Abuse_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;MENTAL INJURY - ABUSE&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Mental_Injury_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF({!sdmRecord.Abuse_child_has_an_observable_identifi__c},{!Menta_Injury_Abuse_Name},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Mental_Injury_Neglect</name>
+        <dataType>String</dataType>
+        <expression>IF({!sdmRecord.Neglect_child_has_an_observable_identif__c},{!Mental_Injury_Neglect_Name},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Mental_Injury_Neglect_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;MENTAL INJURY - NEGLECT&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Neglect_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(OR({!sdmRecord.Suspicious_death_of_child_due_to_neglect__c}, {!sdmRecord.signs_or_diagnosis_of_non_organic__c}, {!sdmRecord.Inadequate_of_food_nutrition__c}, {!sdmRecord.A_child_discharged_from_a_facility__c}, {!sdmRecord.Exposure_to_unsafe__c}, {!sdmRecord.Inadequate_clothing_or_hygiene__c}, {!sdmRecord.Inadequate_supervision__c}, {!sdmRecord.Physical_treatment_of_the_child_poses__c}) ,{!Neglect_Name} ,&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Neglect_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;NEGLECT&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Physical_Abuse_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(OR({!sdmRecord.Suspicious_death_of_a_child_due_to_abuse__c}, {!sdmRecord.Non_accidental_physical_injury__c}, {!sdmRecord.Injury_inconsistent_with_explanation__c}, {!sdmRecord.Injury_that_appears_suspicious__c}, {!sdmRecord.Giving_child_toxic_chemicals_alcohol__c}, {!sdmRecord.Caregiver_action_that_caused_injury__c}),{!Physical_Abuse_Name} ,&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Physical_Abuse_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;PHYSICAL ABUSE&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Risk_Harm_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(OR({!sdmRecord.Prior_child_fatality_and_a_new_child__c}, {!sdmRecord.Substance_Exposed_Newborn__c}, {!sdmRecord.Child_s_basic_need_to_be_unmet__c}, {!sdmRecord.Risk_of_sex_Abuse__c}, {!sdmRecord.Risk_of_Domestic_Violence__c}, {!sdmRecord.Harm_Risk_of_Sex_Trafficking__c}, {!sdmRecord.Previous_Fatality_or_Serious_Injury__c}, {!sdmRecord.Prior_Indicated_or_Unsub_Finding__c}, {!sdmRecord.Adult_Survivor_of_child_Maltreatment__c}, {!sdmRecord.Birth_Match__c}, {!sdmRecord.Allegations_that_the_maltreatment__c}),{!Risk_of_Harm_Name},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Risk_of_Harm_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;RISK OF HARM&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Sexual_Abuse_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(OR({!sdmRecord.Sexual_molestation_of_a_child__c}, {!sdmRecord.Sexual_act_s_among_siblings_or_other__c}, {!sdmRecord.Sexual_exploitation_of_a_child__c}, {!sdmRecord.Physical_behavioral_or_suspicious__c}, {!sdmRecord.Risk_of_Sex_Trafficking__c}) , {!Sexual_Abuse_Name} ,&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Sexual_Abuse_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;SEXUAL ABUSE&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Start_Abuse_Type</name>
+        <dataType>String</dataType>
+        <expression>IF(
+NOT(ISBLANK({!Physical_Abuse_Formula})), {!Physical_Abuse_Formula},
+IF(NOT(ISBLANK({!Sexual_Abuse_Formula})),{!Sexual_Abuse_Formula},
+IF(NOT(ISBLANK({!Neglect_Formula})),{!Neglect_Formula},
+IF(NOT(ISBLANK({!Failure_to_Protect_Formula})), {!Failure_to_Protect_Formula},
+IF(NOT(ISBLANK({!Abandonment_Formula})),{!Abandonment_Formula},
+IF(NOT(ISBLANK({!Unattended_Child_Formula})),{!Unattended_Child_Formula},
+IF(NOT(ISBLANK({!Medical_Neglect_Formula})),{!Medical_Neglect_Formula},
+IF(NOT(ISBLANK({!Mental_Injury_Formula})),{!Mental_Injury_Formula},
+IF(NOT(ISBLANK({!Mental_Injury_Neglect})),{!Mental_Injury_Neglect},
+IF(NOT(ISBLANK({!Risk_Harm_Formula})),{!Risk_Harm_Formula},&apos;&apos;))
+)
+)
+)
+)
+)
+)
+)
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Unattended_Child_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(OR({!sdmRecord.A_child_of_any_age_who_is_physically__c}, {!sdmRecord.A_child_under_8_has_been_left_alone__c}, {!sdmRecord.A_child_over_the_age_of_8_has_been_left__c}),{!Unattended_Child_Name},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Unattended_Child_Name</name>
+        <dataType>String</dataType>
+        <expression>&quot;UNATTENDED CHILD&quot;</expression>
+    </formulas>
+    <interviewLabel>INV Creation - Maltreatment Allegation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>INV Creation - Maltreatment Allegation</label>
+    <loops>
+        <name>Iterate_through_maltreators</name>
+        <label>Iterate through maltreators</label>
+        <locationX>226</locationX>
+        <locationY>878</locationY>
+        <collectionReference>Alleged_Maltreator_Persons</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Assign_Maltreatment_allegation_values</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Iterate_through_victims</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>Iterate_through_victims</name>
+        <label>Iterate through victims</label>
+        <locationX>50</locationX>
+        <locationY>758</locationY>
+        <collectionReference>Alleged_Victim_Persons</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Iterate_through_maltreators</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Assign_next_abuse_type</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Maltreatment_Allegation</name>
+        <label>Create Maltreatment Allegation</label>
+        <locationX>116</locationX>
+        <locationY>1670</locationY>
+        <inputReference>Maltreatment_Allegation_List</inputReference>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Junction_Object_under_Investigation</name>
+        <label>Get Junction Object under Investigation</label>
+        <locationX>347</locationX>
+        <locationY>158</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Alleged_Victim_Persons</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Investigation__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>sdmRecord.Investigation__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Person__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>221</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Junction_Object_under_Investigation</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>Current_Abuse_Type</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>currentItem_Alleged_Maltreator_Persons</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Person__c</objectType>
+    </variables>
+    <variables>
+        <name>currentItem_Alleged_Victim_Persons_0</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Person__c</objectType>
+    </variables>
+    <variables>
+        <name>Maltreatment_Allegation_List</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Maltreatment_Allegation__c</objectType>
+    </variables>
+    <variables>
+        <name>Maltreatment_Allegation_Record</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Maltreatment_Allegation__c</objectType>
+    </variables>
+    <variables>
+        <name>New_Maltreator_ID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>New_Victim_ID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>sdmRecord</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>SDM__c</objectType>
+    </variables>
+</Flow>

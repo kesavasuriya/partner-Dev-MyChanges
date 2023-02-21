@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <apiVersion>56.0</apiVersion>
+    <assignments>
+        <name>Assign_Race_Value</name>
+        <label>Assign Race Value</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <assignmentItems>
+            <assignToReference>recordId.Race__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Race_Field</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Race_Value</targetReference>
+        </connector>
+    </assignments>
+    <dynamicChoiceSets>
+        <name>racePicklist</name>
+        <dataType>Multipicklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Race__c</picklistField>
+        <picklistObject>Contact</picklistObject>
+    </dynamicChoiceSets>
+    <environments>Default</environments>
+    <interviewLabel>Race {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Race</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordUpdates>
+        <name>Update_Race_Value</name>
+        <label>Update Race Value</label>
+        <locationX>176</locationX>
+        <locationY>398</locationY>
+        <inputReference>recordId</inputReference>
+    </recordUpdates>
+    <screens>
+        <name>Race_Picklist</name>
+        <label>Race Picklist</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Assign_Race_Value</targetReference>
+        </connector>
+        <fields>
+            <name>Race_Field</name>
+            <choiceReferences>racePicklist</choiceReferences>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>recordId.Race__c</elementReference>
+            </defaultValue>
+            <fieldText>Race</fieldText>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <nextOrFinishButtonLabel>Save</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Race_Picklist</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Contact</objectType>
+    </variables>
+    <variables>
+        <name>test</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

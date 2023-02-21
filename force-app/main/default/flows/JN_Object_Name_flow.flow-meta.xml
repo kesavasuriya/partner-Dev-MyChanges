@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <environments>Default</environments>
+    <formulas>
+        <name>Full_Name</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Person__r.FirstName} + &apos; &apos; + {!$Record.Person__r.LastName}</expression>
+    </formulas>
+    <formulas>
+        <name>Role_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(INCLUDES({!$Record.Person_Role__c}, &quot;Biological Child&quot;), &quot;1;&quot;, NULL) +
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Other Child (Not in Household)&quot;), &quot;2;&quot;, NULL) +
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Private Adoptive Child&quot;), &quot;3;&quot;, NULL) +
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Other Child&quot;), &quot;4;&quot;, NULL) +
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Non-Victim Child&quot;), &quot;5;&quot;, NULL) +
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Alleged Victim&quot;), &quot;6;&quot;, NULL) +
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Alleged Maltreator&quot;), &quot;7;&quot;, NULL) + 
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Adoptive Parent&quot;) ,&quot;8;&quot;, NULL) +
+IF(INCLUDES({!$Record.Person_Role__c}, &quot;Biological Parent&quot;) ,&quot;9;&quot;, NULL) +
+IF( INCLUDES({!$Record.Person_Role__c}, &quot;Legal Guardian&quot;) , &quot;LegalGuardian;&quot;, NULL) +
+IF( INCLUDES({!$Record.Person_Role__c}, &quot;Child&quot;) , &quot;Child;&quot;, NULL) +
+IF( INCLUDES({!$Record.Person_Role__c}, &quot;Caregiver&quot;) , &quot;Caregiver;&quot;, NULL)</expression>
+    </formulas>
+    <interviewLabel>JN Object Name flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>JN Object Name flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Jn_Object_Name_Update</name>
+        <label>Jn Object Name Update</label>
+        <locationX>176</locationX>
+        <locationY>311</locationY>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>Full_Name</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Person_Role_Formula__c</field>
+            <value>
+                <elementReference>Role_Formula</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Jn_Object_Name_Update</targetReference>
+        </connector>
+        <object>Person__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
