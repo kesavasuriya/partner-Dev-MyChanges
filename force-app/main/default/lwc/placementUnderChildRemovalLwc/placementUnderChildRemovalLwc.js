@@ -42,6 +42,24 @@ export default class PlacementUnderChildRemovalLwc extends UtilityBaseElement {
     isLoading = false;
     subscription = {};
     CHANNEL_NAME = '/data/Placement__ChangeEvent';
+    showFlowScreen = false;
+    @track placementType;
+    showplacementType = false;
+    showLivingArrangementFlow = false;
+    showFlowButton = false;
+    showPlacementFlow = false;
+
+    get inputvariable() {
+        return[{
+            name : 'recordId',
+            type : 'String',
+            value : this.recordId
+        }
+    ]
+    }
+    
+    options=[{label:"Placement", value:"placement"},
+             {label:"Living Arrangement", value:"living arrangement"}];
 
     connectedCallback() {
 
@@ -134,7 +152,7 @@ export default class PlacementUnderChildRemovalLwc extends UtilityBaseElement {
     }
 
     hideModal() {
-        this.showModal = false;
+        this.showFlowScreen = false;
     }
 
     handleChange(event) {
@@ -191,4 +209,30 @@ export default class PlacementUnderChildRemovalLwc extends UtilityBaseElement {
                 this.handleError(error);
             });
     }
+
+    handleFlow() {
+
+        this.showFlowScreen = true;
+
+    }
+
+    handleNavigation(event) {
+        if(event.target.value == 'living arrangement') {
+            this.showLivingArrangementFlow = true;
+        } else if(event.target.value == 'placement') {
+            this.showPlacementFlow = true;
+
+        }
+
+    }
+
+    closeFlowModal() {
+
+        this.showFlowScreen = false;
+        this.showLivingArrangementFlow = false;
+        this.showPlacementFlow = false;
+    }
+
+
+
 }

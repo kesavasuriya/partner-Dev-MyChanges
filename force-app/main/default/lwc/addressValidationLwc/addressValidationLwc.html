@@ -1,0 +1,24 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item size="6">
+            <lightning-input-address
+                variant="label-hidden"        
+                street-label="Address Line 1"
+                city-label="City"
+                country-label="County"
+                province-label="State"
+                postal-code-label="Zip Code"
+                street={address1}
+                city={city}
+                country={county}
+                province={state}
+                postal-code={postalcode}
+                onchange={handleChange}
+                required={valueRequired}
+                show-address-lookup="true"></lightning-input-address>
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <lightning-textarea class="moveDown" label="Address Line 2" value={address2} onchange={handleChange}></lightning-textarea>
+            </lightning-layout-item>
+    </lightning-layout>
+</template>
